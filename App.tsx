@@ -1,7 +1,4 @@
 import React, { useState, useCallback } from 'react';
-import HomeScreen from './components/HomeScreen';
-import TestScreen from './components/TestScreen';
-import ResultsScreen from './components/ResultsScreen';
 import PracticeHub from './components/PracticeHub';
 import DictationScreen from './components/DictationScreen';
 import ReadingPracticeScreen from './components/ReadingPracticeScreen';
@@ -15,7 +12,7 @@ import VocabularyTestScreen from './components/VocabularyTestScreen';
 import StatsFooter from './components/StatsFooter';
 import LoginScreen from './components/LoginScreen';
 import ChangePasswordScreen from './components/ChangePasswordScreen';
-import { AppState, TestData, UserAnswers, ReadingTestData, VocabularyTest, VocabularyPart } from './types';
+import { AppState, ReadingTestData, VocabularyTest, VocabularyPart } from './types';
 import { getReadingTest } from './services/readingLibrary';
 import { getVocabularyPart, getVocabularyTest } from './services/vocabularyLibrary';
 import { LogoIcon } from './components/icons';
@@ -26,8 +23,6 @@ const App: React.FC = () => {
   const [username] = useState<string>('tester1');
   const [password, setPassword] = useState<string>('phattoeic');
   const [appState, setAppState] = useState<AppState>(AppState.PracticeHub);
-  const [testData, setTestData] = useState<TestData | null>(null);
-  const [userAnswers, setUserAnswers] = useState<UserAnswers | null>(null);
   
   // Grammar State
   const [selectedGrammarTopic, setSelectedGrammarTopic] = useState<string | null>(null);
@@ -49,24 +44,7 @@ const App: React.FC = () => {
     setIsAuthenticated(false);
   }, []);
 
-  const handleStartTest = useCallback((data: TestData) => {
-    setTestData(data);
-    const initialAnswers: UserAnswers = {};
-    data.questions.forEach(q => {
-      initialAnswers[q.id] = null;
-    });
-    setUserAnswers(initialAnswers);
-    setAppState(AppState.Test);
-  }, []);
-
-  const handleSubmitTest = useCallback((answers: UserAnswers) => {
-    setUserAnswers(answers);
-    setAppState(AppState.Results);
-  }, []);
-
   const handleGoHome = useCallback(() => {
-    setTestData(null);
-    setUserAnswers(null);
     setSelectedGrammarTopic(null);
     setSelectedReadingPart(null);
     setSelectedReadingTestData(null);
@@ -141,8 +119,6 @@ const App: React.FC = () => {
 
   const renderContent = () => {
     switch (appState) {
-      case AppState.PracticeTestHome:
-        return <HomeScreen onStartTest={handleStartTest} />;
       case AppState.DictationHome:
         return <DictationScreen />;
       case AppState.ReadingPracticeHome:
@@ -183,22 +159,9 @@ const App: React.FC = () => {
         return null;
       case AppState.ChangePassword:
         return <ChangePasswordScreen currentPasswordValue={password} onPasswordChanged={handlePasswordChanged} onBack={handleGoHome} />;
-      case AppState.Test:
-        if (testData && userAnswers) {
-          return <TestScreen testData={testData} userAnswers={userAnswers} onSubmit={handleSubmitTest} />;
-        }
-        handleGoHome();
-        return null;
-      case AppState.Results:
-        if (testData && userAnswers) {
-          return <ResultsScreen testData={testData} userAnswers={userAnswers} onGoHome={handleGoHome} />;
-        }
-        handleGoHome();
-        return null;
       case AppState.PracticeHub:
       default:
         return <PracticeHub 
-          onNavigateToPracticeTest={() => setAppState(AppState.PracticeTestHome)}
           onNavigateToDictation={() => setAppState(AppState.DictationHome)}
           onNavigateToReadingPractice={() => setAppState(AppState.ReadingPracticeHome)}
           onNavigateToGrammar={() => setAppState(AppState.GrammarHome)}

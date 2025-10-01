@@ -1,90 +1,8 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import { TestData, DictationExercise } from '../types';
+// FIX: Import TestData type
+import { DictationExercise, TestData } from '../types';
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
-
-const responseSchema = {
-    type: Type.OBJECT,
-    properties: {
-      testTitle: { type: Type.STRING },
-      duration: { type: Type.NUMBER, description: "Test duration in seconds. For 10 questions, make it 600 seconds." },
-      questions: {
-        type: Type.ARRAY,
-        items: {
-          type: Type.OBJECT,
-          properties: {
-            id: { type: Type.NUMBER },
-            part: { type: Type.NUMBER, description: 'TOEIC Part number (1 or 5)' },
-            image: { type: Type.STRING, nullable: true, description: 'URL of an image for Part 1 questions. Empty for others.' },
-            audioScript: { type: Type.STRING, nullable: true, description: 'The script of the audio for listening questions.' },
-            questionText: { type: Type.STRING, description: 'The main text of the question (e.g., incomplete sentence for Part 5). For Part 1, this should be "Listen to four statements about a picture, then select the one that best describes the picture."' },
-            options: {
-              type: Type.OBJECT,
-              properties: {
-                A: { type: Type.STRING },
-                B: { type: Type.STRING },
-                C: { type: Type.STRING },
-                D: { type: Type.STRING },
-              },
-              required: ['A', 'B', 'C', 'D']
-            },
-            correctAnswer: { type: Type.STRING, description: 'The key of the correct option (A, B, C, or D).' },
-            explanation: { type: Type.STRING, description: 'Detailed explanation of the correct answer.' },
-          },
-          required: ['id', 'part', 'questionText', 'options', 'correctAnswer', 'explanation']
-        }
-      }
-    },
-    required: ['testTitle', 'duration', 'questions']
-};
-
-
-export const generateTOEICMiniTest = async (): Promise<TestData | null> => {
-  try {
-    const prompt = `
-      You are an expert TOEIC test creator. Generate a 10-question mini-test for English learners in JSON format according to the provided schema.
-
-      Instructions:
-      1. Create a test with the title "AI-Generated Mini TOEIC Test".
-      2. Set the duration to 600 seconds.
-      3. The test must contain exactly 10 questions.
-      4. The first 3 questions must be for Part 1 (Photographs).
-      5. The next 7 questions must be for Part 5 (Incomplete Sentences).
-      6. For Part 1 questions:
-         - Provide a relevant public image URL from \`https://picsum.photos/800/500?random=SEED\` where SEED is a unique random integer for each image.
-         - The 'questionText' should be "Listen to four statements about a picture, then select the one that best describes the picture.".
-         - Create four descriptive options (A, B, C, D), where only one is correct.
-         - Provide a concise 'audioScript' that includes all four statements. For example: "(A) They're looking at the screen. (B) They're reading a book. (C) They're sitting on a bench. (D) They're walking in a park."
-      7. For Part 5 questions:
-         - The 'image' and 'audioScript' fields should be null.
-         - The 'questionText' should be a single sentence with a blank indicated by '____'.
-         - Provide four word or phrase options (A, B, C, D) to fill the blank.
-      8. For every question, provide a 'correctAnswer' (A, B, C, or D) and a detailed 'explanation' for why that answer is correct and the others are incorrect.
-      9. Ensure question IDs are sequential from 1 to 10.
-    `;
-
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: responseSchema,
-      },
-    });
-    
-    const jsonStr = response.text.trim();
-    const data = JSON.parse(jsonStr);
-
-    // Basic validation to ensure the response is usable
-    if (data && data.questions && Array.isArray(data.questions) && data.questions.length > 0) {
-      return data as TestData;
-    }
-    return null;
-  } catch (error) {
-    console.error("Error generating TOEIC test:", error);
-    throw new Error("Failed to generate test from API.");
-  }
-};
 
 const dictationSchema = {
     type: Type.OBJECT,
@@ -135,6 +53,84 @@ export const generateDictationExercise = async (): Promise<DictationExercise | n
         throw new Error("Failed to generate dictation from API.");
     }
 };
+
+// FIX: Add generateTOEICMiniTest function and associated schemas.
+const questionSchema = {
+    type: Type.OBJECT,
+    properties: {
+        id: { type: Type.INTEGER, description: 'A unique integer ID for the question, starting from 101.' },
+        part: { type: Type.INTEGER, description: 'The TOEIC part number (e.g., 1, 2, 5, 6, 7).' },
+        questionText: { type: Type.STRING, description: 'The main text of the question. For fill-in-the-blanks, use "____". For Part 7, this contains the passage for the first question in a set.' },
+        options: {
+            type: Type.OBJECT,
+            properties: {
+                A: { type: Type.STRING },
+                B: { type: Type.STRING },
+                C: { type: Type.STRING },
+                D: { type: Type.STRING },
+            },
+            required: ['A', 'B', 'C', 'D']
+        },
+        correctAnswer: { type: Type.STRING, description: "The correct option key ('A', 'B', 'C', or 'D')." },
+        explanation: { type: Type.STRING, description: 'A brief explanation of why the correct answer is right.' },
+        image: { type: Type.STRING, description: 'Optional. For Part 1, a URL to a relevant image. Use a placeholder like https://placehold.co/600x400.' },
+        audioScript: { type: Type.STRING, description: 'Optional. For listening parts (1-4), the script for the audio.' },
+    },
+    required: ['id', 'part', 'questionText', 'options', 'correctAnswer', 'explanation']
+};
+
+const testSchema = {
+    type: Type.OBJECT,
+    properties: {
+        testTitle: { type: Type.STRING, description: 'A creative title for this mini-test, e.g., "TOEIC Mini-Test: Business Scenarios".' },
+        duration: { type: Type.INTEGER, description: 'The total test duration in seconds. Assume 75 seconds per question.' },
+        questions: {
+            type: Type.ARRAY,
+            description: 'An array of question objects.',
+            items: questionSchema
+        }
+    },
+    required: ['testTitle', 'duration', 'questions']
+};
+
+export const generateTOEICMiniTest = async (): Promise<TestData | null> => {
+    try {
+        const prompt = `
+            You are an expert TOEIC test creator. Generate a complete mini-TOEIC test in JSON format according to the provided schema.
+
+            Instructions:
+            1.  Create a test with exactly 5 questions.
+            2.  Include a mix of questions from different TOEIC parts (e.g., Part 5 Incomplete Sentences, Part 7 Reading Comprehension). Do not include listening parts (1-4) or Part 6. Focus on reading comprehension.
+            3.  For each question, provide a unique ID starting from 101.
+            4.  For Part 7, write a short passage (email, notice, article) in the 'questionText' for the first question of the set, and then for subsequent questions related to that passage, write "Refer to the previous passage." in their 'questionText'. All questions for a passage should be grouped together.
+            5.  Ensure all fields in the schema are filled correctly.
+            6.  Set the duration to 375 seconds (5 questions * 75 seconds).
+            7.  Provide a clear and concise explanation for each correct answer.
+        `;
+
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: testSchema,
+            },
+        });
+
+        const jsonStr = response.text.trim();
+        const data = JSON.parse(jsonStr);
+
+        // Basic validation
+        if (data && data.questions && data.questions.length > 0) {
+            return data as TestData;
+        }
+        return null;
+    } catch (error) {
+        console.error("Error generating TOEIC mini-test:", error);
+        throw new Error("Failed to generate test from API.");
+    }
+};
+
 
 export const getWordDefinition = async (word: string, contextSentence: string = ''): Promise<string | null> => {
     try {

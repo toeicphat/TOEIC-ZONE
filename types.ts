@@ -1,6 +1,5 @@
 export enum AppState {
     PracticeHub = 'PRACTICE_HUB',
-    PracticeTestHome = 'PRACTICE_TEST_HOME',
     DictationHome = 'DICTATION_HOME',
     ReadingPracticeHome = 'READING_PRACTICE_HOME',
     ReadingPartHome = 'READING_PART_HOME',
@@ -11,33 +10,33 @@ export enum AppState {
     VocabularyPartHome = 'VOCABULARY_PART_HOME',
     VocabularyTest = 'VOCABULARY_TEST',
     ChangePassword = 'CHANGE_PASSWORD',
-    Test = 'TEST',
-    Results = 'RESULTS',
 }
 
 export type QuestionOption = 'A' | 'B' | 'C' | 'D';
 
+// FIX: Add TestData and Question interfaces for the TOEIC Mini Test feature.
 export interface Question {
     id: number;
     part: number;
-    image?: string | null;
-    audioScript?: string | null;
     questionText: string;
     options: {
         A: string;
         B: string;
         C: string;
-        D?: string;
+        D: string;
     };
     correctAnswer: QuestionOption;
     explanation: string;
+    image?: string;
+    audioScript?: string;
 }
 
 export interface TestData {
     testTitle: string;
-    duration: number; // in seconds
+    duration: number;
     questions: Question[];
 }
+
 
 export interface UserAnswers {
     [questionId: string | number]: QuestionOption | null;
