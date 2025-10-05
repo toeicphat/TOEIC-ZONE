@@ -43,6 +43,7 @@ const TestScreen: React.FC<TestScreenProps> = ({ testData, userAnswers: initialA
 
   const goToPrev = () => {
     if (currentQuestionIndex > 0) {
+      // FIX: Decrement currentQuestionIndex instead of incrementing.
       setCurrentQuestionIndex(currentQuestionIndex - 1);
     }
   };
@@ -57,8 +58,8 @@ const TestScreen: React.FC<TestScreenProps> = ({ testData, userAnswers: initialA
       {selectionPopup && <AddVocabPopup top={selectionPopup.top} left={selectionPopup.left} onSave={handleSaveWord} />}
       <div className="lg:grid lg:grid-cols-3 lg:gap-8">
         {/* Main Content */}
-        <div className="lg:col-span-2 bg-white p-6 rounded-lg shadow-lg" ref={contentRef} onMouseUp={handleMouseUp}>
-          <h2 className="text-xl font-bold mb-4">Question {currentQuestionIndex + 1} of {testData.questions.length}</h2>
+        <div className="lg:col-span-2 bg-white p-6 rounded-lg shadow-lg border" ref={contentRef} onMouseUp={handleMouseUp}>
+          <h2 className="text-xl font-bold mb-4 text-slate-800">Question {currentQuestionIndex + 1} of {testData.questions.length}</h2>
           
           {currentQuestion.part === 1 && currentQuestion.image && (
             <div className="mb-4 rounded-lg overflow-hidden">
@@ -97,7 +98,7 @@ const TestScreen: React.FC<TestScreenProps> = ({ testData, userAnswers: initialA
 
         {/* Right Sidebar */}
         <div className="mt-8 lg:mt-0 space-y-8">
-            <div className="bg-white p-6 rounded-lg shadow-lg">
+            <div className="bg-white p-6 rounded-lg shadow-lg border">
                 <Timer initialTime={time} onTimeUp={handleTimeUp} />
                 <button 
                     onClick={() => { if(window.confirm('Are you sure you want to submit your answers?')) onSubmit(answers); }}
@@ -106,7 +107,7 @@ const TestScreen: React.FC<TestScreenProps> = ({ testData, userAnswers: initialA
                     Submit Test
                 </button>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-lg">
+            <div className="bg-white p-6 rounded-lg shadow-lg border">
                 <h3 className="text-lg font-bold mb-4">Question Palette</h3>
                 <QuestionPalette 
                     questions={testData.questions}

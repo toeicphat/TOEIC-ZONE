@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import PracticeHub from './components/PracticeHub';
 import DictationScreen from './components/DictationScreen';
 import ReadingPracticeScreen from './components/ReadingPracticeScreen';
@@ -9,19 +9,31 @@ import GrammarTopicScreen from './components/GrammarTopicScreen';
 import VocabularyScreen from './components/VocabularyScreen';
 import VocabularyPartScreen from './components/VocabularyPartScreen';
 import VocabularyTestScreen from './components/VocabularyTestScreen';
+import SpeakingScreen from './components/SpeakingScreen';
+import SpeakingPart1Screen from './components/SpeakingPart1Screen';
+import SpeakingPart2Screen from './components/SpeakingPart2Screen';
+import SpeakingPart3Screen from './components/SpeakingPart3Screen';
+import SpeakingPart4Screen from './components/SpeakingPart4Screen';
+import SpeakingPart5Screen from './components/SpeakingPart5Screen';
+import WritingPracticeScreen from './components/WritingPracticeScreen';
+import WritingPart1Screen from './components/WritingPart1Screen';
+import WritingPart2Screen from './components/WritingPart2Screen';
+import WritingPart3Screen from './components/WritingPart3Screen';
 import StatsFooter from './components/StatsFooter';
 import LoginScreen from './components/LoginScreen';
 import ChangePasswordScreen from './components/ChangePasswordScreen';
-import { AppState, ReadingTestData, VocabularyTest, VocabularyPart } from './types';
+import { AppState, ReadingTestData, VocabularyTest, VocabularyPart, User } from './types';
 import { getReadingTest } from './services/readingLibrary';
 import { getVocabularyPart, getVocabularyTest } from './services/vocabularyLibrary';
 import { LogoIcon } from './components/icons';
 
-
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [username] = useState<string>('tester1');
-  const [password, setPassword] = useState<string>('phattoeic');
+  const [users, setUsers] = useState<User[]>([
+    { username: 'tester2', password: '123456' },
+    { username: 'admin', password: 'phattoeic' },
+  ]);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [appState, setAppState] = useState<AppState>(AppState.PracticeHub);
   
   // Grammar State
@@ -34,14 +46,22 @@ const App: React.FC = () => {
   // Vocabulary State
   const [selectedVocabularyPart, setSelectedVocabularyPart] = useState<VocabularyPart | null>(null);
   const [selectedVocabularyTest, setSelectedVocabularyTest] = useState<VocabularyTest | null>(null);
+
+  // Speaking State
+  const [selectedSpeakingPart, setSelectedSpeakingPart] = useState<number | null>(null);
   
-  const handleLoginSuccess = useCallback(() => {
+  // Writing State
+  const [selectedWritingPart, setSelectedWritingPart] = useState<number | null>(null);
+
+  const handleLoginSuccess = useCallback((user: User) => {
     setIsAuthenticated(true);
+    setCurrentUser(user);
     setAppState(AppState.PracticeHub);
   }, []);
 
   const handleLogout = useCallback(() => {
     setIsAuthenticated(false);
+    setCurrentUser(null);
   }, []);
 
   const handleGoHome = useCallback(() => {
@@ -50,6 +70,8 @@ const App: React.FC = () => {
     setSelectedReadingTestData(null);
     setSelectedVocabularyPart(null);
     setSelectedVocabularyTest(null);
+    setSelectedSpeakingPart(null);
+    setSelectedWritingPart(null);
     setAppState(AppState.PracticeHub);
   }, []);
 
@@ -107,14 +129,57 @@ const App: React.FC = () => {
       setAppState(AppState.VocabularyPartHome);
   }, []);
 
+  // Speaking Navigation Handlers
+    const handleSelectSpeakingPart = useCallback((part: number) => {
+        setSelectedSpeakingPart(part);
+        switch (part) {
+            case 1: setAppState(AppState.SpeakingPart1); break;
+            case 2: setAppState(AppState.SpeakingPart2); break;
+            case 3: setAppState(AppState.SpeakingPart3); break;
+            case 4: setAppState(AppState.SpeakingPart4); break;
+            case 5: setAppState(AppState.SpeakingPart5); break;
+            default: setAppState(AppState.SpeakingHome); break;
+        }
+    }, []);
+
+    const handleBackToSpeakingHome = useCallback(() => {
+        setSelectedSpeakingPart(null);
+        setAppState(AppState.SpeakingHome);
+    }, []);
+
+    // Writing Navigation Handlers
+    const handleNavigateToWritingPractice = useCallback(() => {
+        setAppState(AppState.WritingPracticeHome);
+    }, []);
+
+    const handleSelectWritingPart = useCallback((part: number) => {
+        setSelectedWritingPart(part);
+        switch (part) {
+            case 1: setAppState(AppState.WritingPart1); break;
+            case 2: setAppState(AppState.WritingPart2); break;
+            case 3: setAppState(AppState.WritingPart3); break;
+            default: setAppState(AppState.WritingPracticeHome); break;
+        }
+    }, []);
+
+    const handleBackToWritingHome = useCallback(() => {
+        setSelectedWritingPart(null);
+        setAppState(AppState.WritingPracticeHome);
+    }, []);
+
   // Password Change Handlers
   const handleNavigateToChangePassword = useCallback(() => {
     setAppState(AppState.ChangePassword);
   }, []);
 
   const handlePasswordChanged = useCallback((newPassword: string) => {
-    setPassword(newPassword);
-  }, []);
+    if (currentUser) {
+        setUsers(prevUsers => prevUsers.map(u => 
+            u.username === currentUser.username ? { ...u, password: newPassword } : u
+        ));
+        setCurrentUser(prevUser => prevUser ? { ...prevUser, password: newPassword } : null);
+    }
+  }, [currentUser]);
 
 
   const renderContent = () => {
@@ -157,8 +222,40 @@ const App: React.FC = () => {
         }
         handleBackToVocabularyPartHome();
         return null;
+       case AppState.SpeakingHome:
+            return <SpeakingScreen onSelectPart={handleSelectSpeakingPart} />;
+        case AppState.SpeakingPart1:
+            if (selectedSpeakingPart === 1) return <SpeakingPart1Screen onBack={handleBackToSpeakingHome} />;
+            handleBackToSpeakingHome(); return null;
+        case AppState.SpeakingPart2:
+            if (selectedSpeakingPart === 2) return <SpeakingPart2Screen onBack={handleBackToSpeakingHome} />;
+            handleBackToSpeakingHome(); return null;
+        case AppState.SpeakingPart3:
+            if (selectedSpeakingPart === 3) return <SpeakingPart3Screen onBack={handleBackToSpeakingHome} />;
+            handleBackToSpeakingHome(); return null;
+        case AppState.SpeakingPart4:
+            if (selectedSpeakingPart === 4) return <SpeakingPart4Screen onBack={handleBackToSpeakingHome} />;
+            handleBackToSpeakingHome(); return null;
+        case AppState.SpeakingPart5:
+            if (selectedSpeakingPart === 5) return <SpeakingPart5Screen onBack={handleBackToSpeakingHome} />;
+            handleBackToSpeakingHome(); return null;
+        case AppState.WritingPracticeHome:
+            return <WritingPracticeScreen onSelectPart={handleSelectWritingPart} />;
+        case AppState.WritingPart1:
+            if (selectedWritingPart === 1) return <WritingPart1Screen onBack={handleBackToWritingHome} />;
+            handleBackToWritingHome(); return null;
+        case AppState.WritingPart2:
+            if (selectedWritingPart === 2) return <WritingPart2Screen onBack={handleBackToWritingHome} />;
+            handleBackToWritingHome(); return null;
+        case AppState.WritingPart3:
+            if (selectedWritingPart === 3) return <WritingPart3Screen onBack={handleBackToWritingHome} />;
+            handleBackToWritingHome(); return null;
       case AppState.ChangePassword:
-        return <ChangePasswordScreen currentPasswordValue={password} onPasswordChanged={handlePasswordChanged} onBack={handleGoHome} />;
+        if (currentUser) {
+            return <ChangePasswordScreen currentPasswordValue={currentUser.password} onPasswordChanged={handlePasswordChanged} onBack={handleGoHome} />;
+        }
+        handleGoHome();
+        return null;
       case AppState.PracticeHub:
       default:
         return <PracticeHub 
@@ -166,24 +263,26 @@ const App: React.FC = () => {
           onNavigateToReadingPractice={() => setAppState(AppState.ReadingPracticeHome)}
           onNavigateToGrammar={() => setAppState(AppState.GrammarHome)}
           onNavigateToVocabulary={() => setAppState(AppState.VocabularyHome)}
+          onNavigateToSpeaking={() => setAppState(AppState.SpeakingHome)}
+          onNavigateToWritingPractice={handleNavigateToWritingPractice}
         />;
     }
   };
 
-  if (!isAuthenticated) {
-    return <LoginScreen onLoginSuccess={handleLoginSuccess} validUsername={username} validPassword={password} />;
+  if (!isAuthenticated || !currentUser) {
+    return <LoginScreen onLoginSuccess={handleLoginSuccess} users={users} />;
   }
 
   return (
     <div className="min-h-screen bg-slate-100 font-sans text-slate-800 flex flex-col">
-      <header className="bg-white shadow-md sticky top-0 z-10">
+      <header className="bg-white shadow-md sticky top-0 z-10 border-b border-slate-200">
         <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center cursor-pointer" onClick={handleGoHome}>
               <LogoIcon className="h-8 w-8 text-blue-600" />
               <h1 className="ml-3 text-2xl font-bold text-slate-800 tracking-tight">TOEIC Zone with Mr. Phat</h1>
             </div>
-            <div className="flex items-center space-x-4 md:space-x-6">
+            <div className="flex items-center space-x-2 md:space-x-4">
                 <button 
                     onClick={handleGoHome}
                     className="font-semibold text-slate-600 hover:text-blue-600 transition-colors"

@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
 import { LogoIcon } from './icons';
+import { User } from '../types';
 
 interface LoginScreenProps {
-  onLoginSuccess: () => void;
-  validUsername: string;
-  validPassword: string;
+  onLoginSuccess: (user: User) => void;
+  users: User[];
 }
 
-const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess, validUsername, validPassword }) => {
+const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess, users }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (username === validUsername && password === validPassword) {
-      onLoginSuccess();
+    const user = users.find(u => u.username === username && u.password === password);
+    if (user) {
+      onLoginSuccess(user);
     } else {
       setError('Invalid username or password.');
     }
@@ -43,7 +44,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess, validUsername
               required
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full mt-2 p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full mt-2 p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-black"
               placeholder="Enter your username"
               autoComplete="username"
             />
@@ -59,7 +60,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess, validUsername
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full mt-2 p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full mt-2 p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-black"
               placeholder="Enter your password"
               autoComplete="current-password"
             />

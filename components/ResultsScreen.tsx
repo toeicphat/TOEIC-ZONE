@@ -37,8 +37,8 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ testData, userAnswers, on
           </div>
       )}
       {selectionPopup && <AddVocabPopup top={selectionPopup.top} left={selectionPopup.left} onSave={handleSaveWord} />}
-      <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg" ref={contentRef} onMouseUp={handleMouseUp}>
-        <h2 className="text-3xl font-bold text-center mb-2">Test Results</h2>
+      <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg border" ref={contentRef} onMouseUp={handleMouseUp}>
+        <h2 className="text-3xl font-bold text-center mb-2 text-slate-900">Test Results</h2>
         <p className="text-center text-lg text-slate-600 mb-8">{testData.testTitle}</p>
 
         <div className="text-center bg-slate-100 p-6 rounded-lg mb-10">

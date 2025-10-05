@@ -1,3 +1,8 @@
+export interface User {
+    username: string;
+    password: string;
+}
+
 export enum AppState {
     PracticeHub = 'PRACTICE_HUB',
     DictationHome = 'DICTATION_HOME',
@@ -9,6 +14,16 @@ export enum AppState {
     VocabularyHome = 'VOCABULARY_HOME',
     VocabularyPartHome = 'VOCABULARY_PART_HOME',
     VocabularyTest = 'VOCABULARY_TEST',
+    SpeakingHome = 'SPEAKING_HOME',
+    SpeakingPart1 = 'SPEAKING_PART_1',
+    SpeakingPart2 = 'SPEAKING_PART_2',
+    SpeakingPart3 = 'SPEAKING_PART_3',
+    SpeakingPart4 = 'SPEAKING_PART_4',
+    SpeakingPart5 = 'SPEAKING_PART_5',
+    WritingPracticeHome = 'WRITING_PRACTICE_HOME',
+    WritingPart1 = 'WRITING_PART_1',
+    WritingPart2 = 'WRITING_PART_2',
+    WritingPart3 = 'WRITING_PART_3',
     ChangePassword = 'CHANGE_PASSWORD',
 }
 
@@ -95,6 +110,30 @@ export interface ReadingTestData {
     passages: ReadingPassage[];
 }
 
+// For Grammar
+export interface GrammarTopicContent {
+    title: string;
+    explanation: string[]; // array of paragraphs
+    examples: {
+        sentence: string;
+        translation: string;
+    }[];
+    interactiveExercise?: 'determiner_clicker';
+}
+
+export interface GrammarQuestion {
+    id: string;
+    questionText: string;
+    options: { A: string; B: string; C: string; D: string; };
+    correctAnswer: 'A' | 'B' | 'C' | 'D';
+    explanation: string;
+}
+
+export interface DeterminerExercise {
+    paragraph: string;
+    determiners: string[];
+}
+
 // For Vocabulary Review (SRS)
 export interface VocabularyWord {
     id: string; // The word in lowercase
@@ -124,4 +163,184 @@ export interface VocabularyPart {
     title: string;
     description: string;
     tests: VocabularyTest[];
+}
+
+// For Speaking Evaluation
+export interface SpeakingPart1EvaluationResult {
+    taskScore: number;
+    estimatedScoreBand: string;
+    proficiencyLevel: string;
+    pronunciationFeedback: {
+        summary: string;
+        examples: string[];
+    };
+    intonationAndStressFeedback: {
+        summary: string;
+        examples: string[];
+    };
+}
+
+export interface SpeakingPart2EvaluationResult {
+    taskScore: number;
+    estimatedScoreBand: string;
+    proficiencyLevel: string;
+    grammar: {
+        english: string;
+        vietnamese: string;
+    };
+    vocabulary: {
+        english: string;
+        vietnamese: string;
+    };
+    cohesion: {
+        english: string;
+        vietnamese: string;
+    };
+    delivery: {
+        english: string;
+        vietnamese: string;
+    };
+}
+
+export interface SpeakingPart3Feedback {
+    english: string;
+    vietnamese: string;
+}
+
+export interface SpeakingPart3EvaluationResult {
+    taskScore: number;
+    estimatedScoreBand: string;
+    proficiencyLevel: string;
+    generalSummary: SpeakingPart3Feedback;
+    grammarAndVocab: SpeakingPart3Feedback;
+    fluencyAndCohesion: SpeakingPart3Feedback;
+    pronunciation: SpeakingPart3Feedback;
+    responseToQ7: SpeakingPart3Feedback;
+}
+
+export interface SpeakingPart4Task {
+    documentTitle: string;
+    documentContent: string; // Markdown formatted string
+    question8: string;
+    question9: string;
+    question10: string;
+}
+
+export interface SpeakingPart4Feedback {
+    english: string;
+    vietnamese: string;
+}
+
+export interface SpeakingPart4EvaluationResult {
+    taskScore: number;
+    estimatedScoreBand: string;
+    proficiencyLevel: string;
+    generalSummary: SpeakingPart4Feedback;
+    accuracy: SpeakingPart4Feedback;
+    responseToQ10: SpeakingPart4Feedback;
+    languageUse: SpeakingPart4Feedback;
+    delivery: SpeakingPart4Feedback;
+}
+
+export interface SpeakingPart5Scenario {
+    callerName: string;
+    problem: string; // The text of the voicemail
+}
+
+export interface SpeakingPart5Feedback {
+    english: string;
+    vietnamese: string;
+}
+
+export interface SpeakingPart5EvaluationResult {
+    taskScore: number; // 0-5
+    estimatedScoreBand: string;
+    proficiencyLevel: string;
+    generalSummary: SpeakingPart5Feedback;
+    solutionStructure: SpeakingPart5Feedback;
+    languageUse: SpeakingPart5Feedback;
+    fluencyAndCohesion: SpeakingPart5Feedback;
+    intonationAndTone: SpeakingPart5Feedback;
+}
+
+// For Writing Evaluation
+export interface WritingPart1Task {
+    picture: string; // base64 image data URL
+    keywords: [string, string];
+}
+
+export interface WritingPart1SingleEvaluation {
+    score: number; // 0-3
+    grammar: {
+        english: string;
+        vietnamese: string;
+    };
+    relevance: {
+        english: string;
+        vietnamese: string;
+    };
+}
+
+export interface WritingPart1EvaluationResult {
+    totalRawScore: number; // 0-15
+    estimatedScoreBand: string; // "170-190"
+    proficiencyLevel: string; // "Level 8"
+    overallSummary: {
+        english: string;
+        vietnamese: string;
+    };
+    questionFeedback: WritingPart1SingleEvaluation[]; // Array of 5
+}
+
+// For Writing Part 2
+export interface WritingPart2Request {
+    title: string;
+    requestText: string;
+}
+
+export interface WritingPart2Task {
+    question6: WritingPart2Request;
+    question7: WritingPart2Request;
+}
+
+export interface WritingPart2FeedbackDetail {
+    english: string;
+    vietnamese: string;
+}
+
+export interface WritingPart2SingleEvaluation {
+    score: number; // 0-4
+    requestSummary: string;
+    completeness: WritingPart2FeedbackDetail;
+    languageUse: WritingPart2FeedbackDetail;
+    organization?: WritingPart2FeedbackDetail; // Optional for Q6
+    tone?: WritingPart2FeedbackDetail; // Optional for Q6
+}
+
+export interface WritingPart2EvaluationResult {
+    totalRawScore: number; // 0-8
+    estimatedScoreBand: string; // e.g., "180-200"
+    overallSummary: WritingPart2FeedbackDetail;
+    question6Feedback: WritingPart2SingleEvaluation;
+    question7Feedback: WritingPart2SingleEvaluation;
+}
+
+// For Writing Part 3
+export interface WritingPart3Task {
+    question: string;
+}
+
+export interface WritingPart3FeedbackDetail {
+    english: string;
+    vietnamese: string;
+}
+
+export interface WritingPart3EvaluationResult {
+    taskScore: number; // 0-5
+    estimatedScoreBand: string;
+    overallSummary: WritingPart3FeedbackDetail;
+    ideaDevelopment: WritingPart3FeedbackDetail;
+    organization: WritingPart3FeedbackDetail;
+    grammarAndSyntax: WritingPart3FeedbackDetail;
+    vocabulary: WritingPart3FeedbackDetail;
 }

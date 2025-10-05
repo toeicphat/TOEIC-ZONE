@@ -14,7 +14,7 @@ const AddVocabPopup: React.FC<AddVocabPopupProps> = ({ top, left, onSave }) => {
         >
             <button
                 onClick={onSave}
-                className="bg-blue-600 text-white px-3 py-1 rounded-md shadow-lg text-sm font-semibold hover:bg-blue-700 transition-colors"
+                className="bg-blue-600 text-white px-3 py-1 rounded-md shadow-lg text-sm font-semibold hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 transition-colors"
             >
                 Save Word
             </button>

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { UsersIcon } from './icons';
 
@@ -51,19 +50,19 @@ const StatsFooter: React.FC = () => {
     }, []);
 
     return (
-        <footer className="bg-slate-800 text-white py-4">
+        <footer className="bg-slate-100 text-slate-800 py-4 border-t border-slate-200">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
                 <div className="flex justify-center items-center space-x-6">
-                    <UsersIcon className="h-8 w-8 text-slate-400" aria-hidden="true" />
+                    <UsersIcon className="h-8 w-8 text-slate-500" aria-hidden="true" />
                     <div className="flex items-baseline space-x-4 sm:space-x-6">
                         <div>
                             <span className="font-bold text-lg">{dailyUsers.toLocaleString()}</span>
-                            <span className="ml-2 text-slate-300">Daily Visitors</span>
+                            <span className="ml-2 text-slate-600">Daily Visitors</span>
                         </div>
-                        <div className="border-l border-slate-600 h-6"></div>
+                        <div className="border-l border-slate-300 h-6"></div>
                         <div>
                             <span className="font-bold text-lg">{totalUsers.toLocaleString()}</span>
-                            <span className="ml-2 text-slate-300">Total Visitors</span>
+                            <span className="ml-2 text-slate-600">Total Visitors</span>
                         </div>
                     </div>
                 </div>

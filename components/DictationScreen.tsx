@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { generateDictationExercise } from '../services/geminiService';
+import { generateDictationExercise, generateDictationFromUserInput } from '../services/geminiService';
 import { dictationData } from '../services/dictationLibrary';
 import { DictationExercise, LibraryDictationExercise, DictationPart, DictationTest, UserAnswers } from '../types';
 import { LoadingIcon } from './icons';
@@ -35,15 +35,16 @@ const Breadcrumbs: React.FC<{
 );
 
 const DictationScreen: React.FC = () => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [isGenerating, setIsGenerating] = useState(false);
+    const [generationError, setGenerationError] = useState<string | null>(null);
     
     // Navigation state
     const [currentPart, setCurrentPart] = useState<DictationPart | null>(null);
     const [currentTest, setCurrentTest] = useState<DictationTest | null>(null);
 
     // AI/Single Exercise state
-    const [currentExercise, setCurrentExercise] = useState<DictationExercise | LibraryDictationExercise | null>(null);
+    const [userInput, setUserInput] = useState('');
+    const [activeAiExercise, setActiveAiExercise] = useState<{ exercise: DictationExercise | LibraryDictationExercise } | null>(null);
     const [userAnswers, setUserAnswers] = useState<string[]>([]);
     const [isChecked, setIsChecked] = useState(false);
 
@@ -82,10 +83,10 @@ const DictationScreen: React.FC = () => {
 
 
     const startExercise = (data: DictationExercise | LibraryDictationExercise) => {
-        setCurrentExercise(data);
+        setActiveAiExercise({ exercise: data });
         setUserAnswers(new Array(data.missingWords.length).fill(''));
         setIsChecked(false);
-        setError(null);
+        setGenerationError(null);
         setCurrentPart(null);
         setCurrentTest(null);
     };
@@ -101,38 +102,62 @@ const DictationScreen: React.FC = () => {
         });
         setAllUserAnswers(initialAnswers);
         setCheckedExercises(initialChecked);
-        setCurrentExercise(null);
+        setActiveAiExercise(null);
         // Reset refs
         exerciseRefs.current = {};
     };
 
     const handleGenerate = useCallback(async () => {
-        setIsLoading(true);
-        setCurrentExercise(null);
+        setIsGenerating(true);
+        setActiveAiExercise(null);
         window.speechSynthesis.cancel();
         try {
             const data = await generateDictationExercise();
             if (data) {
                 startExercise(data);
             } else {
-                setError('Failed to generate a dictation exercise. Please try again.');
+                setGenerationError('Failed to generate a dictation exercise. Please try again.');
             }
         } catch (err) {
             console.error(err);
-            setError('An error occurred. Please check your API key and try again.');
+            setGenerationError('An error occurred. Please check your API key and try again.');
         } finally {
-            setIsLoading(false);
+            setIsGenerating(false);
         }
     }, []);
 
+    const handleGenerateCustom = useCallback(async () => {
+        if (!userInput.trim()) {
+            setGenerationError("Please enter a topic.");
+            return;
+        }
+        setIsGenerating(true);
+        setActiveAiExercise(null);
+        setGenerationError(null);
+        window.speechSynthesis.cancel();
+
+        try {
+            const data = await generateDictationFromUserInput(userInput);
+            if (data) {
+                startExercise(data);
+            } else {
+                 setGenerationError('Failed to generate a dictation exercise. Please try again.');
+            }
+        } catch (err) {
+            console.error(err);
+            setGenerationError('An error occurred. Please check your API key and try again.');
+        } finally {
+            setIsGenerating(false);
+        }
+    }, [userInput]);
+
     const handleBreadcrumbNavigate = (level: 'home' | 'part') => {
+        setActiveAiExercise(null);
         if (level === 'home') {
             setCurrentPart(null);
             setCurrentTest(null);
-            setCurrentExercise(null);
         } else if (level === 'part') {
             setCurrentTest(null);
-            setCurrentExercise(null);
         }
     };
     
@@ -149,18 +174,20 @@ const DictationScreen: React.FC = () => {
 
     const handleTryAgain = () => {
         setIsChecked(false);
-        setUserAnswers(new Array(currentExercise!.missingWords.length).fill(''));
+        setUserAnswers(new Array(activeAiExercise!.exercise.missingWords.length).fill(''));
     };
     
     const renderTextWithInputs = () => {
-        if (!currentExercise) return null;
+        if (!activeAiExercise) return null;
 
-        const parts = currentExercise.textWithBlanks.split(/_{2,}/);
+        const { exercise } = activeAiExercise;
+        const parts = exercise.textWithBlanks.split(/_{2,}/);
+        
         return (
             <p className="text-lg md:text-xl leading-[3.5rem] text-slate-700">
                 {parts.map((part, index) => {
                     const isLastPart = index === parts.length - 1;
-                    const missingWord = currentExercise.missingWords[index] || '';
+                    const missingWord = exercise.missingWords[index] || '';
                     const userAnswer = userAnswers[index] || '';
                     const isCorrect = userAnswer.trim().toLowerCase() === missingWord.trim().toLowerCase();
                     
@@ -198,24 +225,26 @@ const DictationScreen: React.FC = () => {
     };
 
     // RENDER PRACTICE VIEW (for AI exercise)
-    if (currentExercise) {
+    if (activeAiExercise) {
+        const { exercise } = activeAiExercise;
         const score = userAnswers.reduce((acc, answer, index) => {
-            const correctAnswer = currentExercise.missingWords[index] || '';
+            const correctAnswer = exercise.missingWords[index] || '';
             const userAnswer = answer || '';
             return userAnswer.trim().toLowerCase() === correctAnswer.trim().toLowerCase() ? acc + 1 : acc;
         }, 0);
-        const isLibraryExercise = 'audioSrc' in currentExercise;
+        const isLibraryExercise = 'audioSrc' in exercise;
+        
         return (
             <div className="container mx-auto px-4 py-12">
                 <div className="max-w-4xl mx-auto">
                     <Breadcrumbs part={currentPart} test={currentTest} onNavigate={handleBreadcrumbNavigate} />
                     <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg border border-slate-200">
-                        <h3 className="text-2xl font-bold text-slate-800 mb-6 text-center">{currentExercise.title}</h3>
+                        <h3 className="text-2xl font-bold text-slate-800 mb-6 text-center">{exercise.title}</h3>
                         
                         <div className="mb-8">
                             <AudioPlayer 
-                                audioSrc={isLibraryExercise ? (currentExercise as LibraryDictationExercise).audioSrc : undefined}
-                                audioScript={currentExercise.fullText} 
+                                audioSrc={isLibraryExercise ? (exercise as LibraryDictationExercise).audioSrc : undefined}
+                                audioScript={exercise.fullText} 
                             />
                         </div>
 
@@ -227,7 +256,7 @@ const DictationScreen: React.FC = () => {
                             <div className="text-center bg-blue-50 p-6 rounded-lg mb-8">
                                 <h4 className="text-xl font-semibold text-slate-800">Your Score</h4>
                                 <p className="text-5xl font-bold text-blue-600 my-2">
-                                    {score} / {currentExercise.missingWords.length}
+                                    {score} / {exercise.missingWords.length}
                                 </p>
                             </div>
                         )}
@@ -242,8 +271,8 @@ const DictationScreen: React.FC = () => {
                                     Try Again
                                 </button>
                             )}
-                             <button onClick={handleGenerate} disabled={isLoading} className="w-full sm:w-auto px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors duration-200 disabled:bg-blue-300">
-                                {isLoading ? 'Generating...' : 'New AI Dictation'}
+                             <button onClick={() => setActiveAiExercise(null)} className="w-full sm:w-auto px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors duration-200 disabled:bg-blue-300">
+                                Back to Dictation Hub
                             </button>
                         </div>
                     </div>
@@ -420,8 +449,8 @@ const DictationScreen: React.FC = () => {
                             <div className="bg-white p-6 rounded-lg shadow-lg text-center">
                                 <h3 className="text-xl font-bold text-slate-800 mb-2">Feeling Adventurous?</h3>
                                 <p className="text-slate-600 text-sm mb-4">Generate a brand new dictation exercise using AI.</p>
-                                <button onClick={handleGenerate} disabled={isLoading} className="w-full px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors duration-200 disabled:bg-blue-300">
-                                    {isLoading ? 'Generating...' : 'New AI Dictation'}
+                                <button onClick={handleGenerate} disabled={isGenerating} className="w-full px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors duration-200 disabled:bg-blue-300">
+                                    {isGenerating ? 'Generating...' : 'New AI Dictation'}
                                 </button>
                             </div>
                         </div>
@@ -464,18 +493,44 @@ const DictationScreen: React.FC = () => {
                 <div className="text-center mb-12">
                     <h2 className="text-4xl font-extrabold text-slate-900 sm:text-5xl">Dictation Practice</h2>
                     <p className="mt-4 text-lg text-slate-600">
-                      Choose a part to begin your practice.
+                      Choose from the library or create your own exercise from any topic.
                     </p>
                 </div>
 
-                {isLoading && (
+                {isGenerating && (
                     <div className="flex justify-center items-center p-12">
                          <LoadingIcon className="animate-spin h-10 w-10 text-blue-600" />
-                         <span className="ml-4 text-lg font-semibold text-slate-700">Generating AI Exercise...</span>
+                         <span className="ml-4 text-lg font-semibold text-slate-700">Generating Exercise...</span>
                     </div>
                 )}
                 
-                {error && <p className="mt-6 text-center text-red-500 font-semibold">{error}</p>}
+                {generationError && <p className="mt-6 text-center text-red-500 font-semibold">{generationError}</p>}
+
+                {/* New Custom Generation Section */}
+                <div className="mb-12">
+                    <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg border border-slate-200">
+                        <h3 className="text-2xl font-bold text-slate-800 mb-4 text-center">
+                           Tự chọn bài nghe - Bạn muốn học từ vựng về chủ đề gì? 
+                        </h3>
+                        <div className="flex flex-col sm:flex-row gap-2">
+                           <input
+                                type="text"
+                                value={userInput}
+                                onChange={(e) => setUserInput(e.target.value)}
+                                placeholder="Hãy nhập một chủ đề mà bạn muốn luyện tập (e.g., 'History of Jazz')"
+                                className="flex-grow w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-slate-900 placeholder:text-slate-400"
+                                disabled={isGenerating}
+                            />
+                             <button
+                                onClick={handleGenerateCustom}
+                                disabled={isGenerating}
+                                className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300"
+                            >
+                                {isGenerating ? <LoadingIcon className="animate-spin h-5 w-5"/> : 'Generate Exercise'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {dictationData.map(part => (
@@ -489,14 +544,14 @@ const DictationScreen: React.FC = () => {
                 </div>
                  <div className="mt-12 text-center">
                      <div className="bg-blue-50 p-6 rounded-xl shadow-lg border border-blue-200 inline-block">
-                         <h3 className="text-xl font-bold text-slate-800 mb-2">Feeling Adventurous?</h3>
-                         <p className="text-slate-600 text-sm mb-4">Generate a brand new dictation exercise using AI.</p>
+                         <h3 className="text-xl font-bold text-slate-800 mb-2">Need a Random Topic?</h3>
+                         <p className="text-slate-600 text-sm mb-4">Let AI generate a brand new dictation exercise for you.</p>
                          <button
                             onClick={handleGenerate}
-                            disabled={isLoading}
+                            disabled={isGenerating}
                             className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300"
                         >
-                            {isLoading ? 'Generating...' : 'Generate AI Dictation'}
+                            {isGenerating ? 'Generating...' : 'Generate Random AI Dictation'}
                         </button>
                      </div>
                 </div>

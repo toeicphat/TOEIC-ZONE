@@ -16,11 +16,14 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioScript, audioSrc }) => {
     const [hasError, setHasError] = useState(false);
     const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
     const [selectedVoiceURI, setSelectedVoiceURI] = useState<string | null>(null);
+    const [speechRate, setSpeechRate] = useState(1.0);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
 
     const audioRef = useRef<HTMLAudioElement>(null);
     const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+    const isPlayingRef = useRef(isPlaying);
+    isPlayingRef.current = isPlaying;
 
     const finalAudioSrc = useMemo(() => {
         if (!audioSrc) return undefined;
@@ -30,9 +33,9 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioScript, audioSrc }) => {
         return audioSrc;
     }, [audioSrc]);
 
-    // Effect for loading system voices for TTS
+    // Effect for loading system voices and settings for TTS
     useEffect(() => {
-        const loadVoices = () => {
+        const loadVoicesAndSettings = () => {
             const availableVoices = window.speechSynthesis.getVoices();
             if (availableVoices.length > 0) {
                 setVoices(availableVoices);
@@ -41,19 +44,23 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioScript, audioSrc }) => {
                 const initialVoice = availableVoices.find(v => v.voiceURI === savedVoiceURI) || defaultVoice;
                 setSelectedVoiceURI(initialVoice?.voiceURI || null);
             }
+            const savedRate = localStorage.getItem('tts-rate');
+            if (savedRate) {
+                setSpeechRate(parseFloat(savedRate));
+            }
         };
 
-        loadVoices();
-        window.speechSynthesis.onvoiceschanged = loadVoices;
+        window.speechSynthesis.addEventListener('voiceschanged', loadVoicesAndSettings);
+        loadVoicesAndSettings();
 
         return () => {
-            window.speechSynthesis.onvoiceschanged = null;
+            window.speechSynthesis.removeEventListener('voiceschanged', loadVoicesAndSettings);
         };
     }, []);
 
     // Effect for preparing the TTS utterance
     useEffect(() => {
-        if (!audioScript || voices.length === 0) {
+        if (!audioScript) {
             window.speechSynthesis.cancel();
             utteranceRef.current = null;
             return;
@@ -62,18 +69,28 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioScript, audioSrc }) => {
         const synth = window.speechSynthesis;
         const u = new SpeechSynthesisUtterance(audioScript);
         
-        const selectedVoice = voices.find(v => v.voiceURI === selectedVoiceURI);
-        if (selectedVoice) {
-            u.voice = selectedVoice;
+        if (voices.length > 0) {
+            const selectedVoice = voices.find(v => v.voiceURI === selectedVoiceURI);
+            if (selectedVoice) {
+                u.voice = selectedVoice;
+            }
         }
-
+        
+        u.rate = speechRate;
         u.onend = () => setIsPlaying(false);
         utteranceRef.current = u;
 
-        return () => {
+        if (isPlayingRef.current) {
             synth.cancel();
+            synth.speak(u);
+        }
+
+        return () => {
+            if (synth.speaking) {
+                synth.cancel();
+            }
         };
-    }, [audioScript, selectedVoiceURI, voices]);
+    }, [audioScript, selectedVoiceURI, voices, speechRate]);
 
     // Effect for handling <audio> element events
     useEffect(() => {
@@ -103,7 +120,6 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioScript, audioSrc }) => {
         audio.addEventListener('timeupdate', onTimeUpdate);
         audio.addEventListener('loadedmetadata', onLoadedMetadata);
 
-        // Reset state
         setIsPlaying(false);
         if (!audio.paused) audio.pause();
         audio.currentTime = 0;
@@ -154,12 +170,12 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioScript, audioSrc }) => {
                 synth.cancel();
                 setIsPlaying(false);
             } else {
-                synth.cancel();
+                synth.cancel(); // Ensure any prior speech is stopped
                 synth.speak(utteranceRef.current);
                 setIsPlaying(true);
             }
         }
-    }, [isPlaying, canUseAudioFile, audioScript, hasError]);
+    }, [isPlaying, canUseAudioFile, audioScript]);
     
     const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (audioRef.current) {
@@ -199,6 +215,12 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioScript, audioSrc }) => {
         const uri = e.target.value;
         setSelectedVoiceURI(uri);
         localStorage.setItem('tts-voice', uri);
+    };
+    
+    const handleRateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newRate = parseFloat(e.target.value);
+        setSpeechRate(newRate);
+        localStorage.setItem('tts-rate', newRate.toString());
     };
     
     const getHelperText = () => {
@@ -255,22 +277,40 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioScript, audioSrc }) => {
                 </div>
             </div>
             {voices.length > 0 && (!finalAudioSrc || hasError) && (
-                <div className="mt-4 pt-4 border-t border-slate-200">
-                    <label htmlFor="voice-select" className="block text-sm font-medium text-slate-600 mb-1">
-                        Speech Voice
-                    </label>
-                    <select
-                        id="voice-select"
-                        value={selectedVoiceURI || ''}
-                        onChange={handleVoiceChange}
-                        className="w-full p-2 border border-slate-300 rounded-md bg-white text-sm focus:ring-blue-500 focus:border-blue-500"
-                    >
-                        {voices.map((voice) => (
-                            <option key={voice.voiceURI} value={voice.voiceURI}>
-                                {voice.name} ({voice.lang})
-                            </option>
-                        ))}
-                    </select>
+                <div className="mt-4 pt-4 border-t border-slate-200 space-y-3">
+                    <div>
+                        <label htmlFor="voice-select" className="block text-sm font-medium text-slate-600 mb-1">
+                            Speech Voice
+                        </label>
+                        <select
+                            id="voice-select"
+                            value={selectedVoiceURI || ''}
+                            onChange={handleVoiceChange}
+                            className="w-full p-2 border border-slate-300 rounded-md bg-white text-sm focus:ring-blue-500 focus:border-blue-500"
+                        >
+                            {voices.map((voice) => (
+                                <option key={voice.voiceURI} value={voice.voiceURI}>
+                                    {voice.name} ({voice.lang})
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div>
+                         <label htmlFor="rate-select" className="block text-sm font-medium text-slate-600 mb-1">
+                            Speech Speed ({speechRate.toFixed(2)}x)
+                        </label>
+                        <input
+                            id="rate-select"
+                            type="range"
+                            min="0.5"
+                            max="2"
+                            step="0.1"
+                            value={speechRate}
+                            onChange={handleRateChange}
+                            className="w-full h-2 bg-slate-300 rounded-lg appearance-none cursor-pointer accent-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            aria-label="Speech speed"
+                        />
+                    </div>
                 </div>
             )}
         </div>
