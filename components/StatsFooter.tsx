@@ -66,6 +66,9 @@ const StatsFooter: React.FC = () => {
                         </div>
                     </div>
                 </div>
+                <div className="mt-4 text-slate-500">
+                    © {new Date().getFullYear()} <a href="https://www.facebook.com/phattruong.english" target="_blank" rel="noopener noreferrer" className="font-semibold text-blue-600 hover:underline">Mr.Phat TOEIC</a>. All rights reserved.
+                </div>
             </div>
         </footer>
     );
