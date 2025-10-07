@@ -2,10 +2,8 @@ import { GoogleGenAI, Type } from "@google/genai";
 // FIX: Import TestData type
 import { DictationExercise, TestData, SpeakingPart1EvaluationResult, SpeakingPart2EvaluationResult, SpeakingPart3EvaluationResult, SpeakingPart4Task, SpeakingPart4EvaluationResult, SpeakingPart5Scenario, SpeakingPart5EvaluationResult, WritingPart1Task, WritingPart1EvaluationResult, WritingPart2Task, WritingPart2EvaluationResult, WritingPart3Task, WritingPart3EvaluationResult, DeterminerExercise } from '../types';
 
-const model = new GoogleGenerativeAI({
-  apiKey: import.meta.env.VITE_GEMINI_API_KEY
-});
-
+const client = new GoogleGenerativeAI({
+  apiKey: import.meta.env.VITE_GEMINI_API_KEY});
 
 // Interface for the structured response from the speaking evaluation AI
 export interface SpeakingEvaluationResult {
