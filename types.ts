@@ -25,6 +25,11 @@ export enum AppState {
     WritingPart2 = 'WRITING_PART_2',
     WritingPart3 = 'WRITING_PART_3',
     ChangePassword = 'CHANGE_PASSWORD',
+    MyProgress = 'MY_PROGRESS',
+    MiniTestHome = 'MINI_TEST_HOME',
+    MiniTest = 'MINI_TEST',
+    MiniTestResults = 'MINI_TEST_RESULTS',
+    StudentManagement = 'STUDENT_MANAGEMENT',
 }
 
 export type QuestionOption = 'A' | 'B' | 'C' | 'D';
@@ -50,6 +55,7 @@ export interface TestData {
     testTitle: string;
     duration: number;
     questions: Question[];
+    category: ProgressCategory;
 }
 
 
@@ -343,4 +349,25 @@ export interface WritingPart3EvaluationResult {
     organization: WritingPart3FeedbackDetail;
     grammarAndSyntax: WritingPart3FeedbackDetail;
     vocabulary: WritingPart3FeedbackDetail;
+}
+
+// For user progress
+export interface TestResult {
+    id: string; // e.g., 'reading-part5-test1' or a timestamp
+    title: string;
+    score: number;
+    total: number;
+    date: number; // timestamp
+}
+
+export type ProgressCategory = 'miniTest' | 'reading' | 'grammar' | 'vocabulary' | 'dictation' | 'speaking' | 'writing';
+
+export interface UserProgress {
+    miniTest: TestResult[];
+    reading: TestResult[];
+    grammar: TestResult[];
+    vocabulary: TestResult[];
+    dictation: TestResult[];
+    speaking: TestResult[];
+    writing: TestResult[];
 }

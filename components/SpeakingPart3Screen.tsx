@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { ArrowLeftIcon, LoadingIcon, RefreshIcon, StopIcon, TrophyIcon, MicrophoneIcon } from './icons';
+import { ArrowLeftIcon, LoadingIcon, RefreshIcon, StopIcon, TrophyIcon, MicrophoneIcon, PauseIcon, PlayIcon } from './icons';
 import { evaluateSpeakingPart3, generateSpeakingPart3Questions } from '../services/geminiService';
-import { SpeakingPart3EvaluationResult } from '../types';
+import { SpeakingPart3EvaluationResult, User } from '../types';
+import { addTestResult } from '../services/progressService';
 
 const PREP_TIME = 3;
 const Q5_Q6_RESPONSE_TIME = 15;
@@ -27,20 +28,23 @@ type PracticeState = 'idle' | 'generating' | 'preparing' | 'recording' | 'evalua
 
 interface SpeakingPart3ScreenProps {
   onBack: () => void;
+  currentUser: User;
 }
 
-const SpeakingPart3Screen: React.FC<SpeakingPart3ScreenProps> = ({ onBack }) => {
+const SpeakingPart3Screen: React.FC<SpeakingPart3ScreenProps> = ({ onBack, currentUser }) => {
     const [practiceState, setPracticeState] = useState<PracticeState>('idle');
     const [questions, setQuestions] = useState<{ topic: string, question5: string, question6: string, question7: string } | null>(null);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // 0 for Q5, 1 for Q6, 2 for Q7
     const [timer, setTimer] = useState(0);
     const [results, setResults] = useState<SpeakingPart3EvaluationResult | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [isTimerPaused, setIsTimerPaused] = useState(false);
 
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const audioChunksRef = useRef<Blob[][]>([[], [], []]);
     const timerIntervalRef = useRef<number | null>(null);
     const audioStreamRef = useRef<MediaStream | null>(null);
+    const onCompleteRef = useRef<(() => void) | null>(null);
     
     const questionTimers = [Q5_Q6_RESPONSE_TIME, Q5_Q6_RESPONSE_TIME, Q7_RESPONSE_TIME];
     const questionTexts = [questions?.question5, questions?.question6, questions?.question7];
@@ -58,7 +62,20 @@ const SpeakingPart3Screen: React.FC<SpeakingPart3ScreenProps> = ({ onBack }) => 
             audioStreamRef.current.getTracks().forEach(track => track.stop());
             audioStreamRef.current = null;
         }
+        onCompleteRef.current = null;
     }, []);
+
+    useEffect(() => {
+        if (practiceState === 'results' && results && currentUser) {
+            addTestResult(currentUser.username, 'speaking', {
+                id: `speaking-p3-${Date.now()}`,
+                title: 'Speaking Part 3',
+                score: results.taskScore,
+                total: 5,
+                date: Date.now()
+            });
+        }
+    }, [practiceState, results, currentUser]);
 
     useEffect(() => {
         return () => cleanup();
@@ -66,17 +83,34 @@ const SpeakingPart3Screen: React.FC<SpeakingPart3ScreenProps> = ({ onBack }) => 
 
     const startTimer = (duration: number, onComplete: () => void) => {
         setTimer(duration);
-        timerIntervalRef.current = window.setInterval(() => {
-            setTimer(prev => {
-                if (prev <= 1) {
-                    clearInterval(timerIntervalRef.current!);
-                    onComplete();
-                    return 0;
-                }
-                return prev - 1;
-            });
-        }, 1000);
+        onCompleteRef.current = onComplete;
+        setIsTimerPaused(false);
     };
+
+    useEffect(() => {
+        if (isTimerPaused || (practiceState !== 'preparing' && practiceState !== 'recording')) {
+            if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+            return;
+        }
+    
+        if (timer <= 0) {
+            if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+            if (onCompleteRef.current) {
+                const callback = onCompleteRef.current;
+                onCompleteRef.current = null;
+                callback();
+            }
+            return;
+        }
+    
+        timerIntervalRef.current = window.setInterval(() => {
+            setTimer(t => t - 1);
+        }, 1000);
+    
+        return () => {
+            if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+        };
+    }, [timer, isTimerPaused, practiceState]);
 
     const advanceToNextStep = () => {
         if (currentQuestionIndex < 2) {
@@ -205,6 +239,17 @@ const SpeakingPart3Screen: React.FC<SpeakingPart3ScreenProps> = ({ onBack }) => 
         setCurrentQuestionIndex(0);
     };
 
+    const handlePause = () => setIsTimerPaused(true);
+    const handleResume = () => setIsTimerPaused(false);
+    const handleResetTimer = () => {
+        setIsTimerPaused(true);
+        if (practiceState === 'preparing') {
+            setTimer(PREP_TIME);
+        } else if (practiceState === 'recording') {
+            setTimer(questionTimers[currentQuestionIndex]);
+        }
+    };
+
     const renderIdle = () => (
         <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 text-center">
             <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-4">Part 3: Respond to questions</h2>
@@ -234,7 +279,23 @@ const SpeakingPart3Screen: React.FC<SpeakingPart3ScreenProps> = ({ onBack }) => 
                  <div className={`px-4 py-1 rounded-full font-semibold text-white ${practiceState === 'preparing' ? 'bg-yellow-500' : 'bg-red-500'}`}>
                     {practiceState === 'preparing' ? `Preparing... (Q${currentQuestionIndex + 5})` : `Recording... (Q${currentQuestionIndex + 5})`}
                  </div>
-                 <div className="text-3xl font-bold text-slate-800 dark:text-slate-200">{timer}s</div>
+                 <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
+                        { isTimerPaused ? (
+                            <button onClick={handleResume} className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-600" aria-label="Resume timer">
+                                <PlayIcon className="h-6 w-6 text-slate-700 dark:text-slate-200" />
+                            </button>
+                        ) : (
+                            <button onClick={handlePause} className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-600" aria-label="Pause timer">
+                                <PauseIcon className="h-6 w-6 text-slate-700 dark:text-slate-200" />
+                            </button>
+                        )}
+                        <button onClick={handleResetTimer} className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-600" aria-label="Reset timer">
+                            <RefreshIcon className="h-6 w-6 text-slate-700 dark:text-slate-200" />
+                        </button>
+                    </div>
+                    <div className="text-3xl font-bold text-slate-800 dark:text-slate-200">{timer}s</div>
+                </div>
              </div>
 
              <div className="p-6 bg-slate-50 dark:bg-slate-700/50 rounded-lg border dark:border-slate-600 min-h-[100px] flex items-center justify-center">

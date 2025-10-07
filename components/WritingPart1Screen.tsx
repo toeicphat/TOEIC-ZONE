@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ArrowLeftIcon, LoadingIcon, RefreshIcon, TrophyIcon } from './icons';
 import { generateWritingPart1Tasks, evaluateWritingPart1 } from '../services/geminiService';
-// FIX: Import the missing WritingPart1SingleEvaluation type to resolve the TypeScript error.
-import { WritingPart1Task, WritingPart1EvaluationResult, WritingPart1SingleEvaluation } from '../types';
+// FIX: Import the missing WritingPart1SingleEvaluation and User types to resolve the TypeScript error.
+import { WritingPart1Task, WritingPart1EvaluationResult, WritingPart1SingleEvaluation, User } from '../types';
 import Timer from './Timer';
+import { addTestResult } from '../services/progressService';
 
 const TOTAL_TIME = 8 * 60; // 8 minutes in seconds
 
@@ -11,9 +12,10 @@ type PracticeState = 'idle' | 'generating' | 'practicing' | 'evaluating' | 'resu
 
 interface WritingPart1ScreenProps {
     onBack: () => void;
+    currentUser: User;
 }
 
-const WritingPart1Screen: React.FC<WritingPart1ScreenProps> = ({ onBack }) => {
+const WritingPart1Screen: React.FC<WritingPart1ScreenProps> = ({ onBack, currentUser }) => {
     const [practiceState, setPracticeState] = useState<PracticeState>('idle');
     const [tasks, setTasks] = useState<WritingPart1Task[]>([]);
     const [userAnswers, setUserAnswers] = useState<string[]>([]);
@@ -28,6 +30,15 @@ const WritingPart1Screen: React.FC<WritingPart1ScreenProps> = ({ onBack }) => {
             const result = await evaluateWritingPart1(tasks, userAnswers);
             if (result) {
                 setEvaluationResult(result);
+                if (currentUser) {
+                    addTestResult(currentUser.username, 'writing', {
+                        id: `writing-p1-${Date.now()}`,
+                        title: 'Writing Part 1',
+                        score: result.totalRawScore,
+                        total: 15,
+                        date: Date.now()
+                    });
+                }
                 setPracticeState('results');
             } else {
                 throw new Error("Received invalid evaluation from the server.");
@@ -37,7 +48,7 @@ const WritingPart1Screen: React.FC<WritingPart1ScreenProps> = ({ onBack }) => {
             setError("Sorry, an error occurred during evaluation. Please try again.");
             setPracticeState('idle'); // Go back to start
         }
-    }, [tasks, userAnswers]);
+    }, [tasks, userAnswers, currentUser]);
 
     const handleStart = async () => {
         setPracticeState('generating');

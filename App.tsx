@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import PracticeHub from './components/PracticeHub';
 import DictationScreen from './components/DictationScreen';
 import ReadingPracticeScreen from './components/ReadingPracticeScreen';
@@ -22,9 +22,15 @@ import WritingPart3Screen from './components/WritingPart3Screen';
 import StatsFooter from './components/StatsFooter';
 import LoginScreen from './components/LoginScreen';
 import ChangePasswordScreen from './components/ChangePasswordScreen';
-import { AppState, ReadingTestData, VocabularyTest, VocabularyPart, User } from './types';
+import MyProgressScreen from './components/MyProgressScreen';
+import StudentManagementScreen from './components/StudentManagementScreen';
+import HomeScreen from './components/HomeScreen';
+import TestScreen from './components/TestScreen';
+import ResultsScreen from './components/ResultsScreen';
+import { AppState, ReadingTestData, VocabularyTest, VocabularyPart, User, TestData, UserAnswers } from './types';
 import { getReadingTest } from './services/readingLibrary';
 import { getVocabularyPart, getVocabularyTest } from './services/vocabularyLibrary';
+import { addTestResult } from './services/progressService';
 import { LogoIcon } from './components/icons';
 
 const App: React.FC = () => {
@@ -53,6 +59,14 @@ const App: React.FC = () => {
   // Writing State
   const [selectedWritingPart, setSelectedWritingPart] = useState<number | null>(null);
 
+  // AI Mini-Test State
+  const [miniTestData, setMiniTestData] = useState<TestData | null>(null);
+  const [miniTestUserAnswers, setMiniTestUserAnswers] = useState<UserAnswers>({});
+  
+  // Admin State
+  const [selectedStudent, setSelectedStudent] = useState<User | null>(null);
+
+
   const handleLoginSuccess = useCallback((user: User) => {
     setIsAuthenticated(true);
     setCurrentUser(user);
@@ -72,8 +86,40 @@ const App: React.FC = () => {
     setSelectedVocabularyTest(null);
     setSelectedSpeakingPart(null);
     setSelectedWritingPart(null);
+    setMiniTestData(null);
+    setMiniTestUserAnswers({});
+    setSelectedStudent(null);
     setAppState(AppState.PracticeHub);
   }, []);
+
+  const handleStartMiniTest = useCallback((testData: TestData) => {
+      setMiniTestData(testData);
+      setMiniTestUserAnswers({});
+      setAppState(AppState.MiniTest);
+  }, []);
+  
+  const handleStartRandomGrammarTest = useCallback((testData: TestData) => {
+    setMiniTestData(testData);
+    setMiniTestUserAnswers({});
+    setAppState(AppState.MiniTest);
+  }, []);
+
+  const handleSubmitMiniTest = useCallback((answers: UserAnswers) => {
+      if (miniTestData && currentUser) {
+          const score = miniTestData.questions.reduce((acc, q) => {
+              return answers[q.id] === q.correctAnswer ? acc + 1 : acc;
+          }, 0);
+          addTestResult(currentUser.username, miniTestData.category, {
+              id: `${miniTestData.category}-${Date.now()}`,
+              title: miniTestData.testTitle,
+              score,
+              total: miniTestData.questions.length,
+              date: Date.now()
+          });
+      }
+      setMiniTestUserAnswers(answers);
+      setAppState(AppState.MiniTestResults);
+  }, [miniTestData, currentUser]);
 
   const handleNavigateToGrammarTopic = useCallback((topic: string) => {
     setSelectedGrammarTopic(topic);
@@ -181,11 +227,25 @@ const App: React.FC = () => {
     }
   }, [currentUser]);
 
+  const handleNavigateToMyProgress = useCallback(() => {
+    setSelectedStudent(null);
+    setAppState(AppState.MyProgress);
+  }, []);
+
+  const handleNavigateToStudentManagement = useCallback(() => {
+    setAppState(AppState.StudentManagement);
+  }, []);
+
+  const handleViewStudentProgress = useCallback((user: User) => {
+    setSelectedStudent(user);
+    setAppState(AppState.MyProgress);
+  }, []);
+
 
   const renderContent = () => {
     switch (appState) {
       case AppState.DictationHome:
-        return <DictationScreen />;
+        return <DictationScreen currentUser={currentUser!} />;
       case AppState.ReadingPracticeHome:
         return <ReadingPracticeScreen onSelectPart={handleSelectReadingPart} />;
       case AppState.ReadingPartHome:
@@ -196,15 +256,15 @@ const App: React.FC = () => {
         return null;
       case AppState.ReadingTest:
         if (selectedReadingTestData) {
-          return <ReadingTestScreen testData={selectedReadingTestData} onBack={handleBackToReadingPartHome} />;
+          return <ReadingTestScreen testData={selectedReadingTestData} onBack={handleBackToReadingPartHome} currentUser={currentUser!} />;
         }
         handleBackToReadingPartHome();
         return null;
       case AppState.GrammarHome:
-        return <GrammarScreen onSelectTopic={handleNavigateToGrammarTopic} />;
+        return <GrammarScreen onSelectTopic={handleNavigateToGrammarTopic} onStartRandomTest={handleStartRandomGrammarTest} />;
       case AppState.GrammarTopic:
         if (selectedGrammarTopic) {
-          return <GrammarTopicScreen topic={selectedGrammarTopic} onBack={handleBackToGrammarHome} />;
+          return <GrammarTopicScreen topic={selectedGrammarTopic} onBack={handleBackToGrammarHome} currentUser={currentUser!} />;
         }
         handleBackToGrammarHome();
         return null;
@@ -217,38 +277,38 @@ const App: React.FC = () => {
         handleBackToVocabularyHome();
         return null;
       case AppState.VocabularyTest:
-        if(selectedVocabularyTest) {
-            return <VocabularyTestScreen testData={selectedVocabularyTest} onBack={handleBackToVocabularyPartHome} />
+        if(selectedVocabularyTest && currentUser) {
+            return <VocabularyTestScreen testData={selectedVocabularyTest} onBack={handleBackToVocabularyPartHome} currentUser={currentUser} />
         }
         handleBackToVocabularyPartHome();
         return null;
        case AppState.SpeakingHome:
             return <SpeakingScreen onSelectPart={handleSelectSpeakingPart} />;
         case AppState.SpeakingPart1:
-            if (selectedSpeakingPart === 1) return <SpeakingPart1Screen onBack={handleBackToSpeakingHome} />;
+            if (selectedSpeakingPart === 1) return <SpeakingPart1Screen onBack={handleBackToSpeakingHome} currentUser={currentUser!} />;
             handleBackToSpeakingHome(); return null;
         case AppState.SpeakingPart2:
-            if (selectedSpeakingPart === 2) return <SpeakingPart2Screen onBack={handleBackToSpeakingHome} />;
+            if (selectedSpeakingPart === 2) return <SpeakingPart2Screen onBack={handleBackToSpeakingHome} currentUser={currentUser!} />;
             handleBackToSpeakingHome(); return null;
         case AppState.SpeakingPart3:
-            if (selectedSpeakingPart === 3) return <SpeakingPart3Screen onBack={handleBackToSpeakingHome} />;
+            if (selectedSpeakingPart === 3) return <SpeakingPart3Screen onBack={handleBackToSpeakingHome} currentUser={currentUser!} />;
             handleBackToSpeakingHome(); return null;
         case AppState.SpeakingPart4:
-            if (selectedSpeakingPart === 4) return <SpeakingPart4Screen onBack={handleBackToSpeakingHome} />;
+            if (selectedSpeakingPart === 4) return <SpeakingPart4Screen onBack={handleBackToSpeakingHome} currentUser={currentUser!} />;
             handleBackToSpeakingHome(); return null;
         case AppState.SpeakingPart5:
-            if (selectedSpeakingPart === 5) return <SpeakingPart5Screen onBack={handleBackToSpeakingHome} />;
+            if (selectedSpeakingPart === 5) return <SpeakingPart5Screen onBack={handleBackToSpeakingHome} currentUser={currentUser!} />;
             handleBackToSpeakingHome(); return null;
         case AppState.WritingPracticeHome:
             return <WritingPracticeScreen onSelectPart={handleSelectWritingPart} />;
         case AppState.WritingPart1:
-            if (selectedWritingPart === 1) return <WritingPart1Screen onBack={handleBackToWritingHome} />;
+            if (selectedWritingPart === 1) return <WritingPart1Screen onBack={handleBackToWritingHome} currentUser={currentUser!} />;
             handleBackToWritingHome(); return null;
         case AppState.WritingPart2:
-            if (selectedWritingPart === 2) return <WritingPart2Screen onBack={handleBackToWritingHome} />;
+            if (selectedWritingPart === 2) return <WritingPart2Screen onBack={handleBackToWritingHome} currentUser={currentUser!} />;
             handleBackToWritingHome(); return null;
         case AppState.WritingPart3:
-            if (selectedWritingPart === 3) return <WritingPart3Screen onBack={handleBackToWritingHome} />;
+            if (selectedWritingPart === 3) return <WritingPart3Screen onBack={handleBackToWritingHome} currentUser={currentUser!} />;
             handleBackToWritingHome(); return null;
       case AppState.ChangePassword:
         if (currentUser) {
@@ -256,9 +316,37 @@ const App: React.FC = () => {
         }
         handleGoHome();
         return null;
+      case AppState.MiniTestHome:
+        return <HomeScreen onStartTest={handleStartMiniTest} />;
+      case AppState.MiniTest:
+        if (miniTestData) {
+            return <TestScreen testData={miniTestData} userAnswers={miniTestUserAnswers} onSubmit={handleSubmitMiniTest} />;
+        }
+        return <HomeScreen onStartTest={handleStartMiniTest} />;
+      case AppState.MiniTestResults:
+        if (miniTestData) {
+            return <ResultsScreen testData={miniTestData} userAnswers={miniTestUserAnswers} onGoHome={handleGoHome} />;
+        }
+        return <HomeScreen onStartTest={handleStartMiniTest} />;
+      case AppState.StudentManagement:
+        if (currentUser?.username === 'admin') {
+            return <StudentManagementScreen users={users} onViewStudentProgress={handleViewStudentProgress} />;
+        }
+        handleGoHome();
+        return null;
+      case AppState.MyProgress:
+        if (currentUser) {
+            const isAdminViewingStudent = currentUser.username === 'admin' && selectedStudent;
+            const userToView = isAdminViewingStudent ? selectedStudent : currentUser;
+            const onBackAction = isAdminViewingStudent ? handleNavigateToStudentManagement : handleGoHome;
+            return <MyProgressScreen viewingUser={userToView!} isOwnProgress={!isAdminViewingStudent} onBack={onBackAction} />;
+        }
+        handleGoHome();
+        return null;
       case AppState.PracticeHub:
       default:
         return <PracticeHub 
+          onNavigateToPracticeTest={() => setAppState(AppState.MiniTestHome)}
           onNavigateToDictation={() => setAppState(AppState.DictationHome)}
           onNavigateToReadingPractice={() => setAppState(AppState.ReadingPracticeHome)}
           onNavigateToGrammar={() => setAppState(AppState.GrammarHome)}
@@ -289,6 +377,22 @@ const App: React.FC = () => {
                     aria-label="Go to home page"
                 >
                     Home
+                </button>
+                {currentUser.username === 'admin' && (
+                    <button
+                        onClick={handleNavigateToStudentManagement}
+                        className="font-semibold text-slate-600 hover:text-blue-600 transition-colors"
+                        aria-label="Manage students"
+                    >
+                        Quản lý học viên
+                    </button>
+                )}
+                 <button
+                    onClick={handleNavigateToMyProgress}
+                    className="font-semibold text-slate-600 hover:text-blue-600 transition-colors"
+                    aria-label="View my progress"
+                >
+                    Kết quả học của tôi
                 </button>
                 <button
                     onClick={handleNavigateToChangePassword}

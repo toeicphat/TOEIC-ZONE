@@ -1,21 +1,23 @@
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
-import { ReadingTestData, QuestionOption, ReadingQuestion } from '../types';
+import { ReadingTestData, QuestionOption, ReadingQuestion, User } from '../types';
 import { CheckCircleIcon, XCircleIcon } from './icons';
 import Timer from './Timer';
 import QuestionPalette from './QuestionPalette';
 import AddVocabPopup from './AddVocabPopup';
 import { useWordSelection } from './useWordSelection';
+import { addTestResult } from '../services/progressService';
 
 interface ReadingTestScreenProps {
   testData: ReadingTestData;
   onBack: () => void;
+  currentUser: User;
 }
 
 interface UserAnswers {
     [questionId: string]: QuestionOption | null;
 }
 
-const ReadingTestScreen: React.FC<ReadingTestScreenProps> = ({ testData, onBack }) => {
+const ReadingTestScreen: React.FC<ReadingTestScreenProps> = ({ testData, onBack, currentUser }) => {
     const [userAnswers, setUserAnswers] = useState<UserAnswers>({});
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [currentQuestionIdInView, setCurrentQuestionIdInView] = useState<string | null>(null);
@@ -34,7 +36,20 @@ const ReadingTestScreen: React.FC<ReadingTestScreenProps> = ({ testData, onBack 
     const handleSubmit = useCallback(() => {
         setIsSubmitted(true);
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, []);
+        
+        if (currentUser) {
+            const score = allQuestions.reduce((acc, q) => {
+                return userAnswers[q.id] === q.correctAnswer ? acc + 1 : acc;
+            }, 0);
+            addTestResult(currentUser.username, 'reading', {
+                id: `reading-p${testData.part}-t${testData.id}-${Date.now()}`,
+                title: testData.title,
+                score,
+                total: allQuestions.length,
+                date: Date.now()
+            });
+        }
+    }, [allQuestions, userAnswers, currentUser, testData, setIsSubmitted]);
 
     const handleTimeUp = useCallback(() => {
         handleSubmit();
@@ -181,7 +196,7 @@ const ReadingTestScreen: React.FC<ReadingTestScreenProps> = ({ testData, onBack 
                         <Timer initialTime={testDuration} onTimeUp={handleTimeUp} />
                         <div className="text-center mt-4">
                             {!isSubmitted ? (
-                                <button onClick={handleSubmit} className="w-full px-8 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-colors duration-200">
+                                <button onClick={() => { if(window.confirm('Are you sure you want to submit?')) handleSubmit(); }} className="w-full px-8 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-colors duration-200">
                                     Check Answers
                                 </button>
                             ) : (

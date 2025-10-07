@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ArrowLeftIcon, LoadingIcon, RefreshIcon, TrophyIcon } from './icons';
 import { generateWritingPart2Tasks, evaluateWritingPart2 } from '../services/geminiService';
-import { WritingPart2Task, WritingPart2EvaluationResult, WritingPart2SingleEvaluation } from '../types';
+import { WritingPart2Task, WritingPart2EvaluationResult, WritingPart2SingleEvaluation, User } from '../types';
 import Timer from './Timer';
+import { addTestResult } from '../services/progressService';
 
 const TOTAL_TIME = 20 * 60; // 20 minutes in seconds
 
@@ -10,9 +11,10 @@ type PracticeState = 'idle' | 'generating' | 'practicing' | 'evaluating' | 'resu
 
 interface WritingPart2ScreenProps {
     onBack: () => void;
+    currentUser: User;
 }
 
-const WritingPart2Screen: React.FC<WritingPart2ScreenProps> = ({ onBack }) => {
+const WritingPart2Screen: React.FC<WritingPart2ScreenProps> = ({ onBack, currentUser }) => {
     const [practiceState, setPracticeState] = useState<PracticeState>('idle');
     const [tasks, setTasks] = useState<WritingPart2Task | null>(null);
     const [userAnswers, setUserAnswers] = useState<string[]>(['', '']);
@@ -30,6 +32,15 @@ const WritingPart2Screen: React.FC<WritingPart2ScreenProps> = ({ onBack }) => {
             const result = await evaluateWritingPart2(tasks, userAnswers);
             if (result) {
                 setEvaluationResult(result);
+                if (currentUser) {
+                    addTestResult(currentUser.username, 'writing', {
+                        id: `writing-p2-${Date.now()}`,
+                        title: 'Writing Part 2',
+                        score: result.totalRawScore,
+                        total: 8,
+                        date: Date.now()
+                    });
+                }
                 setPracticeState('results');
             } else {
                 throw new Error("Received invalid evaluation.");
@@ -39,7 +50,7 @@ const WritingPart2Screen: React.FC<WritingPart2ScreenProps> = ({ onBack }) => {
             setError("Sorry, an error occurred during evaluation. Please try again.");
             setPracticeState('idle');
         }
-    }, [tasks, userAnswers]);
+    }, [tasks, userAnswers, currentUser]);
 
     const handleStart = async () => {
         setPracticeState('generating');

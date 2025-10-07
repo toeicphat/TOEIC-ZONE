@@ -50,4 +50,146 @@ export const verbQuizzes: Record<string, GrammarQuestion[]> = {
         { id: 'verb-500-29', questionText: "Neither the supervisor nor the employees __________ satisfied with the current work conditions.", options: { A: 'is', B: 'are', C: 'has been', D: 'be' }, correctAnswer: 'B', explanation: "Câu hoàn chỉnh: Neither the supervisor nor the employees are satisfied with the current work conditions. (Cả người giám sát và nhân viên đều không hài lòng với điều kiện làm việc hiện tại.)\nGiải thích: Trong câu này, do chủ ngữ của câu bắt đầu bằng cấu trúc ngữ pháp “neither…nor…” mà danh từ thứ hai sau 'nor' là 'the employees ' (một danh từ số nhiều), do đó, theo quy tắc thì động từ tobe sẽ được chia theo danh từ này sẽ ở hình thức số nhiều là “are”." },
         { id: 'verb-500-30', questionText: "One-fourths of the revenue _____ towards research and development.", options: { A: 'going', B: 'gone', C: 'go', D: 'goes' }, correctAnswer: 'D', explanation: "Câu hoàn chỉnh: One-fourths of the revenue goes towards research and development. (Một phần tư doanh thu dành cho nghiên cứu và phát triển.)\nGiải thích: do phân số gắn liền với danh từ không đếm được (the revenue) nên động từ chính theo sau được chia ở dạng số ít là “goes”" },
     ],
+    "600+": [
+        {
+            id: 'verb-600-1',
+            questionText: 'The First Street Hotel has almost always been fully booked since it ------- last year.',
+            options: { A: 'had renovated', B: 'renovated', C: 'was renovating', D: 'was renovated' },
+            correctAnswer: 'D',
+            explanation: "The hotel is the object of the renovation, so passive voice is needed ('was renovated'). The action happened at a specific time in the past ('last year'), so simple past tense is correct."
+        },
+        {
+            id: 'verb-600-2',
+            questionText: 'Ramirez Instruments ------ high-quality acoustic guitars for over a century.',
+            options: { A: 'to be designed', B: 'has been designing', C: 'was designed', D: 'is designing' },
+            correctAnswer: 'B',
+            explanation: "The phrase 'for over a century' indicates a duration that started in the past and continues to the present. The present perfect continuous ('has been designing') emphasizes this ongoing action."
+        },
+        {
+            id: 'verb-600-3',
+            questionText: 'The senior manager, Mr. Redmayne, ------- all of the statistics that were needed for the report.',
+            options: { A: 'provided', B: 'provide', C: 'to provide', D: 'providing' },
+            correctAnswer: 'A',
+            explanation: "This sentence describes a single, completed action in the past. The simple past tense ('provided') is the correct choice."
+        },
+        {
+            id: 'verb-600-4',
+            questionText: 'From 11 P.M. on May 3 to 8:00 A.M. on May 4, the online purchasing system ------- while we complete maintenance for the launch of the updated version.',
+            options: { A: 'will be suspended', B: 'was suspended', C: 'is suspended', D: 'to suspend' },
+            correctAnswer: 'A',
+            explanation: "The specified time frame is in the future. The system is the recipient of the action 'suspend', so the passive voice is required. The future passive ('will be suspended') is the correct form."
+        },
+        {
+            id: 'verb-600-5',
+            questionText: "A new list of employee phone numbers will ------- on the intranet next Wednesday.",
+            options: { A: 'post', B: 'to be posted', C: 'posts', D: 'be posted' },
+            correctAnswer: 'D',
+            explanation: "After a modal verb like 'will', the base form of the verb follows. Since the 'list' is the object being acted upon, the passive voice is needed. The structure is 'will + be + past participle' ('be posted')."
+        },
+        {
+            id: 'verb-600-6',
+            questionText: 'Our company policy requires employees ------- in accordance with federal safety regulations at all times.',
+            options: { A: 'acting', B: 'acted', C: 'are acting', D: 'to act' },
+            correctAnswer: 'D',
+            explanation: "The verb 'require' follows the common structure: require + object (employees) + to-infinitive (to act)."
+        },
+        {
+            id: 'verb-600-7',
+            questionText: 'The renovated office building did not look the way Ms. Garcia ------ it would.',
+            options: { A: 'imagine', B: 'imagining', C: 'imagined', D: 'imagination' },
+            correctAnswer: 'C',
+            explanation: "The main clause is in the past tense ('did not look'). The verb describing Ms. Garcia's prior thought or expectation should also be in the past tense ('imagined')."
+        },
+        {
+            id: 'verb-600-8',
+            questionText: 'A second order for 500 recycled paper cups ------ last week.',
+            options: { A: 'was placed', B: 'was placing', C: 'to place', D: 'placed' },
+            correctAnswer: 'A',
+            explanation: "The time marker 'last week' indicates the simple past tense. The 'order' did not perform the action; it was the object of the action 'place'. Therefore, the passive voice is necessary ('was placed')."
+        },
+        {
+            id: 'verb-600-9',
+            questionText: "Join us for dinner on Friday ------ Mr. Yi's promotion to Vice President of Marketing.",
+            options: { A: 'to celebrate', B: 'celebrates', C: 'will celebrate', D: 'celebrated' },
+            correctAnswer: 'A',
+            explanation: "The infinitive of purpose ('to celebrate') is used to explain the reason or purpose of the main action ('Join us for dinner'). It answers the question 'Why?'."
+        },
+        {
+            id: 'verb-600-10',
+            questionText: 'Profits at Talhee Beverage Co. rose about 4 percent last year, according to new figures ------ by the company.',
+            options: { A: 'to release', B: 'releasing', C: 'released', D: 'have released' },
+            correctAnswer: 'C',
+            explanation: "This is a reduced passive relative clause. The past participle 'released' modifies 'figures'. The full, unreduced clause would be '...new figures that were released by the company'."
+        },
+        {
+            id: 'verb-600-11',
+            questionText: "The National Health Agency's latest report ------ that recently adopted health-care regulations have been successful.",
+            options: { A: 'concludes', B: 'concluding', C: 'conclusion', D: 'to conclude' },
+            correctAnswer: 'A',
+            explanation: "The simple present tense ('concludes') is used to state the findings or content of a report, document, or study. The subject 'report' is singular."
+        },
+        {
+            id: 'verb-600-12',
+            questionText: 'We cannot ------- the filming of our documentary, Morning after Night, without sufficient funding.',
+            options: { A: 'completely', B: 'completion', C: 'complete', D: 'completing' },
+            correctAnswer: 'C',
+            explanation: "After a modal verb like 'cannot', the base form of the main verb is required. 'complete' is the base form."
+        },
+        {
+            id: 'verb-600-13',
+            questionText: 'If Ms. Cho ------- the contract sooner, we would have been able to begin work immediately.',
+            options: { A: 'signs', B: 'signed', C: 'had signed', D: 'was signing' },
+            correctAnswer: 'C',
+            explanation: "This is a third conditional sentence, used for hypothetical situations in the past. The 'if' clause requires the past perfect tense ('had signed')."
+        },
+        {
+            id: 'verb-600-14',
+            questionText: 'Mr. Evans ------- to his current position as CFO after successfully managing three major mergers.',
+            options: { A: 'was promoting', B: 'was promoted', C: 'promotes', D: 'to promote' },
+            correctAnswer: 'B',
+            explanation: "Mr. Evans was the recipient of the promotion, not the one performing the action. Therefore, the passive voice is needed. The action is in the past, so simple past passive ('was promoted') is correct."
+        },
+        {
+            id: 'verb-600-15',
+            questionText: 'Since the new software update, employees ------- fewer errors in data entry.',
+            options: { A: 'made', B: 'are making', C: 'have been making', D: 'had made' },
+            correctAnswer: 'C',
+            explanation: "The word 'Since' indicates a point in the past when an action started and has continued until now. The present perfect continuous ('have been making') is used to emphasize this ongoing trend."
+        },
+        {
+            id: 'verb-600-16',
+            questionText: 'The committee recommended ------- the company logo to reflect a more modern image.',
+            options: { A: 'change', B: 'to change', C: 'changing', D: 'changed' },
+            correctAnswer: 'C',
+            explanation: "The verb 'recommend' is followed by a gerund ('changing') when it is used in this structure."
+        },
+        {
+            id: 'verb-600-17',
+            questionText: 'Before ------- the proposal, the board of directors must review the financial forecasts.',
+            options: { A: 'to approve', B: 'approving', C: 'approved', D: 'is approved' },
+            correctAnswer: 'B',
+            explanation: "After a preposition like 'Before', the gerund form of the verb ('approving') is required."
+        },
+        {
+            id: 'verb-600-18',
+            questionText: 'The latest technical documentation ------- in a digital format for easy access by all team members.',
+            options: { A: 'is publishing', B: 'is published', C: 'publishes', D: 'have published' },
+            correctAnswer: 'B',
+            explanation: "The documentation is the object being published, so the passive voice is needed. The simple present passive ('is published') is used to describe a general state or fact."
+        },
+        {
+            id: 'verb-600-19',
+            questionText: 'The two managers agreed ------- the project’s budget constraints before the next meeting.',
+            options: { A: 'discussing', B: 'discussed', C: 'to discuss', D: 'discuss' },
+            correctAnswer: 'C',
+            explanation: "The verb 'agree' is followed by the to-infinitive form of the next verb ('to discuss')."
+        },
+        {
+            id: 'verb-600-20',
+            questionText: 'The old security system ------- with new digital cameras and alarm sensors next month.',
+            options: { A: 'is replacing', B: 'replaces', C: 'to be replaced', D: 'will be replaced' },
+            correctAnswer: 'D',
+            explanation: "The time marker 'next month' indicates a future action. The 'system' is the object being replaced, so the future passive voice ('will be replaced') is correct."
+        }
+    ]
 };

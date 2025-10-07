@@ -2,10 +2,11 @@ import React, { useEffect, useState, useMemo, useRef, useCallback } from 'react'
 // FIX: Moved generateDeterminerExercise to import from geminiService as it is not exported from grammarLibrary
 import { getGrammarTopicContent, getGrammarQuizQuestions, getGrammarQuizLevels } from '../services/grammarLibrary';
 import { generateDeterminerExercise } from '../services/geminiService';
-import { GrammarTopicContent, GrammarQuestion, QuestionOption, DeterminerExercise } from '../types';
+import { GrammarTopicContent, GrammarQuestion, QuestionOption, DeterminerExercise, User } from '../types';
 import SelectionCard from './SelectionCard';
 import QuestionPalette from './QuestionPalette';
 import { CheckCircleIcon, XCircleIcon, ArrowLeftIcon, SparklesIcon, LoadingIcon } from './icons';
+import { addTestResult } from '../services/progressService';
 
 interface UserAnswers {
     [questionId: string]: QuestionOption | null;
@@ -14,9 +15,10 @@ interface UserAnswers {
 interface GrammarTopicScreenProps {
   topic: string;
   onBack: () => void;
+  currentUser: User;
 }
 
-const GrammarTopicScreen: React.FC<GrammarTopicScreenProps> = ({ topic, onBack }) => {
+const GrammarTopicScreen: React.FC<GrammarTopicScreenProps> = ({ topic, onBack, currentUser }) => {
     const [content, setContent] = useState<GrammarTopicContent | null>(null);
     const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
     const [questions, setQuestions] = useState<GrammarQuestion[]>([]);
@@ -60,6 +62,19 @@ const GrammarTopicScreen: React.FC<GrammarTopicScreenProps> = ({ topic, onBack }
     const handleSubmit = () => {
         setIsSubmitted(true);
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        if (currentUser && selectedLevel) {
+            const score = questions.reduce((acc, q) => {
+                return userAnswers[q.id] === q.correctAnswer ? acc + 1 : acc;
+            }, 0);
+            addTestResult(currentUser.username, 'grammar', {
+                id: `grammar-${topic}-${selectedLevel}-${Date.now()}`,
+                title: `${topic} - ${selectedLevel}`,
+                score,
+                total: questions.length,
+                date: Date.now()
+            });
+        }
     };
     
     const handleTryAgain = () => {

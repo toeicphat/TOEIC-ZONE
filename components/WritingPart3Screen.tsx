@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ArrowLeftIcon, LoadingIcon, RefreshIcon, TrophyIcon } from './icons';
 import { generateWritingPart3Task, evaluateWritingPart3 } from '../services/geminiService';
-import { WritingPart3Task, WritingPart3EvaluationResult } from '../types';
+import { WritingPart3Task, WritingPart3EvaluationResult, User } from '../types';
 import Timer from './Timer';
+import { addTestResult } from '../services/progressService';
 
 const TOTAL_TIME = 30 * 60; // 30 minutes in seconds
 
@@ -10,9 +11,10 @@ type PracticeState = 'idle' | 'generating' | 'practicing' | 'evaluating' | 'resu
 
 interface WritingPart3ScreenProps {
     onBack: () => void;
+    currentUser: User;
 }
 
-const WritingPart3Screen: React.FC<WritingPart3ScreenProps> = ({ onBack }) => {
+const WritingPart3Screen: React.FC<WritingPart3ScreenProps> = ({ onBack, currentUser }) => {
     const [practiceState, setPracticeState] = useState<PracticeState>('idle');
     const [task, setTask] = useState<WritingPart3Task | null>(null);
     const [userAnswer, setUserAnswer] = useState<string>('');
@@ -29,6 +31,15 @@ const WritingPart3Screen: React.FC<WritingPart3ScreenProps> = ({ onBack }) => {
             const result = await evaluateWritingPart3(task.question, userAnswer);
             if (result) {
                 setEvaluationResult(result);
+                if (currentUser) {
+                    addTestResult(currentUser.username, 'writing', {
+                        id: `writing-p3-${Date.now()}`,
+                        title: 'Writing Part 3',
+                        score: result.taskScore,
+                        total: 5,
+                        date: Date.now()
+                    });
+                }
                 setPracticeState('results');
             } else {
                 throw new Error("Received invalid evaluation.");
@@ -38,7 +49,7 @@ const WritingPart3Screen: React.FC<WritingPart3ScreenProps> = ({ onBack }) => {
             setError("Sorry, an error occurred during evaluation. Please try again.");
             setPracticeState('idle');
         }
-    }, [task, userAnswer]);
+    }, [task, userAnswer, currentUser]);
 
     const handleStart = async () => {
         setPracticeState('generating');

@@ -2,8 +2,8 @@ import { GoogleGenAI, Type } from "@google/genai";
 // FIX: Import TestData type
 import { DictationExercise, TestData, SpeakingPart1EvaluationResult, SpeakingPart2EvaluationResult, SpeakingPart3EvaluationResult, SpeakingPart4Task, SpeakingPart4EvaluationResult, SpeakingPart5Scenario, SpeakingPart5EvaluationResult, WritingPart1Task, WritingPart1EvaluationResult, WritingPart2Task, WritingPart2EvaluationResult, WritingPart3Task, WritingPart3EvaluationResult, DeterminerExercise } from '../types';
 
-const ai = new GoogleGenAI({
-  apiKey: import.meta.env.VITE_GEMINI_API_KEY});
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
+
 // Interface for the structured response from the speaking evaluation AI
 export interface SpeakingEvaluationResult {
     taskScore: number;
@@ -139,13 +139,14 @@ const testSchema = {
     properties: {
         testTitle: { type: Type.STRING, description: 'A creative title for this mini-test, e.g., "TOEIC Mini-Test: Business Scenarios".' },
         duration: { type: Type.INTEGER, description: 'The total test duration in seconds. Assume 75 seconds per question.' },
+        category: { type: Type.STRING, description: "The category of the test. Use 'miniTest' for TOEIC tests or 'grammar' for grammar quizzes." },
         questions: {
             type: Type.ARRAY,
             description: 'An array of question objects.',
             items: questionSchema
         }
     },
-    required: ['testTitle', 'duration', 'questions']
+    required: ['testTitle', 'duration', 'category', 'questions']
 };
 
 export const generateTOEICMiniTest = async (): Promise<TestData | null> => {
@@ -161,6 +162,7 @@ export const generateTOEICMiniTest = async (): Promise<TestData | null> => {
             5.  Ensure all fields in the schema are filled correctly.
             6.  Set the duration to 375 seconds (5 questions * 75 seconds).
             7.  Provide a clear and concise explanation for each correct answer.
+            8.  Set the 'category' field to "miniTest".
         `;
 
         const response = await ai.models.generateContent({
@@ -183,6 +185,61 @@ export const generateTOEICMiniTest = async (): Promise<TestData | null> => {
     } catch (error) {
         console.error("Error generating TOEIC mini-test:", error);
         throw new Error("Failed to generate test from API.");
+    }
+};
+
+export const generateRandomGrammarQuiz = async (): Promise<TestData | null> => {
+    const grammarTopics = [
+        "Nouns & Noun Phrases",
+        "Verbs (Tenses, Voice, Mood)",
+        "Adjectives",
+        "Adverbs",
+        "Prepositions & Conjunctions",
+        "Determiners",
+        "Pronouns",
+        "Relative Clauses",
+        "Noun Clauses",
+        "Inversions",
+        "Comparisons",
+        "Conditionals"
+    ];
+
+    try {
+        const prompt = `
+            You are an expert English grammar teacher creating a quiz for TOEIC students. Generate a random grammar quiz in JSON format according to the provided schema.
+
+            Instructions:
+            1.  Create a test with exactly 20 multiple-choice questions.
+            2.  The questions must be original and should NOT be simple definitions. They must be contextual sentences with a blank, testing the student's ability to choose the correct grammatical form.
+            3.  The questions must cover a wide and random variety of grammar topics relevant to the TOEIC test, such as: ${grammarTopics.join(', ')}.
+            4.  For each question, provide a unique integer ID, starting from 1.
+            5.  For the 'part' property of each question, use the number 5.
+            6.  Ensure all fields in the schema are filled correctly.
+            7.  Provide a clear and concise explanation for each correct answer, explaining the grammar rule.
+            8.  Set the 'testTitle' to "Random Grammar Review Quiz".
+            9.  Set the 'duration' to 1500 seconds (20 questions * 75 seconds).
+            10. Set the 'category' field to "grammar".
+        `;
+
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: testSchema,
+            },
+        });
+
+        const jsonStr = response.text.trim();
+        const data = JSON.parse(jsonStr);
+
+        if (data && data.questions && data.questions.length === 20) {
+            return data as TestData;
+        }
+        return null;
+    } catch (error) {
+        console.error("Error generating random grammar quiz:", error);
+        throw new Error("Failed to generate grammar quiz from API.");
     }
 };
 

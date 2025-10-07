@@ -1,11 +1,12 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { generateDictationExercise, generateDictationFromUserInput } from '../services/geminiService';
 import { dictationData } from '../services/dictationLibrary';
-import { DictationExercise, LibraryDictationExercise, DictationPart, DictationTest, UserAnswers } from '../types';
+import { DictationExercise, LibraryDictationExercise, DictationPart, DictationTest, UserAnswers, User } from '../types';
 import { LoadingIcon } from './icons';
 import AudioPlayer from './AudioPlayer';
 import SelectionCard from './SelectionCard';
 import QuestionPalette from './QuestionPalette';
+import { addTestResult } from '../services/progressService';
 
 const Breadcrumbs: React.FC<{
     part: DictationPart | null;
@@ -34,7 +35,11 @@ const Breadcrumbs: React.FC<{
   </div>
 );
 
-const DictationScreen: React.FC = () => {
+interface DictationScreenProps {
+    currentUser: User;
+}
+
+const DictationScreen: React.FC<DictationScreenProps> = ({ currentUser }) => {
     const [isGenerating, setIsGenerating] = useState(false);
     const [generationError, setGenerationError] = useState<string | null>(null);
     
@@ -170,6 +175,22 @@ const DictationScreen: React.FC = () => {
     const handleCheckAnswers = () => {
         window.speechSynthesis.cancel();
         setIsChecked(true);
+
+        if (activeAiExercise && currentUser) {
+            const { exercise } = activeAiExercise;
+            const score = userAnswers.reduce((acc, answer, index) => {
+                const correctAnswer = exercise.missingWords[index] || '';
+                const userAnswer = answer || '';
+                return userAnswer.trim().toLowerCase() === correctAnswer.trim().toLowerCase() ? acc + 1 : acc;
+            }, 0);
+            addTestResult(currentUser.username, 'dictation', {
+                id: `dictation-ai-${Date.now()}`,
+                title: exercise.title,
+                score: score,
+                total: exercise.missingWords.length,
+                date: Date.now()
+            });
+        }
     };
 
     const handleTryAgain = () => {
@@ -292,6 +313,24 @@ const DictationScreen: React.FC = () => {
         const handleCheckTestAnswers = (exerciseId: number) => {
             window.speechSynthesis.cancel();
             setCheckedExercises(prev => ({ ...prev, [exerciseId]: true }));
+            
+            if (currentTest && currentUser) {
+                const exercise = currentTest.exercises.find(e => e.id === exerciseId);
+                const userAnswersForExercise = allUserAnswers[exerciseId] || [];
+                if (exercise) {
+                    const score = userAnswersForExercise.reduce((acc, answer, idx) => {
+                        const correctAnswer = exercise.missingWords[idx] || '';
+                        return answer.trim().toLowerCase() === correctAnswer.trim().toLowerCase() ? acc + 1 : acc;
+                    }, 0);
+                    addTestResult(currentUser.username, 'dictation', {
+                        id: `dictation-lib-${currentTest.id}-${exercise.id}-${Date.now()}`,
+                        title: `${currentPart?.title || 'Test'} - ${exercise.title}`,
+                        score,
+                        total: exercise.missingWords.length,
+                        date: Date.now()
+                    });
+                }
+            }
         };
 
         const handleTryAgainTest = (exerciseId: number) => {

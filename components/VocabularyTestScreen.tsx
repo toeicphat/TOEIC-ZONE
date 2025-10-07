@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { VocabularyTest, VocabItem, VocabularyWord } from '../types';
+import { VocabularyTest, VocabItem, VocabularyWord, User } from '../types';
 import { updateWordSrsLevel } from '../services/vocabularyService';
 import { BookOpenIcon, BrainIcon, ShuffleIcon, ArrowLeftIcon, ArrowRightIcon, CheckCircleIcon, XCircleIcon, GridIcon, PuzzleIcon, TypeIcon, LightBulbIcon, HeadphoneIcon, TargetIcon, LinkIcon } from './icons';
 import AudioPlayer from './AudioPlayer';
+import { addTestResult } from '../services/progressService';
 
 type StudyMode = 'flashcards' | 'quiz' | 'matching_game' | 'scrambler' | 'spelling_recall' | 'audio_dictation' | 'hangman' | 'definition_match';
 
@@ -57,7 +58,7 @@ const WORDS_PER_DMATCH_TURN = 8;
 type DMatchItemType = { item: VocabItem; type: 'word' | 'definition' };
 
 
-const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => void }> = ({ testData, onBack }) => {
+const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => void, currentUser: User }> = ({ testData, onBack, currentUser }) => {
     const [mode, setMode] = useState<StudyMode>('flashcards');
     const [deck, setDeck] = useState<VocabItem[]>(testData.words);
     const [currentCardIndex, setCurrentCardIndex] = useState(0);
@@ -311,6 +312,69 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
         startDMatchGame();
     }, [testData, restartQuizSession, startMatchingGame, startScramblerGame, startSpellingGame, startAudioDictationGame, startHangmanGame, startDMatchGame]);
     
+    useEffect(() => {
+        if (isQuizSessionFinished && currentUser && quizQuestions.length > 0) {
+            addTestResult(currentUser.username, 'vocabulary', {
+                id: `vocab-quiz-${testData.id}-${Date.now()}`,
+                title: `${testData.title} (Quiz)`,
+                score,
+                total: quizQuestions.length,
+                date: Date.now()
+            });
+        }
+    }, [isQuizSessionFinished, currentUser, testData.id, testData.title, score, quizQuestions.length]);
+
+    useEffect(() => {
+        if (isScramblerSessionFinished && currentUser && scramblerQuestions.length > 0) {
+            addTestResult(currentUser.username, 'vocabulary', {
+                id: `vocab-scrambler-${testData.id}-${Date.now()}`,
+                title: `${testData.title} (Scrambler)`,
+                score: scramblerScore,
+                total: scramblerQuestions.length,
+                date: Date.now()
+            });
+        }
+    }, [isScramblerSessionFinished, currentUser, testData.id, testData.title, scramblerScore, scramblerQuestions.length]);
+    
+    useEffect(() => {
+        if (isSpellingSessionFinished && currentUser && spellingQuestions.length > 0) {
+             const totalPossibleScore = spellingQuestions.reduce((sum, q) => sum + q.original.word.length, 0);
+            addTestResult(currentUser.username, 'vocabulary', {
+                id: `vocab-spelling-${testData.id}-${Date.now()}`,
+                title: `${testData.title} (Spelling)`,
+                score: spellingScore,
+                total: totalPossibleScore,
+                date: Date.now()
+            });
+        }
+    }, [isSpellingSessionFinished, currentUser, testData.id, testData.title, spellingScore, spellingQuestions]);
+
+    useEffect(() => {
+        if (isAudioDictationSessionFinished && currentUser && audioDictationQuestions.length > 0) {
+            const totalPossibleScore = audioDictationQuestions.length * 2;
+            addTestResult(currentUser.username, 'vocabulary', {
+                id: `vocab-audio-${testData.id}-${Date.now()}`,
+                title: `${testData.title} (Audio Dictation)`,
+                score: audioDictationScore,
+                total: totalPossibleScore,
+                date: Date.now()
+            });
+        }
+    }, [isAudioDictationSessionFinished, currentUser, testData.id, testData.title, audioDictationScore, audioDictationQuestions.length]);
+
+    useEffect(() => {
+        if (isHangmanSessionFinished && currentUser && hangmanQuestions.length > 0) {
+            addTestResult(currentUser.username, 'vocabulary', {
+                id: `vocab-hangman-${testData.id}-${Date.now()}`,
+                title: `${testData.title} (Hangman)`,
+                score: hangmanScore,
+                total: hangmanQuestions.length,
+                date: Date.now()
+            });
+        }
+    }, [isHangmanSessionFinished, currentUser, testData.id, testData.title, hangmanScore, hangmanQuestions.length]);
+
+
     const handleWordPractice = useCallback((word: VocabItem, performance: 'good' | 'hard') => {
         const wordId = word.word.toLowerCase();
         updateWordSrsLevel(wordId, performance, word, `From '${testData.title}' list.`);
