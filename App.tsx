@@ -42,7 +42,7 @@ const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([
     { username: 'tester2', password: '123456' },
     { username: 'admin', password: 'phattoeic' },
-    { username: 'thidautoeic', password: 'thidautoeic' },
+    { username: 'hongquyen22102004@gmail.com', password: 'thidautoeic' },
     { username: 'myquynh070404@gmail.com', password: 'thidautoeic' },
     { username: 'ltrieuvy181104@gmail.com', password: 'thidautoeic' },
     { username: 'hoangphuctayninh1708@gmail.com', password: 'thidautoeic' },
