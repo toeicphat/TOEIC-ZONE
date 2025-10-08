@@ -41,6 +41,18 @@ const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([
     { username: 'tester2', password: '123456' },
     { username: 'admin', password: 'phattoeic' },
+    { username: 'thidautoeic', password: 'thidautoeic' },
+    { username: 'myquynh070404@gmail.com', password: 'thidautoeic' },
+    { username: 'ltrieuvy181104@gmail.com', password: 'thidautoeic' },
+    { username: 'hoangphuctayninh1708@gmail.com', password: 'thidautoeic' },
+    { username: 'V0932089072@gmail.com', password: 'thidautoeic' },
+    { username: 'tavanquy.09102003@gmail.com', password: 'thidautoeic' },
+    { username: 'chanhsp2003@gmail.com', password: 'thidautoeic' },
+    { username: 'ntkimphuc.work@gmail.com', password: 'thidautoeic' },
+    { username: 'phungquangduy2610@gmail.com', password: 'thidautoeic' },
+    { username: 'thupham.241004@gmail.com', password: 'thidautoeic' },
+    { username: 'luongthihongquy2240@gmail.com', password: 'thidautoeic' },
+    { username: 'luongzattu800@gmail.com', password: 'thidautoeic' },
   ]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [appState, setAppState] = useState<AppState>(AppState.PracticeHub);
