@@ -1,22 +1,18 @@
-// vite.config.js
-import path from 'path';
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import path from 'path';
 
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, '.', '');
-  return {
-    server: {
-      port: 3000,
-      host: '0.0.0.0',
+// Cấu hình Vite cho Render (cổng, host)
+export default defineConfig({
+  server: {
+    host: '0.0.0.0',
+    port: 3000
+  },
+  plugins: [react()],
+  base: './',
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, '.'),
     },
-    base: './',
-    plugins: [react()],
-    // Không cần define process.env ở đây nữa
-    resolve: {
-      alias: {
-        '@': path.resolve(__dirname, '.'),
-      },
-    },
-  };
+  },
 });
