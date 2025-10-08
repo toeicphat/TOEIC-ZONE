@@ -1,7 +1,7 @@
 import { GrammarQuestion } from '../../types';
 
 export const adjectiveQuizzes: Record<string, GrammarQuestion[]> = {
-    "450+": [
+    "Bài tập 1": [
         { id: 'adj-450-1', questionText: "The restaurant had _______ service, and the food was delicious.", options: { A: 'quick', B: 'quickly', C: 'quicly', D: 'quicker' }, correctAnswer: 'A', explanation: "" },
         { id: 'adj-450-2', questionText: "She was feeling _______ after a long day at work.", options: { A: 'tiring', B: 'tired', C: 'tireder', D: 'tiredest' }, correctAnswer: 'B', explanation: "" },
         { id: 'adj-450-3', questionText: "The weather was so _______ that we decided to stay indoors.", options: { A: 'beauty', B: 'beautiful', C: 'beautifully', D: 'beautify' }, correctAnswer: 'B', explanation: "" },
@@ -13,7 +13,7 @@ export const adjectiveQuizzes: Record<string, GrammarQuestion[]> = {
         { id: 'adj-450-9', questionText: "The test was _______ that many students found it challenging.", options: { A: 'difficulty', B: 'difficult', C: 'difficultly', D: 'difficulties' }, correctAnswer: 'B', explanation: "" },
         { id: 'adj-450-10', questionText: "We had a _______ day at the beach, playing in the sun and building sandcastles.", options: { A: 'fantastic', B: 'fantasticly', C: 'fantasy', D: 'fantasize' }, correctAnswer: 'A', explanation: "" }
     ],
-    "550+": [
+    "Bài tập 2": [
         { id: 'adj-550-1', questionText: "The company implemented _______ measures to improve efficiency and reduce costs.", options: { A: 'loud', B: 'cost-saving', C: 'short', D: '' }, correctAnswer: 'B', explanation: "“Cost-saving” miêu tả biện pháp giảm chi phí." },
         { id: 'adj-550-2', questionText: "Our company values _______ customer service, ensuring customer satisfaction is our top priority.", options: { A: 'exceptional', B: 'average', C: 'mediocre', D: '' }, correctAnswer: 'A', explanation: "“Exceptional” có nghĩa là xuất sắc, đặc biệt." },
         { id: 'adj-550-3', questionText: "The CEO gave a _______ speech at the annual conference.", options: { A: 'inspire', B: 'inspiration', C: 'inspiring', D: '' }, correctAnswer: 'C', explanation: "“Inspiring” là tính từ miêu tả người hay vật có khả năng gợi cảm hứng." },
@@ -25,7 +25,7 @@ export const adjectiveQuizzes: Record<string, GrammarQuestion[]> = {
         { id: 'adj-550-9', questionText: "The company's new product has _______ features that set it apart from competitors.", options: { A: 'unique', B: 'narrow', C: 'heavy', D: '' }, correctAnswer: 'A', explanation: "“Unique” có nghĩa là độc đáo, không giống ai khác." },
         { id: 'adj-550-10', questionText: "The company offers _______ benefits, including healthcare coverage and retirement plans.", options: { A: 'basic', B: 'minimal', C: 'comprehensive', D: '' }, correctAnswer: 'C', explanation: "“Comprehensive” có nghĩa là toàn diện, bao quát." }
     ],
-    "600+": [
+    "Bài tập 3": [
         { id: 'adj-600-1', questionText: "The company's new advertising campaign aims to create a _______ image for its brand.", options: { A: 'favorable', B: 'favorably', C: 'favored', D: 'favoring' }, correctAnswer: 'A', explanation: "" },
         { id: 'adj-600-2', questionText: "The team was thrilled to receive _______ feedback from the client regarding their work.", options: { A: 'positive', B: 'positively', C: 'positiveness', D: 'positivist' }, correctAnswer: 'A', explanation: "" },
         { id: 'adj-600-3', questionText: "The project manager was impressed by the team's _______ performance, delivering the project ahead of schedule.", options: { A: 'exceptional', B: 'exceptionally', C: 'excepting', D: 'excepted' }, correctAnswer: 'A', explanation: "" },

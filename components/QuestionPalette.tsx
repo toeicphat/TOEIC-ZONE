@@ -6,9 +6,10 @@ interface QuestionPaletteProps {
   answers: UserAnswers;
   currentQuestionIndex: number;
   onQuestionSelect: (index: number) => void;
+  markedForReview?: Set<string>;
 }
 
-const QuestionPalette: React.FC<QuestionPaletteProps> = ({ questions, answers, currentQuestionIndex, onQuestionSelect }) => {
+const QuestionPalette: React.FC<QuestionPaletteProps> = ({ questions, answers, currentQuestionIndex, onQuestionSelect, markedForReview }) => {
   const useIdAsLabel = useMemo(() => {
     if (!questions || questions.length === 0) return false;
     const firstId = questions[0].id;
@@ -30,9 +31,10 @@ const QuestionPalette: React.FC<QuestionPaletteProps> = ({ questions, answers, c
         const questionId = q.id;
         const isAnswered = answers[questionId] != null;
         const isActive = i === currentQuestionIndex;
+        const isMarked = markedForReview?.has(String(questionId));
         const label = useIdAsLabel ? q.id : i + 1;
 
-        let buttonClasses = 'w-full h-8 flex items-center justify-center rounded-md font-semibold border text-sm transition-colors duration-200 ';
+        let buttonClasses = 'w-full h-8 flex items-center justify-center rounded-md font-semibold border text-sm transition-colors duration-200 relative ';
         if (isActive) {
           buttonClasses += 'bg-blue-500 text-white border-blue-600 ring-2 ring-blue-300';
         } else if (isAnswered) {
@@ -49,6 +51,9 @@ const QuestionPalette: React.FC<QuestionPaletteProps> = ({ questions, answers, c
             aria-label={`Go to question ${label}`}
           >
             {label}
+            {isMarked && (
+              <span className="absolute -top-1 -right-1 block h-2.5 w-2.5 rounded-full bg-yellow-400 ring-2 ring-white" aria-label="Marked for review" />
+            )}
           </button>
         );
       })}

@@ -1,7 +1,7 @@
 import { GrammarQuestion } from '../../types';
 
 export const adverbQuizzes: Record<string, GrammarQuestion[]> = {
-    "350+": [
+    "Bài tập 1": [
         { id: 'adv-350-1', questionText: "The team worked ______ to complete the project on time.", options: { A: 'fast', B: 'fastly', C: 'fasted', D: 'faster' }, correctAnswer: 'A', explanation: "Câu này cần một trạng từ để bổ nghĩa cho cách thức làm việc. Trong tiếng Anh, 'fast' là trạng từ tương ứng với tính từ 'fast,' diễn tả mức độ của sự nhanh chóng." },
         { id: 'adv-350-2', questionText: "She studied for the exam ________________, but she still didn't do well.", options: { A: 'hard', B: 'hardly', C: 'good', D: 'badly' }, correctAnswer: 'A', explanation: "Câu này cần một trạng từ để mô tả mức độ cách thức học. 'Hard' là trạng từ phù hợp, diễn tả việc học một cách chăm chỉ." },
         { id: 'adv-350-3', questionText: "The meeting was _______________ long, and I was exhausted by the end.", options: { A: 'extreme', B: 'extremely', C: 'extremeless', D: 'extremeful' }, correctAnswer: 'B', explanation: "Câu này cần một trạng từ để mô tả mức độ dài. 'Extremely' bổ nghĩa cho tính từ 'long,' nó diễn tả mức độ rất cao của độ dài của cuộc họp." },
@@ -12,7 +12,7 @@ export const adverbQuizzes: Record<string, GrammarQuestion[]> = {
         { id: 'adv-350-9', questionText: "She speaks English ________________, and it's a pleasure to listen to her.", options: { A: 'fluent', B: 'fluently', C: 'fluency', D: 'fluents' }, correctAnswer: 'B', explanation: "Câu này cần điền một trạng từ để bổ nghĩa cho động từ “talk” (nói). 'Fluently' diễn tả việc nói tiếng Anh một cách lưu loát." },
         { id: 'adv-350-10', questionText: "He was working ______________ when the accident happened.", options: { A: 'nearby', B: 'hardly', C: 'easy', D: 'easily' }, correctAnswer: 'A', explanation: "Câu này cần điền một trạng từ để bổ nghĩa cho động từ “work” (làm việc). 'Nearby' là trạng từ chỉ nơi chốn, chỉ vị trí mà anh ấy làm việc khi tai nạn xảy ra." },
     ],
-    "450+": [
+    "Bài tập 2": [
         { id: 'adv-450-1', questionText: "The teacher spoke ________, so the students couldn't hear him.", options: { A: 'loudly', B: 'quickly', C: 'beautifully', D: 'often' }, correctAnswer: 'A', explanation: "" },
         { id: 'adv-450-2', questionText: "I'm ________ busy to go to the party tonight.", options: { A: 'rarely', B: 'always', C: 'too', D: 'yesterday' }, correctAnswer: 'C', explanation: "" },
         { id: 'adv-450-3', questionText: "The bus arrived ________ for me to catch it.", options: { A: 'beautifully', B: 'quickly', C: 'usually', D: 'never' }, correctAnswer: 'B', explanation: "" },
@@ -44,7 +44,7 @@ export const adverbQuizzes: Record<string, GrammarQuestion[]> = {
         { id: 'adv-450-29', questionText: "The office is ________ located in the city center.", options: { A: 'rarely', B: 'beautifully', C: 'usually', D: 'centrally' }, correctAnswer: 'D', explanation: "" },
         { id: 'adv-450-30', questionText: "The company ________ expands its business overseas.", options: { A: 'badly', B: 'quickly', C: 'yesterday', D: 'beautifully' }, correctAnswer: 'B', explanation: "" },
     ],
-    "550+": [
+    "Bài tập 3": [
         { id: 'adv-550-1', questionText: "According to the report, our company's profits have ______ increased this quarter.", options: { A: 'heavily', B: 'significantly', C: 'rarely', D: 'occasionally' }, correctAnswer: 'B', explanation: "'significantly' diễn đạt rằng lợi nhuận của công ty đã tăng đáng kể trong quý này." },
         { id: 'adv-550-2', questionText: "The CEO ______ attends industry conferences to stay updated on the latest trends.", options: { A: 'usually', B: 'never', C: 'sporadically', D: 'initially' }, correctAnswer: 'A', explanation: "'usually' cho biết rằng CEO thường tham dự các hội nghị ngành để cập nhật những xu hướng mới nhất." },
         { id: 'adv-550-3', questionText: "The marketing team worked ______ to meet the deadline for the new campaign.", options: { A: 'diligently', B: 'reluctantly', C: 'scarcely', D: 'effortlessly' }, correctAnswer: 'A', explanation: "'diligently' diễn tả việc nhóm tiếp thị làm việc chăm chỉ để hoàn thành kịp thời hạn của chiến dịch mới." },
@@ -76,7 +76,7 @@ export const adverbQuizzes: Record<string, GrammarQuestion[]> = {
         { id: 'adv-550-29', questionText: "The team ______ meets to discuss project progress and address any challenges.", options: { A: 'infrequently', B: 'efficiently', C: 'inadvertently', D: 'reluctantly' }, correctAnswer: 'B', explanation: "'efficiently' cho biết rằng nhóm họp gặp nhau một cách hiệu quả để thảo luận về tiến trình dự án và giải quyết các thách thức." },
         { id: 'adv-550-30', questionText: "The company's CEO ______ makes public appearances at industry events.", options: { A: 'rarely', B: 'momentarily', C: 'deliberately', D: 'hesitantly' }, correctAnswer: 'A', explanation: "'rarely' diễn tả việc CEO công ty hiếm khi xuất hiện công khai tại các sự kiện ngành công nghiệp." },
     ],
-    "650+": [
+    "Bài tập 4": [
         { id: 'adv-650-1', questionText: "Our company has been ______ expanding its market share in the region.", options: { A: 'rapid', B: 'rapidly', C: 'fast', D: 'quickly' }, correctAnswer: 'B', explanation: "'Rapidly' là trạng từ bổ nghĩa cho động từ 'expanding,' diễn tả hành động diễn ra nhanh chóng." },
         { id: 'adv-650-2', questionText: "The new employee was ______ trained by the senior staff members.", options: { A: 'careful', B: 'carefulness', C: 'carefully', D: 'careless' }, correctAnswer: 'C', explanation: "'Carefully' bổ nghĩa cho động từ 'trained,' diễn tả cách thức hành động diễn ra." },
         { id: 'adv-650-3', questionText: "The marketing team is planning to ______ launch the new product.", options: { A: 'soon', B: 'shortly', C: 'immediately', D: 'immediate' }, correctAnswer: 'A', explanation: "'Soon' là trạng từ bổ nghĩa cho động từ 'launch,' diễn tả thời gian hành động diễn ra trong tương lai gần." },

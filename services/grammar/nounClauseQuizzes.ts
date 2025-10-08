@@ -70,7 +70,7 @@ const nounClauseEx4: GrammarQuestion[] = [
 ];
 
 export const nounClauseQuizzes: Record<string, GrammarQuestion[]> = {
-    "Exercise 2": nounClauseEx2,
-    "Exercise 3": nounClauseEx3,
-    "Exercise 4": nounClauseEx4,
+    "Bài tập 1": nounClauseEx2,
+    "Bài tập 2": nounClauseEx3,
+    "Bài tập 3": nounClauseEx4,
 };

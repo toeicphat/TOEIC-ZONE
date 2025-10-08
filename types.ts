@@ -1,3 +1,4 @@
+
 export interface User {
     username: string;
     password: string;
@@ -5,9 +6,11 @@ export interface User {
 
 export enum AppState {
     PracticeHub = 'PRACTICE_HUB',
-    DictationHome = 'DICTATION_HOME',
+    DictationPracticeHome = 'DICTATION_PRACTICE_HOME',
+    DictationPracticeSetup = 'DICTATION_PRACTICE_SETUP',
+    DictationTest = 'DICTATION_TEST',
     ReadingPracticeHome = 'READING_PRACTICE_HOME',
-    ReadingPartHome = 'READING_PART_HOME',
+    ReadingPracticeSetup = 'READING_PRACTICE_SETUP',
     ReadingTest = 'READING_TEST',
     GrammarHome = 'GRAMMAR_HOME',
     GrammarTopic = 'GRAMMAR_TOPIC',
@@ -77,6 +80,7 @@ export interface LibraryDictationExercise extends DictationExercise {
     audioSrc: string;
 }
 
+// FIX: Added missing DictationTest and DictationPart interfaces.
 export interface DictationTest {
     id: number;
     title: string;

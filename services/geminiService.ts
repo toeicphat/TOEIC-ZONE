@@ -2,9 +2,7 @@ import { GoogleGenAI, Type } from "@google/genai";
 // FIX: Import TestData type
 import { DictationExercise, TestData, SpeakingPart1EvaluationResult, SpeakingPart2EvaluationResult, SpeakingPart3EvaluationResult, SpeakingPart4Task, SpeakingPart4EvaluationResult, SpeakingPart5Scenario, SpeakingPart5EvaluationResult, WritingPart1Task, WritingPart1EvaluationResult, WritingPart2Task, WritingPart2EvaluationResult, WritingPart3Task, WritingPart3EvaluationResult, DeterminerExercise } from '../types';
 
-const ai = new GoogleGenAI({
-  apiKey: import.meta.env.VITE_GEMINI_API_KEY});
-
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
 
 // Interface for the structured response from the speaking evaluation AI
 export interface SpeakingEvaluationResult {
@@ -50,6 +48,7 @@ export const generateDictationExercise = async (): Promise<DictationExercise | n
         `;
         
         const response = await ai.models.generateContent({
+            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -89,6 +88,7 @@ export const generateDictationFromUserInput = async (topic: string): Promise<Dic
         `;
         
         const response = await ai.models.generateContent({
+            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -168,6 +168,7 @@ export const generateTOEICMiniTest = async (): Promise<TestData | null> => {
         `;
 
         const response = await ai.models.generateContent({
+            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -224,6 +225,7 @@ export const generateRandomGrammarQuiz = async (): Promise<TestData | null> => {
         `;
 
         const response = await ai.models.generateContent({
+            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -264,6 +266,7 @@ export const generateDeterminerExercise = async (): Promise<DeterminerExercise |
         const prompt = `Generate a short English paragraph (about 50-70 words) on a simple topic like daily routines, hobbies, or work. Identify ALL determiners in the paragraph. Determiners include articles (a, an, the), demonstratives (this, that, these, those), possessives (my, your, his, her, its, our, their), quantifiers (some, any, many, few, several, all), and numbers (one, two). Return a JSON object with two keys: "paragraph" containing the text, and "determiners" containing an array of all the identified determiner words in lowercase.`;
         
         const response = await ai.models.generateContent({
+            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -301,6 +304,7 @@ export const getWordDefinition = async (word: string, contextSentence: string = 
         `;
 
         const response = await ai.models.generateContent({
+            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: prompt,
         });
@@ -377,6 +381,7 @@ Your final output must be a JSON object adhering to the provided schema. Do not 
 `;
 
         const response = await ai.models.generateContent({
+            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: {
                 parts: [
@@ -417,6 +422,7 @@ export const generateSpeakingPart1Text = async (): Promise<string | null> => {
         `;
 
         const response = await ai.models.generateContent({
+            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: prompt,
         });
@@ -531,6 +537,7 @@ For each criterion (Grammar, Vocabulary, Cohesion, Delivery), provide a concise 
 Your final output must be a JSON object adhering to the provided schema. Do not add any extra text or explanations outside the JSON structure.`;
 
         const response = await ai.models.generateContent({
+            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: {
                 parts: [
@@ -580,6 +587,7 @@ export const generateSpeakingPart3Questions = async (): Promise<{ topic: string,
         Return the result as a JSON object.`;
 
         const response = await ai.models.generateContent({
+            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -702,6 +710,7 @@ Your final output must be a JSON object adhering to the provided schema.`;
         });
 
         const response = await ai.models.generateContent({
+            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: { parts: parts },
             config: {
@@ -751,6 +760,7 @@ export const generateSpeakingPart4Task = async (): Promise<SpeakingPart4Task | n
         `;
 
         const response = await ai.models.generateContent({
+            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -877,6 +887,7 @@ Your final output must be a JSON object adhering to the provided schema.`;
         });
 
         const response = await ai.models.generateContent({
+            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: { parts: parts },
             config: {
@@ -916,6 +927,7 @@ export const generateSpeakingPart5Scenario = async (): Promise<SpeakingPart5Scen
         Return the result as a single JSON object adhering to the provided schema.`;
 
         const response = await ai.models.generateContent({
+            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -1013,6 +1025,7 @@ Provide concise feedback for each category in **both English and Vietnamese**.
 Your final output must be a JSON object adhering to the provided schema.`;
 
         const response = await ai.models.generateContent({
+            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: {
                 parts: [
@@ -1066,6 +1079,7 @@ export const generateWritingPart1Tasks = async (): Promise<WritingPart1Task[] | 
         Return the result as a JSON array of 5 objects, where each object has a 'picturePrompt' and a 'keywords' array with exactly two strings.`;
         
         const promptResponse = await ai.models.generateContent({
+            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -1212,6 +1226,7 @@ Your final output must be a single JSON object adhering to the provided schema.`
         });
 
         const response = await ai.models.generateContent({
+            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: { parts },
             config: {
@@ -1266,6 +1281,7 @@ export const generateWritingPart2Tasks = async (): Promise<WritingPart2Task | nu
         Return the result as a single JSON object.`;
 
         const response = await ai.models.generateContent({
+            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -1373,6 +1389,7 @@ For each question, provide a short summary of the original request, and then pro
 Your final output must be a single JSON object.`;
         
         const response = await ai.models.generateContent({
+            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: `Evaluate these two written responses for the TOEIC Writing Part 2 task.
 
@@ -1432,6 +1449,7 @@ export const generateWritingPart3Task = async (): Promise<WritingPart3Task | nul
         Return the result as a single JSON object.`;
 
         const response = await ai.models.generateContent({
+            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -1510,6 +1528,7 @@ For each category (Overall, Idea Development, Organization, Grammar/Syntax, Voca
 Your final output must be a single JSON object.`;
 
         const response = await ai.models.generateContent({
+            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: `Evaluate this essay based on the provided prompt.
             ---

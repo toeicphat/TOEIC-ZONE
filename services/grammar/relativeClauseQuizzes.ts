@@ -70,8 +70,8 @@ const relativeClauseEx3: GrammarQuestion[] = [
 ];
 
 export const relativeClauseQuizzes: Record<string, GrammarQuestion[]> = {
-    "Exercise 1": relativeClauseEx1,
-    "Exercise 2": relativeClauseEx2,
-    "Exercise 3": relativeClauseEx3,
-    "Exercise 4": relativeClauseEx1,
+    "Bài tập 1": relativeClauseEx1,
+    "Bài tập 2": relativeClauseEx2,
+    "Bài tập 3": relativeClauseEx3,
+    "Bài tập 4": relativeClauseEx1,
 };

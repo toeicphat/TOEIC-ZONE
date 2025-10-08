@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import PracticeHub from './components/PracticeHub';
 import DictationScreen from './components/DictationScreen';
 import ReadingPracticeScreen from './components/ReadingPracticeScreen';
-import ReadingPartScreen from './components/ReadingPartScreen';
+import ReadingPracticeSetupScreen from './components/ReadingPartScreen';
 import ReadingTestScreen from './components/ReadingTestScreen';
 import GrammarScreen from './components/GrammarScreen';
 import GrammarTopicScreen from './components/GrammarTopicScreen';
@@ -27,11 +27,14 @@ import StudentManagementScreen from './components/StudentManagementScreen';
 import HomeScreen from './components/HomeScreen';
 import TestScreen from './components/TestScreen';
 import ResultsScreen from './components/ResultsScreen';
-import { AppState, ReadingTestData, VocabularyTest, VocabularyPart, User, TestData, UserAnswers } from './types';
-import { getReadingTest } from './services/readingLibrary';
+import { AppState, ReadingTestData, VocabularyTest, VocabularyPart, User, TestData, UserAnswers, LibraryDictationExercise } from './types';
+import { getReadingTest, allReadingTests } from './services/readingLibrary';
 import { getVocabularyPart, getVocabularyTest } from './services/vocabularyLibrary';
 import { addTestResult } from './services/progressService';
 import { LogoIcon } from './components/icons';
+import { allDictationTests, getDictationExercisesForParts } from './services/dictationLibrary';
+import DictationPracticeSetupScreen from './components/DictationPracticeSetupScreen';
+import DictationTestScreen from './components/DictationTestScreen';
 
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -44,10 +47,16 @@ const App: React.FC = () => {
   
   // Grammar State
   const [selectedGrammarTopic, setSelectedGrammarTopic] = useState<string | null>(null);
+
+  // Dictation State
+  const [selectedDictationTestId, setSelectedDictationTestId] = useState<number | null>(null);
+  const [selectedDictationTestData, setSelectedDictationTestData] = useState<{ id: number; title: string; exercises: LibraryDictationExercise[] } | null>(null);
   
   // Reading State
-  const [selectedReadingPart, setSelectedReadingPart] = useState<number | null>(null);
+  const [selectedReadingTestId, setSelectedReadingTestId] = useState<number | null>(null);
   const [selectedReadingTestData, setSelectedReadingTestData] = useState<ReadingTestData | null>(null);
+  const [selectedReadingTimeLimit, setSelectedReadingTimeLimit] = useState<number | null>(null);
+
 
   // Vocabulary State
   const [selectedVocabularyPart, setSelectedVocabularyPart] = useState<VocabularyPart | null>(null);
@@ -80,8 +89,9 @@ const App: React.FC = () => {
 
   const handleGoHome = useCallback(() => {
     setSelectedGrammarTopic(null);
-    setSelectedReadingPart(null);
+    setSelectedReadingTestId(null);
     setSelectedReadingTestData(null);
+    setSelectedReadingTimeLimit(null);
     setSelectedVocabularyPart(null);
     setSelectedVocabularyTest(null);
     setSelectedSpeakingPart(null);
@@ -89,6 +99,8 @@ const App: React.FC = () => {
     setMiniTestData(null);
     setMiniTestUserAnswers({});
     setSelectedStudent(null);
+    setSelectedDictationTestId(null);
+    setSelectedDictationTestData(null);
     setAppState(AppState.PracticeHub);
   }, []);
 
@@ -131,26 +143,96 @@ const App: React.FC = () => {
     setAppState(AppState.GrammarHome);
   }, []);
 
-  const handleSelectReadingPart = useCallback((part: number) => {
-    setSelectedReadingPart(part);
-    setAppState(AppState.ReadingPartHome);
+  // Dictation Navigation Handlers
+  const handleSelectDictationTestSet = useCallback((testId: number) => {
+    setSelectedDictationTestId(testId);
+    setAppState(AppState.DictationPracticeSetup);
   }, []);
 
-  const handleSelectReadingTest = useCallback((part: number, testId: number) => {
-    const test = getReadingTest(part, testId);
-    setSelectedReadingTestData(test);
-    setAppState(AppState.ReadingTest);
+  const handleStartDictationPractice = useCallback((parts: number[]) => {
+    if (!selectedDictationTestId || parts.length === 0) {
+        handleGoHome();
+        return;
+    }
+
+    const testSet = allDictationTests.find(t => t.id === selectedDictationTestId);
+    if (!testSet) {
+        handleGoHome();
+        return;
+    }
+
+    const combinedExercises = getDictationExercisesForParts(selectedDictationTestId, parts);
+    const combinedTitle = `${testSet.title} - ${parts.map(p => `Part ${p}`).join(' & ')}`;
+    
+    const newTestData = { 
+        id: selectedDictationTestId, 
+        title: combinedTitle, 
+        exercises: combinedExercises
+    };
+
+    setSelectedDictationTestData(newTestData);
+    setAppState(AppState.DictationTest);
+  }, [selectedDictationTestId, handleGoHome]);
+
+  const handleBackToDictationPracticeHome = useCallback(() => {
+    setSelectedDictationTestId(null);
+    setAppState(AppState.DictationPracticeHome);
   }, []);
+  
+  const handleBackToDictationSetup = useCallback(() => {
+      setSelectedDictationTestData(null);
+      setAppState(AppState.DictationPracticeSetup);
+  }, []);
+  
+  // Reading Navigation Handlers
+  const handleSelectReadingTestSet = useCallback((testId: number) => {
+    setSelectedReadingTestId(testId);
+    setAppState(AppState.ReadingPracticeSetup);
+  }, []);
+
+  const handleStartReadingPractice = useCallback((parts: number[], timeLimit: number | null) => {
+      if (!selectedReadingTestId || parts.length === 0) {
+          handleGoHome();
+          return;
+      }
+  
+      const testSet = allReadingTests.find(t => t.id === selectedReadingTestId);
+      if (!testSet) {
+          handleGoHome();
+          return;
+      }
+  
+      const combinedPassages = parts.flatMap(partNum => {
+          const partData = getReadingTest(selectedReadingTestId, partNum);
+          return partData ? partData.passages : [];
+      });
+  
+      const combinedTitle = `${testSet.title} - ${parts.map(p => `Part ${p}`).join(' & ')}`;
+      
+      const newTestData: ReadingTestData = { 
+          id: selectedReadingTestId, 
+          title: combinedTitle, 
+          part: 0, // 0 signifies a custom mix
+          passages: combinedPassages 
+      };
+  
+      setSelectedReadingTestData(newTestData);
+      setSelectedReadingTimeLimit(timeLimit);
+      setAppState(AppState.ReadingTest);
+  }, [selectedReadingTestId, handleGoHome]);
+
 
   const handleBackToReadingPracticeHome = useCallback(() => {
-    setSelectedReadingPart(null);
+    setSelectedReadingTestId(null);
     setAppState(AppState.ReadingPracticeHome);
   }, []);
 
-  const handleBackToReadingPartHome = useCallback(() => {
-    setSelectedReadingTestData(null);
-    setAppState(AppState.ReadingPartHome);
+  const handleBackToReadingSetup = useCallback(() => {
+      setSelectedReadingTestData(null);
+      setSelectedReadingTimeLimit(null);
+      setAppState(AppState.ReadingPracticeSetup);
   }, []);
+
 
   // Vocabulary Navigation Handlers
   const handleSelectVocabularyPart = useCallback((partId: number) => {
@@ -244,21 +326,41 @@ const App: React.FC = () => {
 
   const renderContent = () => {
     switch (appState) {
-      case AppState.DictationHome:
-        return <DictationScreen currentUser={currentUser!} />;
+      case AppState.DictationPracticeHome:
+        return <DictationScreen currentUser={currentUser!} onSelectTestSet={handleSelectDictationTestSet} />;
+      case AppState.DictationPracticeSetup:
+        if (selectedDictationTestId) {
+            return <DictationPracticeSetupScreen 
+                testId={selectedDictationTestId}
+                onStartPractice={handleStartDictationPractice}
+                onBack={handleBackToDictationPracticeHome}
+            />
+        }
+        handleGoHome();
+        return null;
+      case AppState.DictationTest:
+        if (selectedDictationTestData) {
+            return <DictationTestScreen
+                testData={selectedDictationTestData}
+                currentUser={currentUser!}
+                onBack={handleBackToDictationSetup}
+            />
+        }
+        handleBackToDictationSetup();
+        return null;
       case AppState.ReadingPracticeHome:
-        return <ReadingPracticeScreen onSelectPart={handleSelectReadingPart} />;
-      case AppState.ReadingPartHome:
-        if (selectedReadingPart) {
-          return <ReadingPartScreen part={selectedReadingPart} onSelectTest={handleSelectReadingTest} onBack={handleBackToReadingPracticeHome} />;
+        return <ReadingPracticeScreen onSelectTestSet={handleSelectReadingTestSet} />;
+      case AppState.ReadingPracticeSetup:
+        if (selectedReadingTestId) {
+          return <ReadingPracticeSetupScreen testId={selectedReadingTestId} onStartPractice={handleStartReadingPractice} onBack={handleBackToReadingPracticeHome} />;
         }
         handleGoHome();
         return null;
       case AppState.ReadingTest:
         if (selectedReadingTestData) {
-          return <ReadingTestScreen testData={selectedReadingTestData} onBack={handleBackToReadingPartHome} currentUser={currentUser!} />;
+          return <ReadingTestScreen testData={selectedReadingTestData} onBack={handleBackToReadingSetup} currentUser={currentUser!} durationInSeconds={selectedReadingTimeLimit} />;
         }
-        handleBackToReadingPartHome();
+        handleBackToReadingSetup();
         return null;
       case AppState.GrammarHome:
         return <GrammarScreen onSelectTopic={handleNavigateToGrammarTopic} onStartRandomTest={handleStartRandomGrammarTest} />;
@@ -347,7 +449,7 @@ const App: React.FC = () => {
       default:
         return <PracticeHub 
           onNavigateToPracticeTest={() => setAppState(AppState.MiniTestHome)}
-          onNavigateToDictation={() => setAppState(AppState.DictationHome)}
+          onNavigateToDictation={() => setAppState(AppState.DictationPracticeHome)}
           onNavigateToReadingPractice={() => setAppState(AppState.ReadingPracticeHome)}
           onNavigateToGrammar={() => setAppState(AppState.GrammarHome)}
           onNavigateToVocabulary={() => setAppState(AppState.VocabularyHome)}
