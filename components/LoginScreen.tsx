@@ -23,18 +23,18 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess, users }) => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 space-y-8">
+    <div className="min-h-screen bg-slate-100 dark:bg-slate-900 flex items-center justify-center p-4">
+      <div className="max-w-md w-full bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8 space-y-8">
         <div className="text-center">
             <div className="flex items-center justify-center mb-4">
                 <LogoIcon className="h-12 w-12 text-blue-600" />
-                <h1 className="ml-3 text-3xl font-bold text-slate-800 tracking-tight">TOEIC Zone</h1>
+                <h1 className="ml-3 text-3xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">TOEIC Zone</h1>
             </div>
-            <h2 className="text-xl text-slate-600">Sign in to your account</h2>
+            <h2 className="text-xl text-slate-600 dark:text-slate-300">Sign in to your account</h2>
         </div>
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="username" className="text-sm font-bold text-slate-600 block">
+            <label htmlFor="username" className="text-sm font-bold text-slate-600 dark:text-slate-300 block">
               Username
             </label>
             <input
@@ -44,13 +44,13 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess, users }) => {
               required
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full mt-2 p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-black"
+              className="w-full mt-2 p-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-700 text-black dark:text-white"
               placeholder="Enter your username"
               autoComplete="username"
             />
           </div>
           <div>
-            <label htmlFor="password"  className="text-sm font-bold text-slate-600 block">
+            <label htmlFor="password"  className="text-sm font-bold text-slate-600 dark:text-slate-300 block">
               Password
             </label>
             <input
@@ -60,7 +60,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess, users }) => {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full mt-2 p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-black"
+              className="w-full mt-2 p-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-700 text-black dark:text-white"
               placeholder="Enter your password"
               autoComplete="current-password"
             />

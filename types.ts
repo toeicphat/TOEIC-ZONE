@@ -4,6 +4,14 @@ export interface User {
     password: string;
 }
 
+export interface UserSettings {
+    name: string;
+    email: string;
+    scoreTarget: number | string;
+    examDate: string;
+    darkMode: boolean;
+}
+
 export enum AppState {
     PracticeHub = 'PRACTICE_HUB',
     DictationPracticeHome = 'DICTATION_PRACTICE_HOME',
@@ -27,12 +35,12 @@ export enum AppState {
     WritingPart1 = 'WRITING_PART_1',
     WritingPart2 = 'WRITING_PART_2',
     WritingPart3 = 'WRITING_PART_3',
-    ChangePassword = 'CHANGE_PASSWORD',
     MyProgress = 'MY_PROGRESS',
     MiniTestHome = 'MINI_TEST_HOME',
     MiniTest = 'MINI_TEST',
     MiniTestResults = 'MINI_TEST_RESULTS',
     StudentManagement = 'STUDENT_MANAGEMENT',
+    Settings = 'SETTINGS',
 }
 
 export type QuestionOption = 'A' | 'B' | 'C' | 'D';

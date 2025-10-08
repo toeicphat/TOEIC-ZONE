@@ -14,13 +14,9 @@ const initialProgress: UserProgress = {
 
 export const getProgress = (username: string): UserProgress => {
     try {
-        const storedProgress = localStorage.getItem(getProgressStorageKey(username));
-        if (storedProgress) {
-            const parsed = JSON.parse(storedProgress);
-            // Ensure all categories exist to prevent errors if the data structure changes
-            return { ...initialProgress, ...parsed };
-        }
-        return { ...initialProgress };
+        const storageKey = getProgressStorageKey(username);
+        const storedProgress = localStorage.getItem(storageKey);
+        return storedProgress ? { ...initialProgress, ...JSON.parse(storedProgress) } : { ...initialProgress };
     } catch (error) {
         console.error("Error reading progress from localStorage", error);
         return { ...initialProgress };
@@ -39,7 +35,7 @@ export const addTestResult = (username: string, category: ProgressCategory, resu
     const userProgress = getProgress(username);
     
     // Keep only the last 20 results per category to prevent localStorage from getting too big
-    const updatedCategoryResults = [result, ...userProgress[category]].slice(0, 20);
+    const updatedCategoryResults = [result, ...(userProgress[category] || [])].slice(0, 20);
     
     const updatedProgress: UserProgress = {
         ...userProgress,

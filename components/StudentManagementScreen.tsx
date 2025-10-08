@@ -50,7 +50,7 @@ const StudentManagementScreen: React.FC<StudentManagementScreenProps> = ({ users
         setIsLoading(false);
     }, [fetchActivities]);
     
-    // Auto-refresh when the tab becomes visible
+    // Auto-refresh when the tab becomes visible or focused
     useEffect(() => {
         const handleVisibilityChange = () => {
             if (document.visibilityState === 'visible') {
@@ -58,9 +58,11 @@ const StudentManagementScreen: React.FC<StudentManagementScreenProps> = ({ users
             }
         };
 
+        window.addEventListener('focus', handleRefresh);
         document.addEventListener('visibilitychange', handleVisibilityChange);
 
         return () => {
+            window.removeEventListener('focus', handleRefresh);
             document.removeEventListener('visibilitychange', handleVisibilityChange);
         };
     }, [handleRefresh]);

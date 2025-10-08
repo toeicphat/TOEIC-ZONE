@@ -21,16 +21,17 @@ import WritingPart2Screen from './components/WritingPart2Screen';
 import WritingPart3Screen from './components/WritingPart3Screen';
 import StatsFooter from './components/StatsFooter';
 import LoginScreen from './components/LoginScreen';
-import ChangePasswordScreen from './components/ChangePasswordScreen';
 import MyProgressScreen from './components/MyProgressScreen';
 import StudentManagementScreen from './components/StudentManagementScreen';
 import HomeScreen from './components/HomeScreen';
 import TestScreen from './components/TestScreen';
 import ResultsScreen from './components/ResultsScreen';
-import { AppState, ReadingTestData, VocabularyTest, VocabularyPart, User, TestData, UserAnswers, LibraryDictationExercise } from './types';
+import SettingsScreen from './components/SettingsScreen';
+import { AppState, ReadingTestData, VocabularyTest, VocabularyPart, User, TestData, UserAnswers, LibraryDictationExercise, UserSettings } from './types';
 import { getReadingTest, allReadingTests } from './services/readingLibrary';
 import { getVocabularyPart, getVocabularyTest } from './services/vocabularyLibrary';
 import { addTestResult } from './services/progressService';
+import { getSettings, saveSettings } from './services/settingsService';
 import { LogoIcon } from './components/icons';
 import { allDictationTests, getDictationExercisesForParts } from './services/dictationLibrary';
 import DictationPracticeSetupScreen from './components/DictationPracticeSetupScreen';
@@ -41,7 +42,7 @@ const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([
     { username: 'tester2', password: '123456' },
     { username: 'admin', password: 'phattoeic' },
-    { username: 'hongquyen22102004@gmail.com', password: 'thidautoeic' },
+    { username: 'thidautoeic', password: 'thidautoeic' },
     { username: 'myquynh070404@gmail.com', password: 'thidautoeic' },
     { username: 'ltrieuvy181104@gmail.com', password: 'thidautoeic' },
     { username: 'hoangphuctayninh1708@gmail.com', password: 'thidautoeic' },
@@ -56,6 +57,7 @@ const App: React.FC = () => {
   ]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [appState, setAppState] = useState<AppState>(AppState.PracticeHub);
+  const [userSettings, setUserSettings] = useState<UserSettings | null>(null);
   
   // Grammar State
   const [selectedGrammarTopic, setSelectedGrammarTopic] = useState<string | null>(null);
@@ -91,12 +93,22 @@ const App: React.FC = () => {
   const handleLoginSuccess = useCallback((user: User) => {
     setIsAuthenticated(true);
     setCurrentUser(user);
+    setUserSettings(getSettings(user.username));
     setAppState(AppState.PracticeHub);
   }, []);
+  
+  useEffect(() => {
+    if (userSettings?.darkMode) {
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
+    }
+  }, [userSettings?.darkMode]);
 
   const handleLogout = useCallback(() => {
     setIsAuthenticated(false);
     setCurrentUser(null);
+    setUserSettings(null);
   }, []);
 
   const handleGoHome = useCallback(() => {
@@ -307,10 +319,13 @@ const App: React.FC = () => {
         setAppState(AppState.WritingPracticeHome);
     }, []);
 
-  // Password Change Handlers
-  const handleNavigateToChangePassword = useCallback(() => {
-    setAppState(AppState.ChangePassword);
-  }, []);
+    const handleSettingsChange = useCallback((newSettings: Partial<UserSettings>) => {
+        if (currentUser && userSettings) {
+            const updatedSettings = { ...userSettings, ...newSettings };
+            setUserSettings(updatedSettings);
+            saveSettings(currentUser.username, updatedSettings);
+        }
+    }, [currentUser, userSettings]);
 
   const handlePasswordChanged = useCallback((newPassword: string) => {
     if (currentUser) {
@@ -324,6 +339,10 @@ const App: React.FC = () => {
   const handleNavigateToMyProgress = useCallback(() => {
     setSelectedStudent(null);
     setAppState(AppState.MyProgress);
+  }, []);
+  
+  const handleNavigateToSettings = useCallback(() => {
+    setAppState(AppState.Settings);
   }, []);
 
   const handleNavigateToStudentManagement = useCallback(() => {
@@ -424,9 +443,15 @@ const App: React.FC = () => {
         case AppState.WritingPart3:
             if (selectedWritingPart === 3) return <WritingPart3Screen onBack={handleBackToWritingHome} currentUser={currentUser!} />;
             handleBackToWritingHome(); return null;
-      case AppState.ChangePassword:
-        if (currentUser) {
-            return <ChangePasswordScreen currentPasswordValue={currentUser.password} onPasswordChanged={handlePasswordChanged} onBack={handleGoHome} />;
+      case AppState.Settings:
+        if (currentUser && userSettings) {
+            return <SettingsScreen
+                currentUser={currentUser}
+                userSettings={userSettings}
+                onSettingsChange={handleSettingsChange}
+                onPasswordChanged={handlePasswordChanged}
+                onBack={handleGoHome}
+            />;
         }
         handleGoHome();
         return null;
@@ -476,18 +501,18 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 font-sans text-slate-800 flex flex-col">
-      <header className="bg-white shadow-md sticky top-0 z-10 border-b border-slate-200">
+    <div className="min-h-screen bg-slate-100 dark:bg-slate-900 font-sans text-slate-800 dark:text-slate-200 flex flex-col">
+      <header className="bg-white dark:bg-slate-800 shadow-md sticky top-0 z-10 border-b border-slate-200 dark:border-slate-700">
         <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center cursor-pointer" onClick={handleGoHome}>
               <LogoIcon className="h-8 w-8 text-blue-600" />
-              <h1 className="ml-3 text-2xl font-bold text-slate-800 tracking-tight">TOEIC Zone with Mr. Phat</h1>
+              <h1 className="ml-3 text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">TOEIC Zone with Mr. Phat</h1>
             </div>
             <div className="flex items-center space-x-2 md:space-x-4">
                 <button 
                     onClick={handleGoHome}
-                    className="font-semibold text-slate-600 hover:text-blue-600 transition-colors"
+                    className="font-semibold text-slate-600 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400 transition-colors"
                     aria-label="Go to home page"
                 >
                     Home
@@ -495,7 +520,7 @@ const App: React.FC = () => {
                 {currentUser.username === 'admin' && (
                     <button
                         onClick={handleNavigateToStudentManagement}
-                        className="font-semibold text-slate-600 hover:text-blue-600 transition-colors"
+                        className="font-semibold text-slate-600 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400 transition-colors"
                         aria-label="Manage students"
                     >
                         Quản lý học viên
@@ -503,21 +528,21 @@ const App: React.FC = () => {
                 )}
                  <button
                     onClick={handleNavigateToMyProgress}
-                    className="font-semibold text-slate-600 hover:text-blue-600 transition-colors"
+                    className="font-semibold text-slate-600 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400 transition-colors"
                     aria-label="View my progress"
                 >
                     Kết quả học của tôi
                 </button>
                 <button
-                    onClick={handleNavigateToChangePassword}
-                    className="font-semibold text-slate-600 hover:text-blue-600 transition-colors"
-                    aria-label="Change password"
+                    onClick={handleNavigateToSettings}
+                    className="font-semibold text-slate-600 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400 transition-colors"
+                    aria-label="Settings"
                 >
-                    Change Password
+                    Settings
                 </button>
                 <button
                     onClick={handleLogout}
-                    className="font-semibold text-slate-600 hover:text-blue-600 transition-colors"
+                    className="font-semibold text-slate-600 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400 transition-colors"
                     aria-label="Log out"
                 >
                     Log Out

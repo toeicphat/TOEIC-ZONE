@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { User, UserProgress, TestResult, ProgressCategory } from '../types';
+import { User, UserProgress, TestResult, ProgressCategory, UserSettings } from '../types';
 import { getProgress, clearProgress } from '../services/progressService';
-import { BookOpenIcon, BrainIcon, HeadphoneIcon, PuzzleIcon, TypeIcon, TrophyIcon, TrashIcon, ArrowLeftIcon } from './icons';
+import { getSettings } from '../services/settingsService';
+import { BookOpenIcon, BrainIcon, HeadphoneIcon, PuzzleIcon, TypeIcon, TrophyIcon, TrashIcon, ArrowLeftIcon, TargetIcon, CalendarIcon } from './icons';
 import { LoadingIcon } from './icons';
 
 interface MyProgressScreenProps {
@@ -26,7 +27,9 @@ const ResultRow: React.FC<{ result: TestResult }> = ({ result }) => {
 
     return (
         <tr className="border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50">
-            <td className="p-3 text-slate-700 dark:text-slate-300">{result.title}</td>
+            <td className="p-3 text-slate-700 dark:text-slate-300">
+                {result.title}
+            </td>
             <td className="p-3 text-center font-semibold text-slate-800 dark:text-slate-200">{result.score} / {result.total}</td>
             <td className="p-3 text-center font-bold text-blue-600 dark:text-blue-400">{percentage}%</td>
             <td className="p-3 text-right text-sm text-slate-500 dark:text-slate-400">{date}</td>
@@ -78,9 +81,11 @@ const ProgressCategoryCard: React.FC<{ category: ProgressCategory; results: Test
 
 const MyProgressScreen: React.FC<MyProgressScreenProps> = ({ viewingUser, onBack, isOwnProgress }) => {
     const [progress, setProgress] = useState<UserProgress | null>(null);
+    const [settings, setSettings] = useState<UserSettings | null>(null);
 
     useEffect(() => {
         setProgress(getProgress(viewingUser.username));
+        setSettings(getSettings(viewingUser.username));
     }, [viewingUser.username]);
 
     const handleClearProgress = () => {
@@ -90,7 +95,7 @@ const MyProgressScreen: React.FC<MyProgressScreenProps> = ({ viewingUser, onBack
         }
     };
 
-    if (!progress) {
+    if (!progress || !settings) {
         return (
             <div className="flex justify-center items-center p-12">
                 <LoadingIcon className="animate-spin h-10 w-10 text-blue-600" />
@@ -99,6 +104,17 @@ const MyProgressScreen: React.FC<MyProgressScreenProps> = ({ viewingUser, onBack
     }
 
     const allCategories: ProgressCategory[] = ['miniTest', 'reading', 'grammar', 'vocabulary', 'dictation', 'speaking', 'writing'];
+    
+    const formatDate = (dateString: string | undefined) => {
+        if (!dateString) return 'Not Set';
+        // Add time to avoid timezone issues. The input is YYYY-MM-DD.
+        const date = new Date(dateString + 'T00:00:00');
+        return date.toLocaleDateString(undefined, {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+        });
+    };
 
     return (
         <div className="container mx-auto px-4 py-12">
@@ -107,6 +123,7 @@ const MyProgressScreen: React.FC<MyProgressScreenProps> = ({ viewingUser, onBack
                     <ArrowLeftIcon className="h-5 w-5 mr-2" />
                     Back
                 </button>
+
                 <div className="flex flex-col sm:flex-row justify-between items-center mb-10">
                     <div className="text-center sm:text-left mb-4 sm:mb-0">
                         <h2 className="text-4xl font-extrabold text-slate-900 sm:text-5xl dark:text-white">
@@ -124,6 +141,29 @@ const MyProgressScreen: React.FC<MyProgressScreenProps> = ({ viewingUser, onBack
                         Clear All Progress for this User
                     </button>
                 </div>
+
+                {(settings.scoreTarget || settings.examDate) && (
+                    <div className="mb-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {settings.scoreTarget && (
+                            <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 flex items-center space-x-4">
+                                <TargetIcon className="h-10 w-10 text-green-500" />
+                                <div>
+                                    <p className="text-slate-500 dark:text-slate-400 font-semibold">Mục tiêu điểm số</p>
+                                    <p className="text-3xl font-bold text-slate-800 dark:text-slate-100">{settings.scoreTarget}</p>
+                                </div>
+                            </div>
+                        )}
+                        {settings.examDate && (
+                             <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 flex items-center space-x-4">
+                                <CalendarIcon className="h-10 w-10 text-purple-500" />
+                                <div>
+                                    <p className="text-slate-500 dark:text-slate-400 font-semibold">Ngày thi dự kiến</p>
+                                    <p className="text-3xl font-bold text-slate-800 dark:text-slate-100">{formatDate(settings.examDate)}</p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
                 
                 <div className="space-y-8">
                     {allCategories.map(category => (
