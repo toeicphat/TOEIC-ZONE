@@ -1,6 +1,36 @@
-import { UserProgress, TestResult, ProgressCategory } from '../types';
+import { UserProgress, TestResult, ProgressCategory, API_BASE_URL } from '../types';
+import { mockFetch } from './apiMock';
 
-const getProgressStorageKey = (username: string): string => `toeicAppProgress_${username}`;
+/*
+--- BACKEND API NOTE ---
+The following functions simulate calls to a backend API. The backend should be responsible for:
+1.  Authenticating users via a token (e.g., JWT).
+2.  Storing user progress in a persistent database (e.g., PostgreSQL, MongoDB).
+3.  Ensuring that users can only access and modify their own data.
+
+Example Database Schema (Progress): A table where each row represents a single test result.
+- id (PK)
+- user_id (FK to users table, linking to the user)
+- category (string, e.g., 'reading', 'grammar')
+- test_id (string, a unique identifier for the test instance)
+- title (string)
+- score (integer)
+- total (integer)
+- date (timestamp)
+
+API Endpoints:
+- GET /api/progress/:username -> Returns all progress for a user, grouped by category.
+- POST /api/progress/result -> Adds a new test result for the authenticated user.
+- DELETE /api/progress/:username -> Deletes all progress for a user (admin-only or user-confirmed).
+*/
+
+const getAuthToken = (): string | null => {
+    try {
+        return localStorage.getItem('authToken');
+    } catch {
+        return null;
+    }
+}
 
 const initialProgress: UserProgress = {
     miniTest: [],
@@ -12,60 +42,87 @@ const initialProgress: UserProgress = {
     writing: [],
 };
 
-export const getProgress = (username: string): UserProgress => {
+export const getProgress = async (username: string): Promise<UserProgress> => {
+    const token = getAuthToken();
+    if (!token) return { ...initialProgress };
+
+    // In a real app, the username would be derived from the token on the backend.
+    // We pass it here to simulate the correct backend logic.
     try {
-        const storageKey = getProgressStorageKey(username);
-        const storedProgress = localStorage.getItem(storageKey);
-        return storedProgress ? { ...initialProgress, ...JSON.parse(storedProgress) } : { ...initialProgress };
+        console.log(`[CLIENT] Fetching progress for ${username}`);
+        const response = await mockFetch(`${API_BASE_URL}/api/progress/${username}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        if (!response.ok) {
+            console.error(`API Error fetching progress: ${response.status}`);
+            return { ...initialProgress };
+        }
+        const progress = await response.json();
+        // The backend should return data in the UserProgress format.
+        return { ...initialProgress, ...progress };
     } catch (error) {
-        console.error("Error reading progress from localStorage", error);
+        console.error("[CLIENT] Network error fetching progress. This is expected in a simulated environment. Returning initial progress.", error);
         return { ...initialProgress };
     }
 };
 
-export const saveProgress = (username: string, progress: UserProgress): void => {
+export const addTestResult = async (username: string, category: ProgressCategory, result: TestResult): Promise<void> => {
+    const token = getAuthToken();
+    if (!token) return;
+
     try {
-        localStorage.setItem(getProgressStorageKey(username), JSON.stringify(progress));
+        console.log(`[CLIENT] Adding test result for ${username} in category ${category}`);
+        const response = await mockFetch(`${API_BASE_URL}/api/progress/result`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ username, category, result })
+        });
+        if (!response.ok) {
+            console.error(`API Error adding test result: ${response.status}`);
+        }
     } catch (error) {
-        console.error("Error saving progress to localStorage", error);
+        console.error("[CLIENT] Network error adding test result. This is expected in a simulated environment.", error);
     }
 };
 
-export const addTestResult = (username: string, category: ProgressCategory, result: TestResult): void => {
-    const userProgress = getProgress(username);
-    
-    // Keep only the last 20 results per category to prevent localStorage from getting too big
-    const updatedCategoryResults = [result, ...(userProgress[category] || [])].slice(0, 20);
-    
-    const updatedProgress: UserProgress = {
-        ...userProgress,
-        [category]: updatedCategoryResults,
-    };
-    
-    saveProgress(username, updatedProgress);
+export const clearProgress = async (username: string): Promise<void> => {
+    const token = getAuthToken();
+    if (!token) return;
+
+    try {
+        console.log(`[CLIENT] Clearing all progress for ${username}`);
+        const response = await mockFetch(`${API_BASE_URL}/api/progress/${username}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        if (!response.ok) {
+            console.error(`API Error clearing progress: ${response.status}`);
+        }
+    } catch (error) {
+        console.error("[CLIENT] Network error clearing progress. This is expected in a simulated environment.", error);
+    }
 };
 
-export const clearProgress = (username: string): void => {
-    try {
-        localStorage.removeItem(getProgressStorageKey(username));
-    } catch (error) {
-        console.error("Error clearing progress from localStorage", error);
-    }
-}
-
-export const getLatestActivityForAllCategories = (username: string): TestResult | null => {
-    const userProgress = getProgress(username);
-    if (!userProgress) {
+// This function is now intended for client-side use after data has been fetched,
+// primarily in the admin dashboard.
+export const getLatestActivity = (progress: UserProgress): TestResult | null => {
+    if (!progress) {
         return null;
     }
 
-    const allResults: TestResult[] = Object.values(userProgress).flat();
+    const allResults: TestResult[] = Object.values(progress).flat();
 
     if (allResults.length === 0) {
         return null;
     }
 
-    // Sort by date descending to find the latest activity
     allResults.sort((a, b) => b.date - a.date);
 
     return allResults[0];

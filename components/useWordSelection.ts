@@ -1,3 +1,4 @@
+
 import { useState, useCallback, RefObject, useEffect } from 'react';
 import { getWordDefinition } from '../services/geminiService';
 import { addOrUpdateVocabularyWord } from '../services/vocabularyService';
@@ -62,23 +63,29 @@ export const useWordSelection = (containerRef: RefObject<HTMLElement>) => {
         setSelectionPopup(null);
         setToastMessage(`Saving "${word}"...`);
 
-        const definition = await getWordDefinition(word, context);
+        try {
+            const definition = await getWordDefinition(word, context);
 
-        if (definition && !definition.toLowerCase().includes("could not retrieve")) {
-            const newWord: VocabularyWord = {
-                id: word.toLowerCase(),
-                word: word,
-                definition: definition,
-                srsLevel: 0,
-                nextReviewDate: Date.now(),
-                lastReviewedDate: null,
-                sourceText: context,
-            };
-            addOrUpdateVocabularyWord(newWord);
-            setToastMessage(`"${word}" saved successfully!`);
-        } else {
-            setToastMessage(`Could not save "${word}". Definition not found.`);
+            if (definition && !definition.toLowerCase().includes("could not retrieve")) {
+                const newWord: VocabularyWord = {
+                    id: word.toLowerCase(),
+                    word: word,
+                    definition: definition,
+                    srsLevel: 0,
+                    nextReviewDate: Date.now(),
+                    lastReviewedDate: null,
+                    sourceText: context,
+                };
+                await addOrUpdateVocabularyWord(newWord);
+                setToastMessage(`"${word}" saved successfully!`);
+            } else {
+                setToastMessage(`Could not save "${word}". Definition not found.`);
+            }
+        } catch (error) {
+            console.error("Error saving word:", error);
+            setToastMessage(`Failed to save "${word}".`);
         }
+
 
         const timer = setTimeout(() => setToastMessage(null), 3000);
         return () => clearTimeout(timer);

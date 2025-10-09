@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { User, UserProgress, TestResult, ProgressCategory, UserSettings } from '../types';
 import { getProgress, clearProgress } from '../services/progressService';
@@ -82,20 +83,31 @@ const ProgressCategoryCard: React.FC<{ category: ProgressCategory; results: Test
 const MyProgressScreen: React.FC<MyProgressScreenProps> = ({ viewingUser, onBack, isOwnProgress }) => {
     const [progress, setProgress] = useState<UserProgress | null>(null);
     const [settings, setSettings] = useState<UserSettings | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        setProgress(getProgress(viewingUser.username));
-        setSettings(getSettings(viewingUser.username));
+        const loadData = async () => {
+            setIsLoading(true);
+            const progressData = await getProgress(viewingUser.username);
+            const settingsData = await getSettings(viewingUser.username);
+            setProgress(progressData);
+            setSettings(settingsData);
+            setIsLoading(false);
+        };
+        loadData();
     }, [viewingUser.username]);
 
-    const handleClearProgress = () => {
+    const handleClearProgress = async () => {
         if (window.confirm(`Are you sure you want to delete all progress for ${viewingUser.username}? This action cannot be undone.`)) {
-            clearProgress(viewingUser.username);
-            setProgress(getProgress(viewingUser.username)); // Re-fetch to show empty state
+            setIsLoading(true);
+            await clearProgress(viewingUser.username);
+            const data = await getProgress(viewingUser.username);
+            setProgress(data);
+            setIsLoading(false);
         }
     };
 
-    if (!progress || !settings) {
+    if (isLoading || !progress || !settings) {
         return (
             <div className="flex justify-center items-center p-12">
                 <LoadingIcon className="animate-spin h-10 w-10 text-blue-600" />

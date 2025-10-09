@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ArrowLeftIcon, LoadingIcon, RefreshIcon, TrophyIcon } from './icons';
+import { ArrowLeftIcon, LoadingIcon, RefreshIcon, TrophyIcon, LightBulbIcon, XCircleIcon, QuestionMarkCircleIcon } from './icons';
 import { generateWritingPart2Tasks, evaluateWritingPart2 } from '../services/geminiService';
 import { WritingPart2Task, WritingPart2EvaluationResult, WritingPart2SingleEvaluation, User } from '../types';
 import Timer from './Timer';
@@ -14,6 +14,23 @@ interface WritingPart2ScreenProps {
     currentUser: User;
 }
 
+const HintBox: React.FC<{onClose: () => void}> = ({onClose}) => (
+    <div className="bg-blue-50 dark:bg-slate-800/50 border-l-4 border-blue-500 text-blue-800 dark:text-blue-300 p-4 rounded-r-lg mb-6 relative">
+        <div className="flex">
+            <div className="flex-shrink-0">
+                <LightBulbIcon className="h-6 w-6 text-blue-500" />
+            </div>
+            <div className="ml-3">
+                <h3 className="text-lg font-bold">Pro Tip: Respond to an Email</h3>
+                <p className="text-sm mt-1">Make sure to address all parts of the original email. Structure your response like a real email with a greeting, body, and closing. Use a professional and polite tone throughout your writing.</p>
+            </div>
+        </div>
+        <button onClick={onClose} className="absolute top-2 right-2 p-1 rounded-full hover:bg-blue-100 dark:hover:bg-slate-700" aria-label="Close hint">
+            <XCircleIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+        </button>
+    </div>
+);
+
 const WritingPart2Screen: React.FC<WritingPart2ScreenProps> = ({ onBack, currentUser }) => {
     const [practiceState, setPracticeState] = useState<PracticeState>('idle');
     const [tasks, setTasks] = useState<WritingPart2Task | null>(null);
@@ -21,6 +38,7 @@ const WritingPart2Screen: React.FC<WritingPart2ScreenProps> = ({ onBack, current
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // 0 for Q6, 1 for Q7
     const [evaluationResult, setEvaluationResult] = useState<WritingPart2EvaluationResult | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [showHint, setShowHint] = useState(true);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     const wordCount = userAnswers[currentQuestionIndex]?.trim().split(/\s+/).filter(Boolean).length || 0;
@@ -56,6 +74,7 @@ const WritingPart2Screen: React.FC<WritingPart2ScreenProps> = ({ onBack, current
         setPracticeState('generating');
         setError(null);
         setEvaluationResult(null);
+        setShowHint(true);
         try {
             const generatedTasks = await generateWritingPart2Tasks();
             if (generatedTasks) {
@@ -129,31 +148,34 @@ const WritingPart2Screen: React.FC<WritingPart2ScreenProps> = ({ onBack, current
         if (!currentTask) return null;
 
         return (
-            <div className="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">Question {currentQuestionIndex + 6} of 7</h2>
-                    <Timer initialTime={TOTAL_TIME} onTimeUp={handleSubmitPractice} />
+            <>
+                {showHint && <HintBox onClose={() => setShowHint(false)} />}
+                <div className="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">Question {currentQuestionIndex + 6} of 7</h2>
+                        <Timer initialTime={TOTAL_TIME} onTimeUp={handleSubmitPractice} />
+                    </div>
+                    <div className="mb-4 p-4 bg-slate-100 dark:bg-slate-700/50 rounded-lg border dark:border-slate-600">
+                        <h3 className="font-bold text-slate-800 dark:text-slate-200">{currentTask.title}</h3>
+                        <p className="text-slate-700 dark:text-slate-300 whitespace-pre-wrap mt-2">{currentTask.requestText}</p>
+                    </div>
+                    <div>
+                        <textarea
+                            ref={textareaRef}
+                            value={userAnswers[currentQuestionIndex]}
+                            onChange={handleAnswerChange}
+                            placeholder="Write your response here..."
+                            className="w-full h-64 p-4 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-900 dark:text-white"
+                        />
+                         <div className="flex justify-between items-center mt-2">
+                            <p className="text-sm text-slate-500 dark:text-slate-400">Word count: {wordCount}</p>
+                            <button onClick={handleNextQuestion} className="px-8 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-colors">
+                                {currentQuestionIndex === 0 ? "Next" : "Submit"}
+                            </button>
+                         </div>
+                    </div>
                 </div>
-                <div className="mb-4 p-4 bg-slate-100 dark:bg-slate-700/50 rounded-lg border dark:border-slate-600">
-                    <h3 className="font-bold text-slate-800 dark:text-slate-200">{currentTask.title}</h3>
-                    <p className="text-slate-700 dark:text-slate-300 whitespace-pre-wrap mt-2">{currentTask.requestText}</p>
-                </div>
-                <div>
-                    <textarea
-                        ref={textareaRef}
-                        value={userAnswers[currentQuestionIndex]}
-                        onChange={handleAnswerChange}
-                        placeholder="Write your response here..."
-                        className="w-full h-64 p-4 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-900 dark:text-white"
-                    />
-                     <div className="flex justify-between items-center mt-2">
-                        <p className="text-sm text-slate-500 dark:text-slate-400">Word count: {wordCount}</p>
-                        <button onClick={handleNextQuestion} className="px-8 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-colors">
-                            {currentQuestionIndex === 0 ? "Next" : "Submit"}
-                        </button>
-                     </div>
-                </div>
-            </div>
+            </>
         );
     };
 
@@ -247,6 +269,11 @@ const WritingPart2Screen: React.FC<WritingPart2ScreenProps> = ({ onBack, current
     return (
         <div className="container mx-auto px-4 py-12">
             <div className="max-w-4xl mx-auto">
+                 {!showHint && practiceState === 'practicing' && (
+                    <button onClick={() => setShowHint(true)} className="fixed top-24 right-4 z-50 p-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700" aria-label="Show hint">
+                        <QuestionMarkCircleIcon className="h-6 w-6" />
+                    </button>
+                )}
                 <button onClick={onBack} className="mb-8 inline-flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-semibold transition-colors">
                     <ArrowLeftIcon className="h-5 w-5 mr-2" />
                     Back to Writing Practice

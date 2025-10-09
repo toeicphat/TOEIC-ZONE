@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { VocabularyTest, VocabItem, VocabularyWord, User } from '../types';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { VocabularyTest, VocabItem, User, TranslationEvaluationResult } from '../types';
 import { updateWordSrsLevel } from '../services/vocabularyService';
-import { BookOpenIcon, BrainIcon, ShuffleIcon, ArrowLeftIcon, ArrowRightIcon, CheckCircleIcon, XCircleIcon, GridIcon, PuzzleIcon, TypeIcon, LightBulbIcon, HeadphoneIcon, TargetIcon, LinkIcon } from './icons';
+import { generateSentenceForTranslation, evaluateTranslation } from '../services/geminiService';
+import { BookOpenIcon, BrainIcon, ShuffleIcon, ArrowLeftIcon, ArrowRightIcon, CheckCircleIcon, XCircleIcon, GridIcon, PuzzleIcon, TypeIcon, LightBulbIcon, HeadphoneIcon, TargetIcon, LinkIcon, FlipIcon, SparklesIcon, LoadingIcon, RefreshIcon, QuestionMarkCircleIcon } from './icons';
 import AudioPlayer from './AudioPlayer';
 import { addTestResult } from '../services/progressService';
 
-type StudyMode = 'flashcards' | 'quiz' | 'matching_game' | 'scrambler' | 'spelling_recall' | 'audio_dictation' | 'hangman' | 'definition_match';
+type StudyMode = 'flashcards' | 'quiz' | 'matching_game' | 'scrambler' | 'spelling_recall' | 'audio_dictation' | 'definition_match' | 'listening_translation';
 
 interface QuizQuestion {
     questionText: string; // The definition
@@ -36,31 +37,45 @@ interface AudioDictationQuestion {
     meaningRevealed: boolean;
 }
 
-interface HangmanQuestion {
-    original: VocabItem;
-    letters: string[];
-    guessedCorrectly: Set<string>;
-    guessedIncorrectly: Set<string>;
-    status: 'playing' | 'won' | 'lost';
-}
-
-
 const shuffleArray = <T,>(array: T[]): T[] => {
     return [...array].sort(() => Math.random() - 0.5);
 };
 
 const WORDS_PER_MATCHING_TURN = 6;
-
 type MatchingItem = { item: VocabItem; type: 'word' | 'definition' };
 
-// New Definition Match types
 const WORDS_PER_DMATCH_TURN = 8;
 type DMatchItemType = { item: VocabItem; type: 'word' | 'definition' };
 
+const HintBox: React.FC<{onClose: () => void}> = ({onClose}) => (
+    <div className="bg-blue-50 dark:bg-slate-800/50 border-l-4 border-blue-500 text-blue-800 dark:text-blue-300 p-4 rounded-r-lg mb-6 relative">
+        <div className="flex">
+            <div className="flex-shrink-0">
+                <LightBulbIcon className="h-6 w-6 text-blue-500" />
+            </div>
+            <div className="ml-3">
+                <h3 className="text-lg font-bold">Pro Tip: Listen & Translate</h3>
+                <p className="text-sm mt-1">Listen to the sentence multiple times to catch the rhythm and key words. Translate the meaning, not just word-for-word. It's okay if your translation isn't perfect; the AI will give you feedback on grammar and vocabulary choice.</p>
+            </div>
+        </div>
+        <button onClick={onClose} className="absolute top-2 right-2 p-1 rounded-full hover:bg-blue-100 dark:hover:bg-slate-700" aria-label="Close hint">
+            <XCircleIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+        </button>
+    </div>
+);
+
 
 const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => void, currentUser: User }> = ({ testData, onBack, currentUser }) => {
+    const wordsForSession = useMemo(() => {
+        const words = testData.words;
+        if (words.length > 50) {
+            return shuffleArray(words).slice(0, 50);
+        }
+        return words;
+    }, [testData.words]);
+
     const [mode, setMode] = useState<StudyMode>('flashcards');
-    const [deck, setDeck] = useState<VocabItem[]>(testData.words);
+    const [deck, setDeck] = useState<VocabItem[]>(wordsForSession);
     const [currentCardIndex, setCurrentCardIndex] = useState(0);
     const [isFlipped, setIsFlipped] = useState(false);
     const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -99,13 +114,6 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
     const [audioDictationScore, setAudioDictationScore] = useState(0);
     const [isAudioDictationSessionFinished, setIsAudioDictationSessionFinished] = useState(false);
 
-    // State for Hangman
-    const [hangmanQuestions, setHangmanQuestions] = useState<HangmanQuestion[]>([]);
-    const [currentHangmanIndex, setCurrentHangmanIndex] = useState(0);
-    const [isHangmanSessionFinished, setIsHangmanSessionFinished] = useState(false);
-    const [hangmanScore, setHangmanScore] = useState(0);
-    const MAX_INCORRECT_GUESSES = 6;
-
     // State for Definition Match
     const [fullDMatchDeck, setFullDMatchDeck] = useState<VocabItem[]>([]);
     const [dMatchTurn, setDMatchTurn] = useState(0);
@@ -117,11 +125,19 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
     const [isDMatchGameFinished, setIsDMatchGameFinished] = useState(false);
     const [isDMatchTurnFinished, setIsDMatchTurnFinished] = useState(false);
 
+    // State for Listening & Translation
+    type ListeningTranslationState = 'generating' | 'answering' | 'evaluating' | 'result';
+    const [ltState, setLtState] = useState<ListeningTranslationState>('generating');
+    const [ltError, setLtError] = useState<string | null>(null);
+    const [originalSentence, setOriginalSentence] = useState<string>('');
+    const [userTranslation, setUserTranslation] = useState<string>('');
+    const [ltEvaluation, setLtEvaluation] = useState<TranslationEvaluationResult | null>(null);
+    const [showLtHint, setShowLtHint] = useState(true);
 
     const generateQuizQuestions = useCallback(() => {
-        const shuffledWords = shuffleArray(testData.words);
+        const shuffledWords = shuffleArray(wordsForSession);
         const questions = shuffledWords.map((correctItem: VocabItem) => {
-            const distractors = shuffleArray(testData.words.filter((w: VocabItem) => w.word !== correctItem.word)).slice(0, 3).map((d: VocabItem) => d.word);
+            const distractors = shuffleArray(wordsForSession.filter((w: VocabItem) => w.word !== correctItem.word)).slice(0, 3).map((d: VocabItem) => d.word);
             const options = shuffleArray([correctItem.word, ...distractors]);
             return {
                 questionText: correctItem.definition,
@@ -132,9 +148,9 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
             };
         });
         setQuizQuestions(questions);
-    }, [testData.words]);
+    }, [wordsForSession]);
     
-    const restartQuizSession = useCallback(() => {
+    const startQuizSession = useCallback(() => {
         generateQuizQuestions();
         setCurrentQuizIndex(0);
         setScore(0);
@@ -165,10 +181,10 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
     }, []);
 
     const startMatchingGame = useCallback(() => {
-        const shuffledDeck = shuffleArray(testData.words);
+        const shuffledDeck = shuffleArray(wordsForSession);
         setFullMatchingDeck(shuffledDeck);
         setupMatchingTurn(shuffledDeck, 0);
-    }, [testData.words, setupMatchingTurn]);
+    }, [wordsForSession, setupMatchingTurn]);
     
     const scrambleWord = (word: string): string => {
         if (word.length <= 1) return word;
@@ -182,7 +198,7 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
     };
 
     const generateScramblerQuestions = useCallback(() => {
-        const shuffledWords = shuffleArray(testData.words);
+        const shuffledWords = shuffleArray(wordsForSession);
         const questions = shuffledWords.map((item: VocabItem) => ({
             scrambled: scrambleWord(item.word),
             original: item,
@@ -190,7 +206,7 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
             isCorrect: null,
         }));
         setScramblerQuestions(questions);
-    }, [testData.words]);
+    }, [wordsForSession]);
 
     const startScramblerGame = useCallback(() => {
         generateScramblerQuestions();
@@ -218,7 +234,7 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
     }, [scramblerQuestions, currentScramblerIndex]);
 
     const generateSpellingQuestions = useCallback(() => {
-        const shuffledWords = shuffleArray(testData.words);
+        const shuffledWords = shuffleArray(wordsForSession);
         const questions = shuffledWords.map((item: VocabItem) => ({
             original: item,
             userAnswer: '',
@@ -226,7 +242,7 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
             revealedCount: 0,
         }));
         setSpellingQuestions(questions);
-    }, [testData.words]);
+    }, [wordsForSession]);
 
     const startSpellingGame = useCallback(() => {
         generateSpellingQuestions();
@@ -236,7 +252,7 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
     }, [generateSpellingQuestions]);
     
     const generateAudioDictationQuestions = useCallback(() => {
-        const shuffledWords = shuffleArray(testData.words);
+        const shuffledWords = shuffleArray(wordsForSession);
         const questions = shuffledWords.map((item: VocabItem) => ({
             original: item,
             userAnswer: '',
@@ -244,7 +260,7 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
             meaningRevealed: false,
         }));
         setAudioDictationQuestions(questions);
-    }, [testData.words]);
+    }, [wordsForSession]);
 
     const startAudioDictationGame = useCallback(() => {
         generateAudioDictationQuestions();
@@ -252,24 +268,6 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
         setAudioDictationScore(0);
         setIsAudioDictationSessionFinished(false);
     }, [generateAudioDictationQuestions]);
-
-    const generateHangmanQuestions = useCallback(() => {
-        const questions = shuffleArray(testData.words).map((item: VocabItem) => ({
-            original: item,
-            letters: item.word.toLowerCase().replace(/[^a-z]/g, '').split(''),
-            guessedCorrectly: new Set<string>(),
-            guessedIncorrectly: new Set<string>(),
-            status: 'playing' as 'playing' | 'won' | 'lost',
-        }));
-        setHangmanQuestions(questions);
-    }, [testData.words]);
-
-    const startHangmanGame = useCallback(() => {
-        generateHangmanQuestions();
-        setCurrentHangmanIndex(0);
-        setIsHangmanSessionFinished(false);
-        setHangmanScore(0);
-    }, [generateHangmanQuestions]);
 
     const setupDMatchTurn = useCallback((deck: VocabItem[], turn: number) => {
         const startIndex = turn * WORDS_PER_DMATCH_TURN;
@@ -293,24 +291,43 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
     }, []);
 
     const startDMatchGame = useCallback(() => {
-        const shuffledDeck = shuffleArray(testData.words);
+        const shuffledDeck = shuffleArray(wordsForSession);
         setupDMatchTurn(shuffledDeck, 0);
-    }, [testData.words, setupDMatchTurn]);
-
+    }, [wordsForSession, setupDMatchTurn]);
+    
+    const generateNewLtExercise = useCallback(async () => {
+        setLtState('generating');
+        setLtError(null);
+        setUserTranslation('');
+        setLtEvaluation(null);
+        setShowLtHint(true);
+        try {
+            const sentence = await generateSentenceForTranslation(wordsForSession);
+            if (sentence) {
+                setOriginalSentence(sentence);
+                setLtState('answering');
+            } else {
+                throw new Error("Failed to generate a sentence.");
+            }
+        } catch (err) {
+            console.error(err);
+            setLtError("Could not generate a new exercise. Please try again.");
+            setLtState('answering');
+        }
+    }, [wordsForSession]);
 
     useEffect(() => {
-        // Reset all modes when a new test is loaded
-        setDeck(testData.words);
+        setDeck(wordsForSession);
         setCurrentCardIndex(0);
         setIsFlipped(false);
-        restartQuizSession();
-        startMatchingGame();
-        startScramblerGame();
-        startSpellingGame();
-        startAudioDictationGame();
-        startHangmanGame();
-        startDMatchGame();
-    }, [testData, restartQuizSession, startMatchingGame, startScramblerGame, startSpellingGame, startAudioDictationGame, startHangmanGame, startDMatchGame]);
+        if (mode === 'quiz') startQuizSession();
+        if (mode === 'matching_game') startMatchingGame();
+        if (mode === 'scrambler') startScramblerGame();
+        if (mode === 'spelling_recall') startSpellingGame();
+        if (mode === 'audio_dictation') startAudioDictationGame();
+        if (mode === 'definition_match') startDMatchGame();
+        if (mode === 'listening_translation') generateNewLtExercise();
+    }, [mode, wordsForSession, startQuizSession, startMatchingGame, startScramblerGame, startSpellingGame, startAudioDictationGame, startDMatchGame, generateNewLtExercise]);
     
     useEffect(() => {
         if (isQuizSessionFinished && currentUser && quizQuestions.length > 0) {
@@ -362,19 +379,6 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
         }
     }, [isAudioDictationSessionFinished, currentUser, testData.id, testData.title, audioDictationScore, audioDictationQuestions.length]);
 
-    useEffect(() => {
-        if (isHangmanSessionFinished && currentUser && hangmanQuestions.length > 0) {
-            addTestResult(currentUser.username, 'vocabulary', {
-                id: `vocab-hangman-${testData.id}-${Date.now()}`,
-                title: `${testData.title} (Hangman)`,
-                score: hangmanScore,
-                total: hangmanQuestions.length,
-                date: Date.now()
-            });
-        }
-    }, [isHangmanSessionFinished, currentUser, testData.id, testData.title, hangmanScore, hangmanQuestions.length]);
-
-
     const handleWordPractice = useCallback((word: VocabItem, performance: 'good' | 'hard') => {
         const wordId = word.word.toLowerCase();
         updateWordSrsLevel(wordId, performance, word, `From '${testData.title}' list.`);
@@ -395,14 +399,6 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
         setCurrentCardIndex(0);
         setIsFlipped(false);
     };
-
-    const handleSaveToSrs = (word: VocabItem, remembered: boolean) => {
-        handleWordPractice(word, remembered ? 'good' : 'hard');
-        setToastMessage(`"${word.word}" saved to My Flashcards!`);
-        setTimeout(() => {
-            setToastMessage(null);
-        }, 3000);
-    };
     
     const handleQuizAnswer = (selectedOption: string) => {
         if (quizQuestions[currentQuizIndex].userAnswer !== null) return;
@@ -414,7 +410,7 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
             setScore(prev => prev + 1);
         }
         
-        const vocabItem = testData.words.find(w => w.word === currentQuestion.correctAnswer);
+        const vocabItem = wordsForSession.find(w => w.word === currentQuestion.correctAnswer);
         if (vocabItem) {
             handleWordPractice(vocabItem, isCorrect ? 'good' : 'hard');
         }
@@ -433,37 +429,23 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
     };
     
     const handleMatchingItemSelect = (clickedItem: MatchingItem) => {
-        if (matchedPairs.includes(clickedItem.item.word)) return;
-        setIncorrectPairItems(null);
+        if (matchedPairs.includes(clickedItem.item.word) || incorrectPairItems) return;
 
         if (!selectedMatchingItem) {
-            // First item selected
             setSelectedMatchingItem(clickedItem);
         } else {
-            // Second item selected, check for match
-            if (selectedMatchingItem.type !== clickedItem.type && selectedMatchingItem.item.word === clickedItem.item.word) {
-                // Correct match
+            if (selectedMatchingItem.item.word === clickedItem.item.word && selectedMatchingItem.type !== clickedItem.type) {
+                // Match
                 const newMatchedPairs = [...matchedPairs, clickedItem.item.word];
                 setMatchedPairs(newMatchedPairs);
                 setSelectedMatchingItem(null);
-                handleWordPractice(clickedItem.item, 'good');
-
                 if (newMatchedPairs.length === currentTurnItems.length) {
-                    const isMoreWords = (matchingTurn + 1) * WORDS_PER_MATCHING_TURN < fullMatchingDeck.length;
-                    if(isMoreWords) {
-                        setIsTurnFinished(true);
-                    } else {
-                        setIsGameFinished(true);
-                    }
+                    setIsTurnFinished(true);
                 }
             } else {
-                // Incorrect match or same type selected
+                // Mismatch
                 setIncorrectPairItems({ item1: selectedMatchingItem, item2: clickedItem });
                 setSelectedMatchingItem(null);
-                // Only penalize if they selected one of each type and it was wrong.
-                if (selectedMatchingItem.type !== clickedItem.type) {
-                    handleWordPractice(selectedMatchingItem.item, 'hard');
-                }
                 setTimeout(() => {
                     setIncorrectPairItems(null);
                 }, 1000);
@@ -471,138 +453,195 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
         }
     };
 
-    const handleNextTurn = () => {
-        setupMatchingTurn(fullMatchingDeck, matchingTurn + 1);
+    // Scrambler handlers
+    const handleScramblerInputChange = (index: number, value: string) => {
+        const newQuestions = [...scramblerQuestions];
+        newQuestions[index].userAnswer = value;
+        setScramblerQuestions(newQuestions);
+    };
+
+    const handleScramblerSubmit = (index: number) => {
+        const question = scramblerQuestions[index];
+        const isCorrect = question.userAnswer.trim().toLowerCase() === question.original.word.toLowerCase();
+        
+        const newQuestions = [...scramblerQuestions];
+        newQuestions[index].isCorrect = isCorrect;
+        setScramblerQuestions(newQuestions);
+        
+        if(isCorrect) setScramblerScore(s => s + 1);
+
+        setTimeout(() => {
+            if (currentScramblerIndex + 1 < scramblerQuestions.length) {
+                setCurrentScramblerIndex(prev => prev + 1);
+            } else {
+                setIsScramblerSessionFinished(true);
+            }
+        }, 1000);
     };
     
-    const handleModeChange = (newMode: StudyMode) => {
-        if (newMode === 'quiz' && mode !== 'quiz') restartQuizSession();
-        if (newMode === 'matching_game' && mode !== 'matching_game') startMatchingGame();
-        if (newMode === 'scrambler' && mode !== 'scrambler') startScramblerGame();
-        if (newMode === 'spelling_recall' && mode !== 'spelling_recall') startSpellingGame();
-        if (newMode === 'audio_dictation' && mode !== 'audio_dictation') startAudioDictationGame();
-        if (newMode === 'flashcards' && mode !== 'flashcards') {
-            setCurrentCardIndex(0);
-            setIsFlipped(false);
-        }
-        if (newMode === 'hangman' && mode !== 'hangman') startHangmanGame();
-        if (newMode === 'definition_match' && mode !== 'definition_match') startDMatchGame();
-        setMode(newMode);
+    // Spelling Recall handlers
+    const handleSpellingInputChange = (index: number, value: string) => {
+        const newQuestions = [...spellingQuestions];
+        newQuestions[index].userAnswer = value;
+        setSpellingQuestions(newQuestions);
     };
 
+    const handleSpellingSubmit = (index: number) => {
+        const question = spellingQuestions[index];
+        const isCorrect = question.userAnswer.trim().toLowerCase() === question.original.word.toLowerCase();
+        
+        const newQuestions = [...spellingQuestions];
+        newQuestions[index].isCorrect = isCorrect;
+        setSpellingQuestions(newQuestions);
+        
+        if (isCorrect) {
+            const points = question.original.word.length - question.revealedCount;
+            setSpellingScore(s => s + Math.max(0, points));
+        }
+
+        setTimeout(() => {
+             if (currentSpellingIndex + 1 < spellingQuestions.length) {
+                setCurrentSpellingIndex(prev => prev + 1);
+            } else {
+                setIsSpellingSessionFinished(true);
+            }
+        }, 1200);
+    };
+    
+    const handleRevealLetter = (index: number) => {
+        setSpellingQuestions(prev => {
+            const newQuestions = [...prev];
+            const q = newQuestions[index];
+            if (q.revealedCount < q.original.word.length) {
+                q.revealedCount++;
+                q.userAnswer = q.original.word.substring(0, q.revealedCount);
+            }
+            return newQuestions;
+        });
+    };
+
+    const handleAudioDictationInputChange = (index: number, value: string) => {
+        const newQuestions = [...audioDictationQuestions];
+        newQuestions[index].userAnswer = value;
+        setAudioDictationQuestions(newQuestions);
+    };
+
+    const handleAudioDictationSubmit = (index: number) => {
+        const question = audioDictationQuestions[index];
+        const isCorrect = question.userAnswer.trim().toLowerCase() === question.original.word.toLowerCase();
+        
+        const newQuestions = [...audioDictationQuestions];
+        newQuestions[index].isCorrect = isCorrect;
+        setAudioDictationQuestions(newQuestions);
+
+        let points = 0;
+        if (isCorrect) {
+            points = question.meaningRevealed ? 1 : 2;
+        }
+        setAudioDictationScore(s => s + points);
+
+        setTimeout(() => {
+             if (currentAudioDictationIndex + 1 < audioDictationQuestions.length) {
+                setCurrentAudioDictationIndex(prev => prev + 1);
+            } else {
+                setIsAudioDictationSessionFinished(true);
+            }
+        }, 1200);
+    };
+
+    const handleToggleMeaning = (index: number) => {
+        setAudioDictationQuestions(prev => {
+            const newQuestions = [...prev];
+            newQuestions[index].meaningRevealed = !newQuestions[index].meaningRevealed;
+            return newQuestions;
+        })
+    };
+
+    // Definition Match handlers
+    const handleDMatchWordSelect = (wordItem: DMatchItemType) => {
+        if(correctDMatches.includes(wordItem.item.word)) return;
+        setIncorrectDMatchPair(null);
+        setSelectedDMatchWord(wordItem);
+    };
+
+    const handleDMatchDefinitionSelect = (defItem: DMatchItemType) => {
+        if (!selectedDMatchWord || correctDMatches.includes(defItem.item.word)) return;
+
+        if (selectedDMatchWord.item.word === defItem.item.word) {
+            const newCorrect = [...correctDMatches, defItem.item.word];
+            setCorrectDMatches(newCorrect);
+            setSelectedDMatchWord(null);
+            if (newCorrect.length === dMatchWords.length) {
+                setIsDMatchTurnFinished(true);
+            }
+        } else {
+            setIncorrectDMatchPair([selectedDMatchWord.item.word, defItem.item.definition]);
+            setSelectedDMatchWord(null);
+            setTimeout(() => setIncorrectDMatchPair(null), 1200);
+        }
+    };
+
+    const handleLtSubmit = async () => {
+        if (!userTranslation.trim()) {
+            setLtError("Please enter your translation.");
+            return;
+        }
+        setLtState('evaluating');
+        setLtError(null);
+        try {
+            const result = await evaluateTranslation(originalSentence, userTranslation);
+            if (result) {
+                setLtEvaluation(result);
+                setLtState('result');
+            } else {
+                throw new Error("Received an invalid evaluation from the AI.");
+            }
+        } catch (err) {
+             console.error(err);
+             setLtError("Sorry, an error occurred during evaluation. Please try again.");
+             setLtState('answering');
+        }
+    };
+    
+    
+    // RENDER FUNCTIONS FOR EACH MODE
+    
     const renderFlashcards = () => {
         const currentCard = deck[currentCardIndex];
-        if (!currentCard) return null;
-
         return (
             <div>
-                <div className="perspective-1000">
-                     <div 
-                        className={`relative w-full h-80 transition-transform duration-700 transform-style-preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}
+                <div className="relative mb-6">
+                    <div 
+                        className={`w-full h-80 flex flex-col items-center justify-center p-8 bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 transition-transform duration-500 cursor-pointer [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}
                         onClick={() => setIsFlipped(!isFlipped)}
-                     >
-                        <div className="absolute w-full h-full backface-hidden bg-white rounded-xl shadow-2xl border border-slate-200 flex items-center justify-center p-6 cursor-pointer">
-                             <h2 className="text-4xl md:text-5xl font-bold text-slate-800 text-center">{currentCard.word}</h2>
+                    >
+                        {/* Front */}
+                        <div className="absolute w-full h-full flex flex-col items-center justify-center p-8 [backface-visibility:hidden]">
+                            <span className="text-sm text-slate-500 dark:text-slate-400">Word</span>
+                            <h3 className="text-5xl font-bold text-slate-800 dark:text-slate-100 tracking-tight text-center">{currentCard.word}</h3>
                         </div>
-                         <div className="absolute w-full h-full backface-hidden bg-blue-50 rounded-xl shadow-2xl border border-blue-200 flex flex-col items-center justify-center p-6 cursor-pointer rotate-y-180">
-                             <div className="flex-grow flex flex-col items-center justify-center w-full">
-                                <p className="text-2xl md:text-3xl text-slate-800 text-center font-semibold">{`${currentCard.word} - ${currentCard.definition}`}</p>
-                                {currentCard.example && <p className="text-base text-slate-500 italic mt-4 text-center">"{currentCard.example}"</p>}
-                            </div>
-                             <div className="flex-shrink-0 w-full mt-4 flex justify-center gap-4 border-t border-blue-200 pt-4">
-                                <button 
-                                    onClick={(e) => { e.stopPropagation(); handleSaveToSrs(currentCard, false); }}
-                                    className="flex items-center gap-2 px-4 py-2 bg-red-100 text-red-700 font-semibold rounded-lg hover:bg-red-200 transition-colors"
-                                    title="Add to My Flashcards for review"
-                                >
-                                    <XCircleIcon className="h-6 w-6" />
-                                    Didn't Remember
-                                </button>
-                                <button 
-                                    onClick={(e) => { e.stopPropagation(); handleSaveToSrs(currentCard, true); }}
-                                    className="flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 font-semibold rounded-lg hover:bg-green-200 transition-colors"
-                                    title="Add to My Flashcards as learned"
-                                >
-                                    <CheckCircleIcon className="h-6 w-6" />
-                                    Remembered
-                                </button>
-                            </div>
+                        {/* Back */}
+                        <div className="absolute w-full h-full flex flex-col items-center justify-center p-8 [transform:rotateY(180deg)] [backface-visibility:hidden]">
+                             <span className="text-sm text-slate-500 dark:text-slate-400">Definition</span>
+                            <p className="text-xl text-slate-700 dark:text-slate-200 text-center">{currentCard.definition}</p>
                         </div>
                     </div>
                 </div>
-                <div className="flex justify-between items-center mt-6">
-                    <button onClick={handlePrevCard} className="p-3 rounded-full hover:bg-slate-200 transition-colors"><ArrowLeftIcon className="h-6 w-6 text-slate-600" /></button>
-                    <span className="font-semibold text-slate-600">{currentCardIndex + 1} / {deck.length}</span>
-                    <button onClick={handleNextCard} className="p-3 rounded-full hover:bg-slate-200 transition-colors"><ArrowRightIcon className="h-6 w-6 text-slate-600" /></button>
+                
+                <div className="flex justify-between items-center mb-6">
+                    <button onClick={handlePrevCard} className="p-4 rounded-full bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors" aria-label="Previous card"><ArrowLeftIcon className="h-6 w-6" /></button>
+                    <span className="font-semibold text-lg">{currentCardIndex + 1} / {deck.length}</span>
+                    <button onClick={handleNextCard} className="p-4 rounded-full bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors" aria-label="Next card"><ArrowRightIcon className="h-6 w-6" /></button>
                 </div>
-            </div>
-        );
-    };
 
-    const renderMatchingGame = () => {
-        if (isGameFinished) {
-            return (
-                <div className="text-center bg-white p-8 rounded-xl shadow-lg">
-                    <h3 className="text-2xl font-bold text-slate-800">Congratulations!</h3>
-                    <p className="text-lg text-slate-600 mt-2">You matched all the words.</p>
-                    <button onClick={startMatchingGame} className="mt-8 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
-                        Play Again
-                    </button>
-                </div>
-            );
-        }
-        
-        if (isTurnFinished) {
-            return (
-                <div className="text-center bg-white p-8 rounded-xl shadow-lg">
-                    <h3 className="text-2xl font-bold text-slate-800">Round {matchingTurn + 1} Complete!</h3>
-                    <p className="text-lg text-slate-600 mt-2">Ready for the next set?</p>
-                    <button onClick={handleNextTurn} className="mt-8 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
-                        Next Round
-                    </button>
-                </div>
-            );
-        }
-
-        const getGridItemClasses = (gridItem: MatchingItem) => {
-            const isMatched = matchedPairs.includes(gridItem.item.word);
-            const isSelected = selectedMatchingItem?.item.word === gridItem.item.word && selectedMatchingItem?.type === gridItem.type;
-            const isIncorrect = (incorrectPairItems?.item1.item.word === gridItem.item.word && incorrectPairItems?.item1.type === gridItem.type) || (incorrectPairItems?.item2.item.word === gridItem.item.word && incorrectPairItems?.item2.type === gridItem.type);
-        
-            let baseClasses = 'w-full h-28 p-3 border rounded-xl text-center font-medium text-slate-700 flex items-center justify-center transition-all duration-200 shadow-sm';
-        
-            if (isMatched) {
-                return `${baseClasses} bg-green-100 border-green-300 text-green-800 cursor-default shadow-inner opacity-60`;
-            }
-            if (isIncorrect) {
-                return `${baseClasses} bg-red-100 border-red-400 animate-shake`;
-            }
-            if (isSelected) {
-                return `${baseClasses} bg-slate-200 border-slate-400 shadow-md`;
-            }
-            return `${baseClasses} bg-white hover:bg-slate-50 border-slate-200 hover:shadow-md hover:-translate-y-0.5`;
-        };
-
-        return (
-            <div>
-                <p className="text-center text-slate-600 mb-6">Match the word with its correct definition. <strong>Round {matchingTurn + 1} of {Math.ceil(fullMatchingDeck.length / WORDS_PER_MATCHING_TURN)}</strong></p>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {matchingGridItems.map((gridItem, index) => (
-                        <button
-                            key={`${gridItem.item.word}-${gridItem.type}-${index}`}
-                            onClick={() => handleMatchingItemSelect(gridItem)}
-                            disabled={matchedPairs.includes(gridItem.item.word)}
-                            className={getGridItemClasses(gridItem)}
-                        >
-                           <span className="text-sm md:text-base">{gridItem.type === 'word' ? gridItem.item.word : gridItem.item.definition}</span>
-                        </button>
-                    ))}
-                </div>
-                 <div className="mt-8 flex justify-end">
-                    <button onClick={startMatchingGame} className="p-2 rounded-full hover:bg-slate-200 transition-colors" title="Restart Game">
-                       <ShuffleIcon className="h-6 w-6 text-slate-600" />
-                    </button>
-                </div>
+                 <div className="flex justify-center items-center gap-4 mt-8">
+                     <button onClick={() => setIsFlipped(!isFlipped)} className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-700 font-semibold rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600">
+                        <FlipIcon className="h-5 w-5"/> Flip
+                     </button>
+                     <button onClick={handleShuffle} className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-700 font-semibold rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600">
+                        <ShuffleIcon className="h-5 w-5"/> Shuffle
+                     </button>
+                 </div>
             </div>
         );
     };
@@ -610,767 +649,530 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
     const renderQuiz = () => {
         if (isQuizSessionFinished) {
             return (
-                <div className="text-center bg-white p-8 rounded-xl shadow-lg">
-                    <h3 className="text-2xl font-bold text-slate-800">Session Complete!</h3>
-                    <p className="text-6xl font-bold text-blue-600 my-4">{Math.round((score / quizQuestions.length) * 100)}%</p>
-                    <p className="text-lg text-slate-600">You got <span className="font-bold">{score}</span> out of <span className="font-bold">{quizQuestions.length}</span> correct.</p>
-                    <button onClick={restartQuizSession} className="mt-8 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
-                        Restart Quiz
+                <div className="text-center bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg">
+                    <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Quiz Complete!</h3>
+                    <p className="text-6xl font-bold text-blue-600 dark:text-blue-400 my-4">{Math.round((score / quizQuestions.length) * 100)}%</p>
+                    <p className="text-lg text-slate-600 dark:text-slate-400">You got {score} out of {quizQuestions.length} correct.</p>
+                    <button onClick={startQuizSession} className="mt-8 px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">
+                        Try Again
                     </button>
                 </div>
-            )
+            );
         }
-        
+
         const currentQuestion = quizQuestions[currentQuizIndex];
         if (!currentQuestion) return null;
 
-        const getOptionClasses = (option: string) => {
-             if (currentQuestion.userAnswer === null) {
-                return 'bg-white hover:bg-slate-100 border-slate-300';
-             }
-             if (option === currentQuestion.correctAnswer) {
-                return 'bg-green-100 border-green-500 text-green-800 font-bold';
-             }
-             if (option === currentQuestion.userAnswer) {
-                return 'bg-red-100 border-red-500 text-red-800';
-             }
-             return 'bg-slate-50 border-slate-200 text-slate-500';
-        }
-
         return (
-            <div>
-                 <div className="text-right text-sm font-semibold text-slate-600 mb-2">
-                    <span>Progress: {currentQuizIndex + 1} / {quizQuestions.length}</span>
-                    <span className="mx-2">|</span>
-                    <span>Score: {score}</span>
+            <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg">
+                <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">Quiz</h3>
+                    <span className="font-semibold text-slate-500 dark:text-slate-400">{currentQuizIndex + 1} / {quizQuestions.length}</span>
                 </div>
-                <div className="bg-white p-8 rounded-xl shadow-lg border border-slate-200 min-h-[150px] flex items-center justify-center">
-                    <p className="text-xl text-center text-slate-800">{currentQuestion.questionText}</p>
+                <div className="mb-8 text-center bg-slate-50 dark:bg-slate-700/50 p-6 rounded-lg min-h-[120px] flex items-center justify-center">
+                    <p className="text-2xl font-semibold text-slate-700 dark:text-slate-200">{currentQuestion.questionText}</p>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                    {currentQuestion.options.map((option, index) => (
-                        <button 
-                            key={index} 
-                            onClick={() => handleQuizAnswer(option)}
-                            disabled={currentQuestion.userAnswer !== null}
-                            className={`p-4 border rounded-lg text-left transition-colors duration-300 ${getOptionClasses(option)}`}
-                        >
-                            <span className="font-bold mr-2">{String.fromCharCode(65 + index)}.</span>
-                            {option}
-                        </button>
-                    ))}
+                <div className="space-y-3">
+                    {currentQuestion.options.map((option, index) => {
+                        let buttonClass = "w-full text-left p-4 rounded-lg border-2 transition-all font-semibold ";
+                        if (currentQuestion.userAnswer) {
+                            if (option === currentQuestion.correctAnswer) {
+                                buttonClass += "bg-green-100 dark:bg-green-900/50 border-green-500 text-green-800 dark:text-green-300";
+                            } else if (option === currentQuestion.userAnswer) {
+                                buttonClass += "bg-red-100 dark:bg-red-900/50 border-red-500 text-red-800 dark:text-red-300";
+                            } else {
+                                buttonClass += "bg-slate-100 dark:bg-slate-700 border-slate-200 dark:border-slate-600 opacity-60";
+                            }
+                        } else {
+                             buttonClass += "bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 hover:border-blue-500 dark:hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30";
+                        }
+                        return (
+                            <button key={index} onClick={() => handleQuizAnswer(option)} disabled={!!currentQuestion.userAnswer} className={buttonClass}>
+                                {option}
+                            </button>
+                        );
+                    })}
                 </div>
             </div>
         );
     };
-    
-    const renderScrambler = () => {
-        if (isScramblerSessionFinished) {
+
+    const renderMatchingGame = () => {
+         if (isGameFinished) {
+            const totalTurns = Math.ceil(fullMatchingDeck.length / WORDS_PER_MATCHING_TURN);
             return (
-                <div className="text-center bg-white p-8 rounded-xl shadow-lg">
-                    <h3 className="text-2xl font-bold text-slate-800">Session Complete!</h3>
-                    <p className="text-6xl font-bold text-blue-600 my-4">{Math.round((scramblerScore / scramblerQuestions.length) * 100)}%</p>
-                    <p className="text-lg text-slate-600">You got <span className="font-bold">{scramblerScore}</span> out of <span className="font-bold">{scramblerQuestions.length}</span> correct.</p>
-                    <button onClick={startScramblerGame} className="mt-8 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+                <div className="text-center bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg">
+                    <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Matching Game Complete!</h3>
+                    <p className="text-lg text-slate-600 dark:text-slate-400 mt-2">You matched all {fullMatchingDeck.length} pairs in {totalTurns} turn{totalTurns > 1 ? 's' : ''}.</p>
+                    <button onClick={startMatchingGame} className="mt-8 px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">
                         Play Again
                     </button>
                 </div>
-            )
+            );
+        }
+
+        return (
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg">
+                 <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">Matching Game</h3>
+                    <span className="font-semibold text-slate-500 dark:text-slate-400">Turn {matchingTurn + 1} / {Math.ceil(fullMatchingDeck.length / WORDS_PER_MATCHING_TURN)}</span>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                    {matchingGridItems.map((gridItem, index) => {
+                        const isSelected = selectedMatchingItem?.item.word === gridItem.item.word && selectedMatchingItem.type === gridItem.type;
+                        const isMatched = matchedPairs.includes(gridItem.item.word);
+                        const isIncorrect = (incorrectPairItems?.item1.item.word === gridItem.item.word && incorrectPairItems?.item1.type === gridItem.type) || (incorrectPairItems?.item2.item.word === gridItem.item.word && incorrectPairItems?.item2.type === gridItem.type);
+
+                        let cardClass = "h-28 flex items-center justify-center p-3 text-center rounded-lg border-2 font-semibold transition-all duration-300 text-sm ";
+                        if (isMatched) {
+                            cardClass += "bg-green-100 dark:bg-green-900/50 border-green-500 text-green-800 dark:text-green-300 opacity-50 cursor-default";
+                        } else if (isIncorrect) {
+                            cardClass += "bg-red-100 dark:bg-red-900/50 border-red-500 text-red-800 dark:text-red-300 transform -translate-x-1";
+                        } else if (isSelected) {
+                            cardClass += "bg-blue-100 dark:bg-blue-900/50 border-blue-500 text-blue-800 dark:text-blue-300 scale-105 shadow-lg";
+                        } else {
+                            cardClass += "bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-slate-50 dark:hover:bg-slate-600 cursor-pointer";
+                        }
+
+                        return (
+                            <button key={index} onClick={() => handleMatchingItemSelect(gridItem)} className={cardClass} disabled={isMatched}>
+                                {gridItem.type === 'word' ? gridItem.item.word : gridItem.item.definition}
+                            </button>
+                        );
+                    })}
+                </div>
+                {isTurnFinished && (
+                     <div className="text-center mt-6">
+                        <button onClick={() => setupMatchingTurn(fullMatchingDeck, matchingTurn + 1)} className="px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">
+                            Next Turn
+                        </button>
+                    </div>
+                )}
+            </div>
+        );
+    };
+
+    const renderScrambler = () => {
+        if (isScramblerSessionFinished) {
+            return (
+                <div className="text-center bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg">
+                    <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Game Over!</h3>
+                    <p className="text-6xl font-bold text-blue-600 dark:text-blue-400 my-4">{scramblerScore}</p>
+                    <p className="text-lg text-slate-600 dark:text-slate-400">You unscrambled {scramblerScore} out of {scramblerQuestions.length} words correctly.</p>
+                    <button onClick={startScramblerGame} className="mt-8 px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">
+                        Play Again
+                    </button>
+                </div>
+            );
         }
 
         const currentQuestion = scramblerQuestions[currentScramblerIndex];
         if (!currentQuestion) return null;
 
-        const handleScramblerInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-            const newQuestions = [...scramblerQuestions];
-            newQuestions[currentScramblerIndex] = {
-                ...newQuestions[currentScramblerIndex],
-                userAnswer: e.target.value,
-            };
-            setScramblerQuestions(newQuestions);
-        };
-    
-        const handleCheckAnswer = (e: React.FormEvent) => {
-            e.preventDefault();
-            if (currentQuestion.isCorrect !== null) return;
-    
-            const userAnswer = currentQuestion.userAnswer.trim().toLowerCase();
-            const correctAnswer = currentQuestion.original.word.toLowerCase();
-            const isCorrect = userAnswer === correctAnswer;
-            
-            if (isCorrect) {
-                setScramblerScore(prev => prev + 1);
-            }
-            
-            handleWordPractice(currentQuestion.original, isCorrect ? 'good' : 'hard');
-    
-            const newQuestions = [...scramblerQuestions];
-            newQuestions[currentScramblerIndex] = {
-                ...newQuestions[currentScramblerIndex],
-                isCorrect: isCorrect,
-            };
-            setScramblerQuestions(newQuestions);
-        };
-    
-        const handleNextQuestion = () => {
-            if (currentScramblerIndex + 1 < scramblerQuestions.length) {
-                setCurrentScramblerIndex(prev => prev + 1);
-            } else {
-                setIsScramblerSessionFinished(true);
-            }
-        };
-
-        let inputClasses = 'border-slate-300 focus:border-blue-500 focus:ring-blue-500';
+        let inputClass = "w-full text-center text-2xl font-bold tracking-widest uppercase p-4 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50 dark:bg-slate-700 dark:text-white ";
         if (currentQuestion.isCorrect === true) {
-            inputClasses = 'border-green-500 ring-green-500 bg-green-50';
+            inputClass += "bg-green-100 dark:bg-green-900/50 border-green-500 text-green-700";
         } else if (currentQuestion.isCorrect === false) {
-            inputClasses = 'border-red-500 ring-red-500 bg-red-50 animate-shake';
+            inputClass += "bg-red-100 dark:bg-red-900/50 border-red-500 text-red-700";
+        } else {
+            inputClass += "border-slate-300 dark:border-slate-600";
         }
 
         return (
-             <div>
-                 <div className="text-right text-sm font-semibold text-slate-600 mb-2">
-                    <span>Progress: {currentScramblerIndex + 1} / {scramblerQuestions.length}</span>
-                    <span className="mx-2">|</span>
-                    <span>Score: {scramblerScore}</span>
+            <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg">
+                <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">Unscramble the Word</h3>
+                    <span className="font-semibold text-slate-500 dark:text-slate-400">{currentScramblerIndex + 1} / {scramblerQuestions.length}</span>
                 </div>
-                <div className="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
-                    <p className="text-xl text-center text-slate-700 mb-6">{currentQuestion.original.definition}</p>
-
-                    <div className="bg-blue-50 p-4 rounded-lg text-center mb-6">
-                        <p className="text-3xl font-bold tracking-[0.2em] text-blue-700 uppercase">
-                            {currentQuestion.scrambled}
-                        </p>
-                    </div>
-                    
-                    <form onSubmit={handleCheckAnswer} className="flex flex-col sm:flex-row gap-2">
-                        <input
-                            type="text"
-                            value={currentQuestion.userAnswer}
-                            onChange={handleScramblerInputChange}
-                            disabled={currentQuestion.isCorrect !== null}
-                            className={`flex-grow p-3 border-2 rounded-lg text-lg focus:outline-none focus:ring-2 transition-colors ${inputClasses}`}
-                            placeholder="Type the unscrambled word"
-                            autoFocus
-                            autoComplete="off"
-                        />
-                         {currentQuestion.isCorrect === null && (
-                            <div className="flex gap-2 shrink-0">
-                                <button type="submit" className="px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors flex-grow sm:flex-grow-0">
-                                    Check
-                                </button>
-                                <button 
-                                    type="button" 
-                                    onClick={handleShuffleScrambler}
-                                    className="p-3 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 transition-colors disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed"
-                                    title="Get a different word"
-                                    disabled={scramblerQuestions.slice(currentScramblerIndex).filter(q => q.isCorrect === null).length < 2}
-                                    aria-label="Shuffle word"
-                                >
-                                    <ShuffleIcon className="h-6 w-6" />
-                                </button>
-                            </div>
-                        )}
-                    </form>
-
-                    {currentQuestion.isCorrect !== null && (
-                        <div className="mt-4 text-center">
-                             {currentQuestion.isCorrect === false && (
-                                <p className="text-red-600 mb-2">
-                                    The correct answer is: <strong className="font-bold text-red-700">{currentQuestion.original.word}</strong>
-                                </p>
-                            )}
-                             {currentQuestion.isCorrect === true && (
-                                <p className="text-green-600 font-semibold mb-2">Correct!</p>
-                             )}
-                            <button 
-                                onClick={handleNextQuestion} 
-                                className="w-full sm:w-auto sm:px-12 py-3 bg-slate-700 text-white font-bold rounded-lg hover:bg-slate-800 transition-colors"
-                            >
-                                {currentScramblerIndex + 1 < scramblerQuestions.length ? 'Next' : 'Finish Session'}
-                            </button>
-                        </div>
+                <div className="mb-6 text-center bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg">
+                    <p className="text-sm text-slate-500 dark:text-slate-400">Definition:</p>
+                    <p className="text-lg font-medium text-slate-700 dark:text-slate-200">{currentQuestion.original.definition}</p>
+                </div>
+                <p className="text-center text-4xl font-bold tracking-[0.5em] my-6 p-4 bg-yellow-100 dark:bg-yellow-900/50 rounded-lg text-yellow-800 dark:text-yellow-200">{currentQuestion.scrambled}</p>
+                <form onSubmit={(e) => { e.preventDefault(); handleScramblerSubmit(currentScramblerIndex); }}>
+                    <input
+                        type="text"
+                        value={currentQuestion.userAnswer}
+                        onChange={(e) => handleScramblerInputChange(currentScramblerIndex, e.target.value)}
+                        className={inputClass}
+                        autoComplete="off"
+                        autoCapitalize="off"
+                        disabled={currentQuestion.isCorrect !== null}
+                    />
+                    {currentQuestion.isCorrect === false && (
+                        <p className="text-center text-green-600 font-bold mt-2">Correct answer: {currentQuestion.original.word}</p>
                     )}
-                </div>
+                    <div className="mt-6 flex justify-between items-center">
+                         <button type="button" onClick={handleShuffleScrambler} className="px-4 py-2 bg-slate-200 dark:bg-slate-600 font-semibold rounded-lg hover:bg-slate-300 dark:hover:bg-slate-500 transition-colors">
+                            Shuffle
+                        </button>
+                        <button type="submit" className="px-8 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50" disabled={currentQuestion.isCorrect !== null}>
+                            Submit
+                        </button>
+                    </div>
+                </form>
             </div>
         );
-    }
-
+    };
+    
     const renderSpellingRecall = () => {
         if (isSpellingSessionFinished) {
             const totalPossibleScore = spellingQuestions.reduce((sum, q) => sum + q.original.word.length, 0);
             return (
-                <div className="text-center bg-white p-8 rounded-xl shadow-lg">
-                    <h3 className="text-2xl font-bold text-slate-800">Session Complete!</h3>
-                    <p className="text-6xl font-bold text-blue-600 my-4">{spellingScore}</p>
-                    <p className="text-lg text-slate-600">You scored <span className="font-bold">{spellingScore}</span> out of a possible <span className="font-bold">{totalPossibleScore}</span> points.</p>
-                    <button onClick={startSpellingGame} className="mt-8 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+                <div className="text-center bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg">
+                    <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Spelling Practice Complete!</h3>
+                    <p className="text-6xl font-bold text-blue-600 dark:text-blue-400 my-4">{spellingScore}</p>
+                    <p className="text-lg text-slate-600 dark:text-slate-400">You scored {spellingScore} out of a possible {totalPossibleScore} points.</p>
+                    <button onClick={startSpellingGame} className="mt-8 px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">
                         Play Again
                     </button>
                 </div>
             );
         }
-    
         const currentQuestion = spellingQuestions[currentSpellingIndex];
         if (!currentQuestion) return null;
     
-        const handleSpellingInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-            if (currentQuestion.isCorrect !== null) return;
-            const newQuestions = [...spellingQuestions];
-            newQuestions[currentSpellingIndex].userAnswer = e.target.value;
-            setSpellingQuestions(newQuestions);
-        };
-    
-        const handleCheckSpellingAnswer = (e: React.FormEvent) => {
-            e.preventDefault();
-            if (currentQuestion.isCorrect !== null) return;
-    
-            const isCorrect = currentQuestion.userAnswer.trim().toLowerCase() === currentQuestion.original.word.toLowerCase();
-    
-            if (isCorrect) {
-                const maxPoints = currentQuestion.original.word.length;
-                const points = Math.max(0, maxPoints - currentQuestion.revealedCount);
-                setSpellingScore(prev => prev + points);
-                handleWordPractice(currentQuestion.original, 'good');
-                
-                const newQuestions = [...spellingQuestions];
-                newQuestions[currentSpellingIndex].isCorrect = true;
-                setSpellingQuestions(newQuestions);
-            } else {
-                setToastMessage("Incorrect. A hint has been revealed.");
-                setTimeout(() => setToastMessage(null), 2000);
-                
-                const wordLength = currentQuestion.original.word.length;
-                if (currentQuestion.revealedCount < wordLength) {
-                    const newQuestions = [...spellingQuestions];
-                    newQuestions[currentSpellingIndex].revealedCount++;
-                    setSpellingQuestions(newQuestions);
-                }
-            }
-        };
-    
-        const handleRevealLetter = () => {
-            if (currentQuestion.isCorrect !== null) return;
-            const wordLength = currentQuestion.original.word.length;
-            if (currentQuestion.revealedCount < wordLength) {
-                const newQuestions = [...spellingQuestions];
-                newQuestions[currentSpellingIndex].revealedCount++;
-                setSpellingQuestions(newQuestions);
-            }
-        };
-
-        const handleGiveUp = () => {
-            if (currentQuestion.isCorrect !== null) return;
-            handleWordPractice(currentQuestion.original, 'hard');
-            const newQuestions = [...spellingQuestions];
-            newQuestions[currentSpellingIndex].isCorrect = false;
-            setSpellingQuestions(newQuestions);
-        };
-    
-        const handleNextSpellingQuestion = () => {
-            if (currentSpellingIndex + 1 < spellingQuestions.length) {
-                setCurrentSpellingIndex(prev => prev + 1);
-            } else {
-                setIsSpellingSessionFinished(true);
-            }
-        };
-    
-        const wordDisplay = currentQuestion.original.word
-            .split('')
-            .map((char, i) => (currentQuestion.isCorrect === false || i < currentQuestion.revealedCount) ? char : '_')
-            .join(' ');
-    
-        let inputClasses = 'border-slate-300 focus:border-blue-500 focus:ring-blue-500';
+        let inputClass = "w-full text-lg p-4 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50 dark:bg-slate-700 dark:text-white ";
         if (currentQuestion.isCorrect === true) {
-            inputClasses = 'border-green-500 ring-green-500 bg-green-50 text-green-800 font-bold';
+            inputClass += "bg-green-100 dark:bg-green-900/50 border-green-500 text-green-700";
         } else if (currentQuestion.isCorrect === false) {
-            inputClasses = 'border-red-500 ring-red-500 bg-red-50 text-red-800 font-semibold';
+            inputClass += "bg-red-100 dark:bg-red-900/50 border-red-500 text-red-700";
+        } else {
+            inputClass += "border-slate-300 dark:border-slate-600";
         }
     
         return (
-            <div>
-                <div className="text-right text-sm font-semibold text-slate-600 mb-2">
-                    <span>Progress: {currentSpellingIndex + 1} / {spellingQuestions.length}</span>
-                    <span className="mx-2">|</span>
-                    <span>Score: {spellingScore}</span>
+            <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg">
+                <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">Spelling Recall</h3>
+                    <span className="font-semibold text-slate-500 dark:text-slate-400">{currentSpellingIndex + 1} / {spellingQuestions.length}</span>
                 </div>
-                <div className="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
-                    <p className="text-xl text-center text-slate-700 mb-6">{currentQuestion.original.definition}</p>
-    
-                    <div className="bg-blue-50 p-4 rounded-lg text-center mb-6 min-h-[64px] flex items-center justify-center">
-                        <p className="text-3xl font-bold tracking-[0.2em] text-blue-700 uppercase">
-                            {wordDisplay}
-                        </p>
-                    </div>
-                    
-                    {currentQuestion.isCorrect !== null ? (
-                         <div className="mt-4 text-center">
-                            {currentQuestion.isCorrect ? (
-                               <p className="text-green-600 font-semibold mb-2 text-xl">Correct!</p>
-                            ) : (
-                               <p className="text-red-600 mb-2">The correct answer was: <strong className="font-bold text-red-700">{currentQuestion.original.word}</strong></p>
-                            )}
-                           <button 
-                               onClick={handleNextSpellingQuestion} 
-                               className="w-full sm:w-auto sm:px-12 py-3 bg-slate-700 text-white font-bold rounded-lg hover:bg-slate-800 transition-colors"
-                           >
-                               {currentSpellingIndex + 1 < spellingQuestions.length ? 'Next' : 'Finish Session'}
-                           </button>
-                       </div>
-                    ) : (
-                        <form onSubmit={handleCheckSpellingAnswer}>
-                             <input
-                                type="text"
-                                value={currentQuestion.userAnswer}
-                                onChange={handleSpellingInputChange}
-                                className={`w-full p-3 border-2 rounded-lg text-lg text-center focus:outline-none focus:ring-2 transition-colors ${inputClasses}`}
-                                placeholder="Type the English word"
-                                autoFocus
-                                autoComplete="off"
-                            />
-                            <div className="mt-4 flex flex-col sm:flex-row gap-2 justify-center">
-                                <button type="button" onClick={handleRevealLetter} className="px-5 py-2 bg-yellow-500 text-white font-semibold rounded-lg hover:bg-yellow-600 transition-colors flex-1">
-                                    Reveal Letter
-                                </button>
-                                <button type="submit" className="px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors flex-[2]">
-                                    Check Answer
-                                </button>
-                                <button type="button" onClick={handleGiveUp} className="px-5 py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition-colors flex-1">
-                                    I give up
-                                </button>
-                            </div>
-                        </form>
+                <div className="mb-6 text-center bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg">
+                    <p className="text-sm text-slate-500 dark:text-slate-400">Definition:</p>
+                    <p className="text-lg font-medium text-slate-700 dark:text-slate-200">{currentQuestion.original.definition}</p>
+                </div>
+                <form onSubmit={(e) => { e.preventDefault(); handleSpellingSubmit(currentSpellingIndex); }}>
+                     <input
+                        type="text"
+                        value={currentQuestion.userAnswer}
+                        onChange={(e) => handleSpellingInputChange(currentSpellingIndex, e.target.value)}
+                        className={inputClass}
+                        autoComplete="off"
+                        autoCapitalize="off"
+                        disabled={currentQuestion.isCorrect !== null}
+                        placeholder="Type the word..."
+                    />
+                     {currentQuestion.isCorrect === false && (
+                        <p className="text-center text-green-600 font-bold mt-2">Correct spelling: {currentQuestion.original.word}</p>
                     )}
-                </div>
+                     <div className="mt-6 flex justify-between items-center">
+                        <button type="button" onClick={() => handleRevealLetter(currentSpellingIndex)} className="px-4 py-2 bg-yellow-400 text-yellow-900 font-semibold rounded-lg hover:bg-yellow-500 disabled:opacity-50" disabled={currentQuestion.isCorrect !== null || currentQuestion.revealedCount >= currentQuestion.original.word.length -1}>
+                            Reveal Letter
+                        </button>
+                        <button type="submit" className="px-8 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50" disabled={currentQuestion.isCorrect !== null}>
+                            Check Spelling
+                        </button>
+                    </div>
+                </form>
             </div>
         );
     };
-
-    const renderAudioDictationChallenge = () => {
+    
+    const renderAudioDictation = () => {
         if (isAudioDictationSessionFinished) {
-            const totalPossibleScore = audioDictationQuestions.length * 2;
             return (
-                <div className="text-center bg-white p-8 rounded-xl shadow-lg">
-                    <h3 className="text-2xl font-bold text-slate-800">Session Complete!</h3>
-                    <p className="text-6xl font-bold text-blue-600 my-4">{audioDictationScore}</p>
-                    <p className="text-lg text-slate-600">You scored <span className="font-bold">{audioDictationScore}</span> out of a possible <span className="font-bold">{totalPossibleScore}</span> points.</p>
-                    <button onClick={startAudioDictationGame} className="mt-8 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+                <div className="text-center bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg">
+                    <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Audio Dictation Complete!</h3>
+                    <p className="text-lg text-slate-600 dark:text-slate-400 mt-2">You scored {audioDictationScore} out of a possible {audioDictationQuestions.length * 2} points.</p>
+                    <button onClick={startAudioDictationGame} className="mt-8 px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">
                         Play Again
                     </button>
                 </div>
             );
         }
-
         const currentQuestion = audioDictationQuestions[currentAudioDictationIndex];
         if (!currentQuestion) return null;
-
-        const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-            if (currentQuestion.isCorrect !== null) return;
-            const newQuestions = [...audioDictationQuestions];
-            newQuestions[currentAudioDictationIndex].userAnswer = e.target.value;
-            setAudioDictationQuestions(newQuestions);
-        };
-
-        const handleCheckAnswer = (e: React.FormEvent) => {
-            e.preventDefault();
-            if (currentQuestion.isCorrect !== null) return;
-
-            const isCorrect = currentQuestion.userAnswer.trim().toLowerCase() === currentQuestion.original.word.toLowerCase();
-            
-            if (isCorrect) {
-                const points = currentQuestion.meaningRevealed ? 1 : 2;
-                setAudioDictationScore(prev => prev + points);
-                handleWordPractice(currentQuestion.original, 'good');
-            } else {
-                handleWordPractice(currentQuestion.original, 'hard');
-            }
-
-            const newQuestions = [...audioDictationQuestions];
-            newQuestions[currentAudioDictationIndex].isCorrect = isCorrect;
-            setAudioDictationQuestions(newQuestions);
-        };
-        
-        const handleRevealMeaning = () => {
-            if (currentQuestion.isCorrect !== null || currentQuestion.meaningRevealed) return;
-            const newQuestions = [...audioDictationQuestions];
-            newQuestions[currentAudioDictationIndex].meaningRevealed = true;
-            setAudioDictationQuestions(newQuestions);
-        };
-
-        const handleGiveUp = () => {
-            if (currentQuestion.isCorrect !== null) return;
-            handleWordPractice(currentQuestion.original, 'hard');
-            const newQuestions = [...audioDictationQuestions];
-            newQuestions[currentAudioDictationIndex].isCorrect = false;
-            setAudioDictationQuestions(newQuestions);
-        };
-
-        const handleNextQuestion = () => {
-            if (currentAudioDictationIndex + 1 < audioDictationQuestions.length) {
-                setCurrentAudioDictationIndex(prev => prev + 1);
-            } else {
-                setIsAudioDictationSessionFinished(true);
-            }
-        };
-
-        let inputClasses = 'border-slate-300 focus:border-blue-500 focus:ring-blue-500';
+    
+        let inputClass = "w-full text-lg p-4 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50 dark:bg-slate-700 dark:text-white ";
         if (currentQuestion.isCorrect === true) {
-            inputClasses = 'border-green-500 ring-green-500 bg-green-50 text-green-800 font-bold';
+            inputClass += "bg-green-100 dark:bg-green-900/50 border-green-500 text-green-700";
         } else if (currentQuestion.isCorrect === false) {
-            inputClasses = 'border-red-500 ring-red-500 bg-red-50 text-red-800 font-semibold';
+            inputClass += "bg-red-100 dark:bg-red-900/50 border-red-500 text-red-700";
+        } else {
+            inputClass += "border-slate-300 dark:border-slate-600";
         }
         
         return (
-            <div>
-                <div className="text-right text-sm font-semibold text-slate-600 mb-2">
-                    <span>Progress: {currentAudioDictationIndex + 1} / {audioDictationQuestions.length}</span>
-                    <span className="mx-2">|</span>
-                    <span>Score: {audioDictationScore}</span>
+             <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg">
+                <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">Audio Dictation</h3>
+                    <span className="font-semibold text-slate-500 dark:text-slate-400">{currentAudioDictationIndex + 1} / {audioDictationQuestions.length}</span>
                 </div>
-                <div className="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
-                    <div className="mb-6">
-                        <AudioPlayer audioScript={currentQuestion.original.word} />
+                <p className="text-center text-slate-600 dark:text-slate-400 mb-4">Listen to the word and type what you hear.</p>
+                <div className="mb-6">
+                    <AudioPlayer audioScript={currentQuestion.original.word} />
+                </div>
+                {currentQuestion.meaningRevealed && (
+                    <div className="mb-4 text-center bg-yellow-100 dark:bg-yellow-900/50 p-3 rounded-lg">
+                        <p className="text-sm text-yellow-800 dark:text-yellow-200">Hint: {currentQuestion.original.definition}</p>
                     </div>
-
-                    <div className="text-center text-slate-700 mb-6 min-h-[3rem] flex items-center justify-center">
-                        {currentQuestion.meaningRevealed && (
-                            <p className="text-xl font-semibold animate-fade-in">{currentQuestion.original.definition}</p>
-                        )}
-                    </div>
-                    
-                    {currentQuestion.isCorrect !== null ? (
-                         <div className="mt-4 text-center">
-                            {currentQuestion.isCorrect ? (
-                               <p className="text-green-600 font-semibold mb-2 text-xl">Correct!</p>
-                            ) : (
-                               <p className="text-red-600 mb-2">The correct answer was: <strong className="font-bold text-red-700">{currentQuestion.original.word}</strong></p>
-                            )}
-                           <button 
-                               onClick={handleNextQuestion} 
-                               className="w-full sm:w-auto sm:px-12 py-3 bg-slate-700 text-white font-bold rounded-lg hover:bg-slate-800 transition-colors"
-                           >
-                               {currentAudioDictationIndex + 1 < audioDictationQuestions.length ? 'Next' : 'Finish Session'}
-                           </button>
-                       </div>
-                    ) : (
-                        <form onSubmit={handleCheckAnswer}>
-                             <input
-                                type="text"
-                                value={currentQuestion.userAnswer}
-                                onChange={handleInputChange}
-                                className={`w-full p-3 border-2 rounded-lg text-lg text-center focus:outline-none focus:ring-2 transition-colors ${inputClasses}`}
-                                placeholder="Type what you hear..."
-                                autoFocus
-                                autoComplete="off"
-                            />
-                            <div className="mt-4 flex flex-col sm:flex-row gap-2 justify-center">
-                                <button type="button" onClick={handleRevealMeaning} className="px-5 py-2 bg-yellow-500 text-white font-semibold rounded-lg hover:bg-yellow-600 transition-colors flex-1" disabled={currentQuestion.meaningRevealed}>
-                                    Reveal Meaning
-                                </button>
-                                <button type="submit" className="px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors flex-[2]">
-                                    Check Answer
-                                </button>
-                                <button type="button" onClick={handleGiveUp} className="px-5 py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition-colors flex-1">
-                                    I give up
-                                </button>
-                            </div>
-                        </form>
+                )}
+                 <form onSubmit={(e) => { e.preventDefault(); handleAudioDictationSubmit(currentAudioDictationIndex); }}>
+                     <input
+                        type="text"
+                        value={currentQuestion.userAnswer}
+                        onChange={(e) => handleAudioDictationInputChange(currentAudioDictationIndex, e.target.value)}
+                        className={inputClass}
+                        autoComplete="off"
+                        autoCapitalize="off"
+                        disabled={currentQuestion.isCorrect !== null}
+                        placeholder="Type the word you hear..."
+                    />
+                    {currentQuestion.isCorrect === false && (
+                        <p className="text-center text-green-600 font-bold mt-2">Correct word: {currentQuestion.original.word}</p>
                     )}
-                </div>
+                    <div className="mt-6 flex justify-between items-center">
+                         <button type="button" onClick={() => handleToggleMeaning(currentAudioDictationIndex)} className="px-4 py-2 bg-slate-200 dark:bg-slate-600 font-semibold rounded-lg hover:bg-slate-300 dark:hover:bg-slate-500 transition-colors disabled:opacity-50" disabled={currentQuestion.isCorrect !== null}>
+                            {currentQuestion.meaningRevealed ? 'Hide' : 'Show'} Hint
+                        </button>
+                        <button type="submit" className="px-8 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50" disabled={currentQuestion.isCorrect !== null}>
+                            Check Word
+                        </button>
+                    </div>
+                </form>
             </div>
-        );
-    }
-
-    const HangmanDrawing = ({ incorrectGuesses }: { incorrectGuesses: number }) => {
-        const head = <circle cx="125" cy="70" r="20" stroke="currentColor" strokeWidth="4" fill="none" />;
-        const body = <line x1="125" y1="90" x2="125" y2="150" stroke="currentColor" strokeWidth="4" />;
-        const rightArm = <line x1="125" y1="110" x2="155" y2="140" stroke="currentColor" strokeWidth="4" />;
-        const leftArm = <line x1="125" y1="110" x2="95" y2="140" stroke="currentColor" strokeWidth="4" />;
-        const rightLeg = <line x1="125" y1="150" x2="155" y2="180" stroke="currentColor" strokeWidth="4" />;
-        const leftLeg = <line x1="125" y1="150" x2="95" y2="180" stroke="currentColor" strokeWidth="4" />;
-    
-        const bodyParts = [head, body, rightArm, leftArm, rightLeg, leftLeg];
-    
-        return (
-            <svg height="250" width="200" className="mx-auto stroke-slate-700">
-                <line x1="20" y1="230" x2="100" y2="230" strokeWidth="4" />
-                <line x1="60" y1="230" x2="60" y2="30" strokeWidth="4" />
-                <line x1="60" y1="30" x2="125" y2="30" strokeWidth="4" />
-                <line x1="125" y1="30" x2="125" y2="50" strokeWidth="4" />
-                {bodyParts.slice(0, incorrectGuesses).map((part, index) => React.cloneElement(part, { key: index }))}
-            </svg>
         );
     };
 
-    const renderHangman = () => {
-        if (isHangmanSessionFinished) {
-            return (
-                 <div className="text-center bg-white p-8 rounded-xl shadow-lg">
-                    <h3 className="text-2xl font-bold text-slate-800">Session Complete!</h3>
-                    <p className="text-6xl font-bold text-blue-600 my-4">{Math.round((hangmanScore / hangmanQuestions.length) * 100)}%</p>
-                    <p className="text-lg text-slate-600">You guessed <span className="font-bold">{hangmanScore}</span> out of <span className="font-bold">{hangmanQuestions.length}</span> words correctly.</p>
-                    <button onClick={startHangmanGame} className="mt-8 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
-                        Play Again
-                    </button>
-                </div>
-            )
-        }
-        
-        const currentQuestion = hangmanQuestions[currentHangmanIndex];
-        if (!currentQuestion) return null;
-
-        const handleGuess = (letter: string) => {
-            if (currentQuestion.status !== 'playing') return;
-
-            const newQuestions = [...hangmanQuestions];
-            const q = newQuestions[currentHangmanIndex];
-
-            if (q.letters.includes(letter)) {
-                q.guessedCorrectly.add(letter);
-            } else {
-                q.guessedIncorrectly.add(letter);
-            }
-            
-            const isWon = q.letters.every(l => q.guessedCorrectly.has(l));
-            const isLost = q.guessedIncorrectly.size >= MAX_INCORRECT_GUESSES;
-
-            if(isWon) {
-                q.status = 'won';
-                setHangmanScore(prev => prev + 1);
-                handleWordPractice(q.original, 'good');
-            } else if (isLost) {
-                q.status = 'lost';
-                handleWordPractice(q.original, 'hard');
-            }
-
-            setHangmanQuestions(newQuestions);
-        };
-
-        const handleNextHangman = () => {
-            if (currentHangmanIndex + 1 < hangmanQuestions.length) {
-                setCurrentHangmanIndex(prev => prev + 1);
-            } else {
-                setIsHangmanSessionFinished(true);
-            }
-        }
-        
-        const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
-
-        return (
-            <div>
-                 <div className="text-right text-sm font-semibold text-slate-600 mb-2">
-                    <span>Word: {currentHangmanIndex + 1} / {hangmanQuestions.length}</span>
-                    <span className="mx-2">|</span>
-                    <span>Score: {hangmanScore}</span>
-                </div>
-                <div className="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
-                        <HangmanDrawing incorrectGuesses={currentQuestion.guessedIncorrectly.size} />
-                        <div className="text-center md:text-left">
-                            <p className="text-lg text-slate-600 mb-4">Clue: <span className="font-semibold">{currentQuestion.original.definition}</span></p>
-                            <div className="flex justify-center md:justify-start gap-2 flex-wrap mb-4">
-                                {currentQuestion.letters.map((letter, index) => (
-                                    <span key={index} className="w-10 h-10 bg-slate-200 rounded-md flex items-center justify-center text-2xl font-bold uppercase">
-                                        {currentQuestion.guessedCorrectly.has(letter) || currentQuestion.status === 'lost' ? letter : ''}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                     {currentQuestion.status !== 'playing' ? (
-                        <div className="text-center mt-4">
-                            {currentQuestion.status === 'won' && <p className="text-2xl font-bold text-green-600">You won!</p>}
-                            {currentQuestion.status === 'lost' && <p className="text-2xl font-bold text-red-600">You lost! The word was: {currentQuestion.original.word}</p>}
-                            <button onClick={handleNextHangman} className="mt-4 px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg">
-                                {currentHangmanIndex < hangmanQuestions.length - 1 ? 'Next Word' : 'Finish'}
-                            </button>
-                        </div>
-                    ) : (
-                         <div className="mt-6 flex flex-wrap gap-2 justify-center">
-                            {alphabet.map(letter => {
-                                const isGuessed = currentQuestion.guessedCorrectly.has(letter) || currentQuestion.guessedIncorrectly.has(letter);
-                                return (
-                                <button
-                                    key={letter}
-                                    onClick={() => handleGuess(letter)}
-                                    disabled={isGuessed}
-                                    className="w-10 h-10 font-bold uppercase rounded-md bg-slate-200 hover:bg-slate-300 disabled:bg-slate-400 disabled:text-white disabled:cursor-not-allowed transition-colors"
-                                >
-                                    {letter}
-                                </button>
-                            )})}
-                        </div>
-                    )}
-                </div>
-            </div>
-        )
-    };
-    
     const renderDefinitionMatch = () => {
-         if (isDMatchGameFinished) {
+        if (isDMatchGameFinished) {
             return (
-                <div className="text-center bg-white p-8 rounded-xl shadow-lg">
-                    <h3 className="text-2xl font-bold text-slate-800">Congratulations!</h3>
-                    <p className="text-lg text-slate-600 mt-2">You matched all the words.</p>
-                    <button onClick={startDMatchGame} className="mt-8 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+                <div className="text-center bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg">
+                    <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Well Done!</h3>
+                    <p className="text-lg text-slate-600 dark:text-slate-400 mt-2">You've matched all the words and definitions.</p>
+                    <button onClick={startDMatchGame} className="mt-8 px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">
                         Play Again
                     </button>
                 </div>
             );
         }
         
-        if (isDMatchTurnFinished) {
-            return (
-                <div className="text-center bg-white p-8 rounded-xl shadow-lg">
-                    <h3 className="text-2xl font-bold text-slate-800">Round {dMatchTurn + 1} Complete!</h3>
-                    <p className="text-lg text-slate-600 mt-2">Ready for the next set?</p>
-                    <button onClick={() => setupDMatchTurn(fullDMatchDeck, dMatchTurn + 1)} className="mt-8 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
-                        Next Round
-                    </button>
-                </div>
-            );
-        }
-
-        const handleDMatchSelect = (item: DMatchItemType) => {
-            setIncorrectDMatchPair(null);
-            if (correctDMatches.includes(item.item.word)) return;
-    
-            if (item.type === 'word') {
-                setSelectedDMatchWord(item);
-            } else if (item.type === 'definition' && selectedDMatchWord) {
-                if (item.item.word === selectedDMatchWord.item.word) {
-                    // Correct match
-                    setCorrectDMatches(prev => [...prev, item.item.word]);
-                    handleWordPractice(item.item, 'good');
-                    setSelectedDMatchWord(null);
-
-                    if (correctDMatches.length + 1 === dMatchWords.length) {
-                         const isMoreWords = (dMatchTurn + 1) * WORDS_PER_DMATCH_TURN < fullDMatchDeck.length;
-                        if(isMoreWords) setIsDMatchTurnFinished(true);
-                        else setIsDMatchGameFinished(true);
-                    }
-
-                } else {
-                    // Incorrect match
-                    setIncorrectDMatchPair([selectedDMatchWord.item.word, item.item.definition]);
-                    handleWordPractice(selectedDMatchWord.item, 'hard');
-                    setSelectedDMatchWord(null);
-                    setTimeout(() => setIncorrectDMatchPair(null), 1000);
-                }
-            }
-        };
-
-        const getItemClasses = (item: DMatchItemType) => {
-            const base = "w-full p-4 border rounded-lg text-left transition-all duration-200";
-            if (correctDMatches.includes(item.item.word)) return `${base} bg-green-100 border-green-300 text-green-800 cursor-not-allowed`;
-            if (incorrectDMatchPair && (incorrectDMatchPair[0] === item.item.word || incorrectDMatchPair[1] === item.item.definition)) return `${base} bg-red-100 border-red-400 animate-shake`;
-            if (selectedDMatchWord?.item.word === item.item.word && item.type === 'word') return `${base} bg-blue-100 border-blue-400 ring-2 ring-blue-300`;
-            return `${base} bg-white hover:bg-slate-50 border-slate-300`;
-        };
-
         return (
-            <div>
-                 <p className="text-center text-slate-600 mb-6">Click a word, then click its matching definition. <strong>Round {dMatchTurn + 1} of {Math.ceil(fullDMatchDeck.length / WORDS_PER_DMATCH_TURN)}</strong></p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-                    <div className="space-y-3">
-                        {dMatchWords.map(wordItem => (
-                            <button key={wordItem.item.word} onClick={() => handleDMatchSelect(wordItem)} className={getItemClasses(wordItem)}>
-                                <span className="font-bold">{wordItem.item.word}</span>
-                            </button>
-                        ))}
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg">
+                 <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">Definition Match</h3>
+                    <span className="font-semibold text-slate-500 dark:text-slate-400">Turn {dMatchTurn + 1} / {Math.ceil(fullDMatchDeck.length / WORDS_PER_DMATCH_TURN)}</span>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Words Column */}
+                    <div className="space-y-2">
+                        {dMatchWords.map((wordItem, index) => {
+                            const isSelected = selectedDMatchWord?.item.word === wordItem.item.word;
+                            const isCorrect = correctDMatches.includes(wordItem.item.word);
+                            const isIncorrect = incorrectDMatchPair?.[0] === wordItem.item.word;
+                            let btnClass = "w-full text-left p-3 rounded-lg border-2 font-semibold transition-all duration-200 ";
+    
+                            if (isCorrect) btnClass += "bg-green-100 dark:bg-green-900/50 border-green-500 text-green-800 dark:text-green-300 opacity-50 cursor-default";
+                            else if (isIncorrect) btnClass += "bg-red-100 dark:bg-red-900/50 border-red-500 text-red-800 dark:text-red-300";
+                            else if (isSelected) btnClass += "bg-blue-100 dark:bg-blue-900/50 border-blue-500 text-blue-800 dark:text-blue-300 ring-2 ring-blue-300";
+                            else btnClass += "bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 hover:border-blue-400 cursor-pointer";
+    
+                            return <button key={`word-${index}`} onClick={() => handleDMatchWordSelect(wordItem)} className={btnClass} disabled={isCorrect}>{wordItem.item.word}</button>;
+                        })}
                     </div>
-                     <div className="space-y-3">
-                        {dMatchDefinitions.map(defItem => (
-                            <button key={defItem.item.word} onClick={() => handleDMatchSelect(defItem)} className={getItemClasses(defItem)}>
-                                {defItem.item.definition}
-                            </button>
-                        ))}
+                    {/* Definitions Column */}
+                    <div className="space-y-2">
+                        {dMatchDefinitions.map((defItem, index) => {
+                             const isCorrect = correctDMatches.includes(defItem.item.word);
+                             const isIncorrect = incorrectDMatchPair?.[1] === defItem.item.definition;
+                             let btnClass = "w-full text-left p-3 rounded-lg border-2 text-sm transition-all duration-200 truncate ";
+    
+                             if (isCorrect) btnClass += "bg-green-100 dark:bg-green-900/50 border-green-500 text-green-800 dark:text-green-300 opacity-50 cursor-default";
+                             else if (isIncorrect) btnClass += "bg-red-100 dark:bg-red-900/50 border-red-500 text-red-800 dark:text-red-300";
+                             else btnClass += "bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 hover:border-blue-400 cursor-pointer";
+    
+                             return <button key={`def-${index}`} onClick={() => handleDMatchDefinitionSelect(defItem)} className={btnClass} disabled={isCorrect} title={defItem.item.definition}>{defItem.item.definition}</button>
+                        })}
                     </div>
                 </div>
+                 {isDMatchTurnFinished && (
+                     <div className="text-center mt-6">
+                        <button onClick={() => setupDMatchTurn(fullDMatchDeck, dMatchTurn + 1)} className="px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">
+                            Next Set
+                        </button>
+                    </div>
+                )}
             </div>
         );
-    }
+    };
+    
+    const renderListeningTranslation = () => {
+        switch (ltState) {
+            case 'generating':
+                return (
+                    <div className="flex flex-col items-center justify-center p-12 bg-white dark:bg-slate-800 rounded-xl shadow-lg">
+                        <LoadingIcon className="h-12 w-12 text-blue-600 animate-spin" />
+                        <h3 className="mt-6 text-xl font-semibold text-slate-700 dark:text-slate-200">Generating New Exercise...</h3>
+                        <p className="mt-2 text-slate-500 dark:text-slate-400">The AI is creating a sentence using words from this set.</p>
+                    </div>
+                );
+
+            case 'answering':
+            case 'evaluating':
+                return (
+                    <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
+                        <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 text-center mb-2">Listen and Translate</h3>
+                        <p className="text-slate-600 dark:text-slate-400 text-center mb-6">Listen to the English sentence, then type your Vietnamese translation below.</p>
+                        {showLtHint && <HintBox onClose={() => setShowLtHint(false)} />}
+                        <div className="mb-6">
+                            <AudioPlayer audioScript={originalSentence} />
+                        </div>
+                        <textarea
+                            value={userTranslation}
+                            onChange={(e) => setUserTranslation(e.target.value)}
+                            className="w-full h-40 p-4 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50 dark:bg-slate-700 dark:text-white"
+                            placeholder="Nhập bản dịch tiếng Việt của bạn ở đây..."
+                            disabled={ltState === 'evaluating'}
+                        />
+                        {ltError && <p className="text-red-500 text-center mt-4 font-semibold">{ltError}</p>}
+                        <div className="mt-6 flex flex-col-reverse sm:flex-row gap-4">
+                            <button
+                                onClick={generateNewLtExercise}
+                                className="w-full sm:w-auto flex items-center justify-center gap-2 py-3 px-5 bg-slate-200 dark:bg-slate-600 text-slate-700 dark:text-slate-200 font-semibold rounded-lg hover:bg-slate-300 dark:hover:bg-slate-500 transition-colors disabled:opacity-50"
+                                disabled={ltState === 'evaluating'}
+                                aria-label="Get a new sentence"
+                            >
+                                <RefreshIcon className="h-5 w-5" />
+                                <span>New Sentence</span>
+                            </button>
+                            <button
+                                onClick={handleLtSubmit}
+                                className="w-full flex-grow flex items-center justify-center gap-2 py-4 px-6 bg-blue-600 text-white font-bold text-lg rounded-lg hover:bg-blue-700 transition-colors disabled:bg-blue-300"
+                                disabled={ltState === 'evaluating'}
+                            >
+                                {ltState === 'evaluating' ? (
+                                    <><LoadingIcon className="h-6 w-6 animate-spin" /><span>Evaluating...</span></>
+                                ) : (
+                                    "Submit for AI Evaluation"
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                );
+
+            case 'result':
+                if (!ltEvaluation) return null;
+                const getScoreColor = (score: number) => {
+                    if (score >= 90) return 'text-green-500';
+                    if (score >= 70) return 'text-blue-500';
+                    if (score >= 50) return 'text-yellow-500';
+                    return 'text-red-500';
+                };
+                return (
+                    <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
+                        <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100 text-center mb-6">Kết quả đánh giá</h3>
+                        <div className="text-center bg-slate-100 dark:bg-slate-700/50 p-6 rounded-lg mb-6">
+                            <p className="text-lg font-semibold text-slate-700 dark:text-slate-300">Điểm của bạn</p>
+                            <p className={`text-7xl font-bold my-2 ${getScoreColor(ltEvaluation.score)}`}>{ltEvaluation.score}%</p>
+                        </div>
+                        <div className="bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg mb-6">
+                            <h4 className="font-bold text-slate-800 dark:text-slate-200">Nhận xét từ AI:</h4>
+                            <p className="text-slate-600 dark:text-slate-300 mt-1 italic">{ltEvaluation.feedback_vi}</p>
+                        </div>
+                        <div className="space-y-4">
+                            <div>
+                                <h4 className="font-semibold text-slate-500 dark:text-slate-400">Câu gốc (Tiếng Anh):</h4>
+                                <p className="p-3 bg-slate-50 dark:bg-slate-900/50 rounded-md text-slate-800 dark:text-slate-200">{originalSentence}</p>
+                            </div>
+                             <div>
+                                <h4 className="font-semibold text-slate-500 dark:text-slate-400">Bản dịch của bạn (Tiếng Việt):</h4>
+                                <p className="p-3 bg-slate-50 dark:bg-slate-900/50 rounded-md text-slate-800 dark:text-slate-200">{userTranslation}</p>
+                            </div>
+                        </div>
+                        <div className="mt-8">
+                             <button
+                                onClick={generateNewLtExercise}
+                                className="w-full flex items-center justify-center gap-2 py-4 px-6 bg-blue-600 text-white font-bold text-lg rounded-lg hover:bg-blue-700 transition-colors"
+                            >
+                                <RefreshIcon className="h-6 w-6" />
+                                Next Exercise
+                            </button>
+                        </div>
+                    </div>
+                );
+            default:
+                return null;
+        }
+    };
+
+
+    const renderContent = () => {
+        switch (mode) {
+            case 'flashcards': return renderFlashcards();
+            case 'quiz': return renderQuiz();
+            case 'matching_game': return renderMatchingGame();
+            case 'scrambler': return renderScrambler();
+            case 'spelling_recall': return renderSpellingRecall();
+            case 'audio_dictation': return renderAudioDictation();
+            case 'definition_match': return renderDefinitionMatch();
+            case 'listening_translation': return renderListeningTranslation();
+            default:
+                return renderFlashcards();
+        }
+    };
+    
+     const studyModes: { id: StudyMode; name: string; icon: React.FC<any> }[] = [
+        { id: 'flashcards', name: 'Flashcards', icon: BookOpenIcon },
+        { id: 'quiz', name: 'Quiz', icon: BrainIcon },
+        { id: 'matching_game', name: 'Matching Game', icon: GridIcon },
+        { id: 'definition_match', name: 'Definition Match', icon: LinkIcon },
+        { id: 'scrambler', name: 'Scrambler', icon: PuzzleIcon },
+        { id: 'spelling_recall', name: 'Spelling Recall', icon: TypeIcon },
+        { id: 'audio_dictation', name: 'Audio Dictation', icon: HeadphoneIcon },
+        { id: 'listening_translation', name: 'Listen & Translate (AI)', icon: SparklesIcon },
+    ];
 
     return (
-        <div className="container mx-auto px-4 py-12">
+        <div className="container mx-auto px-4 py-8">
              {toastMessage && (
                 <div className="fixed bottom-5 right-5 bg-slate-800 text-white px-6 py-3 rounded-lg shadow-xl z-50 animate-bounce">
                     {toastMessage}
                 </div>
             )}
-            <div className="max-w-4xl mx-auto">
-                <button onClick={onBack} className="mb-8 inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                    Back to Test List
+             {!showLtHint && mode === 'listening_translation' && (ltState === 'answering' || ltState === 'evaluating') && (
+                <button onClick={() => setShowLtHint(true)} className="fixed top-24 right-4 z-50 p-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700" aria-label="Show hint">
+                    <QuestionMarkCircleIcon className="h-6 w-6" />
                 </button>
+            )}
+            <div className="max-w-5xl mx-auto">
+                <button onClick={onBack} className="mb-6 inline-flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-semibold transition-colors">
+                    <ArrowLeftIcon className="h-5 w-5 mr-2" />
+                    Back to Test Selection
+                </button>
+
                 <div className="text-center mb-8">
-                    <h2 className="text-3xl font-extrabold text-slate-900 sm:text-4xl">{testData.title}</h2>
-                    <p className="text-slate-600">{testData.words.length} terms</p>
+                    <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white sm:text-4xl">{testData.title}</h2>
+                    <p className="mt-2 text-lg text-slate-500 dark:text-slate-400">{wordsForSession.length} words</p>
                 </div>
-
-                <div className="flex justify-center items-center gap-1 sm:gap-2 bg-slate-200 p-1 rounded-full mb-8 flex-wrap">
-                    <button 
-                        onClick={() => handleModeChange('flashcards')} 
-                        className={`px-3 sm:px-4 py-2 rounded-full font-semibold flex items-center gap-2 transition-colors text-sm sm:text-base ${mode === 'flashcards' ? 'bg-white text-blue-600 shadow' : 'bg-transparent text-slate-600'}`}>
-                        <BookOpenIcon className="h-5 w-5" /> Flashcards
-                    </button>
-                    <button 
-                        onClick={() => handleModeChange('quiz')} 
-                        className={`px-3 sm:px-4 py-2 rounded-full font-semibold flex items-center gap-2 transition-colors text-sm sm:text-base ${mode === 'quiz' ? 'bg-white text-blue-600 shadow' : 'bg-transparent text-slate-600'}`}>
-                        <BrainIcon className="h-5 w-5" /> Quiz
-                    </button>
-                     <button 
-                        onClick={() => handleModeChange('definition_match')} 
-                        className={`px-3 sm:px-4 py-2 rounded-full font-semibold flex items-center gap-2 transition-colors text-sm sm:text-base ${mode === 'definition_match' ? 'bg-white text-blue-600 shadow' : 'bg-transparent text-slate-600'}`}>
-                        <LinkIcon className="h-5 w-5" /> Definition Match
-                    </button>
-                    <button 
-                        onClick={() => handleModeChange('matching_game')} 
-                        className={`px-3 sm:px-4 py-2 rounded-full font-semibold flex items-center gap-2 transition-colors text-sm sm:text-base ${mode === 'matching_game' ? 'bg-white text-blue-600 shadow' : 'bg-transparent text-slate-600'}`}>
-                        <GridIcon className="h-5 w-5" /> Card Match
-                    </button>
-                     <button 
-                        onClick={() => handleModeChange('scrambler')} 
-                        className={`px-3 sm:px-4 py-2 rounded-full font-semibold flex items-center gap-2 transition-colors text-sm sm:text-base ${mode === 'scrambler' ? 'bg-white text-blue-600 shadow' : 'bg-transparent text-slate-600'}`}>
-                        <PuzzleIcon className="h-5 w-5" /> Scrambler
-                    </button>
-                    <button 
-                        onClick={() => handleModeChange('spelling_recall')} 
-                        className={`px-3 sm:px-4 py-2 rounded-full font-semibold flex items-center gap-2 transition-colors text-sm sm:text-base ${mode === 'spelling_recall' ? 'bg-white text-blue-600 shadow' : 'bg-transparent text-slate-600'}`}>
-                        <TypeIcon className="h-5 w-5" /> Spelling
-                    </button>
-                    <button 
-                        onClick={() => handleModeChange('audio_dictation')} 
-                        className={`px-3 sm:px-4 py-2 rounded-full font-semibold flex items-center gap-2 transition-colors text-sm sm:text-base ${mode === 'audio_dictation' ? 'bg-white text-blue-600 shadow' : 'bg-transparent text-slate-600'}`}>
-                        <HeadphoneIcon className="h-5 w-5" /> Audio
-                    </button>
-                     <button 
-                        onClick={() => handleModeChange('hangman')} 
-                        className={`px-3 sm:px-4 py-2 rounded-full font-semibold flex items-center gap-2 transition-colors text-sm sm:text-base ${mode === 'hangman' ? 'bg-white text-blue-600 shadow' : 'bg-transparent text-slate-600'}`}>
-                        <TargetIcon className="h-5 w-5" /> Hangman
-                    </button>
-                </div>
-
-                <div>
-                    {mode === 'flashcards' && renderFlashcards()}
-                    {mode === 'quiz' && renderQuiz()}
-                    {mode === 'matching_game' && renderMatchingGame()}
-                    {mode === 'scrambler' && renderScrambler()}
-                    {mode === 'spelling_recall' && renderSpellingRecall()}
-                    {mode === 'audio_dictation' && renderAudioDictationChallenge()}
-                    {mode === 'hangman' && renderHangman()}
-                    {mode === 'definition_match' && renderDefinitionMatch()}
-                </div>
-
-                {mode === 'flashcards' && (
-                    <div className="mt-8 flex justify-end">
-                        <button onClick={handleShuffle} className="p-2 rounded-full hover:bg-slate-200 transition-colors" title="Shuffle Deck">
-                           <ShuffleIcon className="h-6 w-6 text-slate-600" />
-                        </button>
+                
+                <div className="mb-8">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                         {studyModes.map(m => (
+                            <button 
+                                key={m.id}
+                                onClick={() => setMode(m.id)}
+                                className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold transition-colors text-sm ${mode === m.id ? 'bg-blue-600 text-white' : 'bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'}`}
+                            >
+                                <m.icon className="h-5 w-5"/>
+                                <span>{m.name}</span>
+                            </button>
+                         ))}
                     </div>
-                )}
+                </div>
+                
+                <div>
+                     {renderContent()}
+                </div>
             </div>
         </div>
     );

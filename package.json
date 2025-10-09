@@ -1,23 +1,22 @@
 {
-  "name": "toeic-zone-with-mr-phat",
+  "name": "toeic-zone-with-mr.-phat",
   "private": true,
-  "version": "1.0.0",
+  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npx vite build",
-    "start": "npx serve -s dist -l $PORT"
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "@google/genai": "^1.21.0",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "serve": "^14.2.3",
-    "vite": "^6.2.0"
+    "@google/genai": "^1.21.0",
+    "react-dom": "^19.1.1"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
     "@vitejs/plugin-react": "^5.0.0",
-    "typescript": "~5.8.2"
+    "typescript": "~5.8.2",
+    "vite": "^6.2.0"
   }
 }

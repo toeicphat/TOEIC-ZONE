@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ArrowLeftIcon, LoadingIcon, RefreshIcon, TrophyIcon } from './icons';
+import { ArrowLeftIcon, LoadingIcon, RefreshIcon, TrophyIcon, LightBulbIcon, XCircleIcon, QuestionMarkCircleIcon } from './icons';
 import { generateWritingPart3Task, evaluateWritingPart3 } from '../services/geminiService';
 import { WritingPart3Task, WritingPart3EvaluationResult, User } from '../types';
 import Timer from './Timer';
@@ -14,12 +14,31 @@ interface WritingPart3ScreenProps {
     currentUser: User;
 }
 
+const HintBox: React.FC<{onClose: () => void}> = ({onClose}) => (
+    <div className="bg-blue-50 dark:bg-slate-800/50 border-l-4 border-blue-500 text-blue-800 dark:text-blue-300 p-4 rounded-r-lg mb-6 relative">
+        <div className="flex">
+            <div className="flex-shrink-0">
+                <LightBulbIcon className="h-6 w-6 text-blue-500" />
+            </div>
+            <div className="ml-3">
+                <h3 className="text-lg font-bold">Pro Tip: Write an Opinion Essay</h3>
+                <p className="text-sm mt-1">Plan your essay before writing. Your essay should have a clear introduction (stating your opinion), body paragraphs (with reasons and examples), and a conclusion. Aim for at least 300 words to fully develop your ideas.</p>
+            </div>
+        </div>
+        <button onClick={onClose} className="absolute top-2 right-2 p-1 rounded-full hover:bg-blue-100 dark:hover:bg-slate-700" aria-label="Close hint">
+            <XCircleIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+        </button>
+    </div>
+);
+
+
 const WritingPart3Screen: React.FC<WritingPart3ScreenProps> = ({ onBack, currentUser }) => {
     const [practiceState, setPracticeState] = useState<PracticeState>('idle');
     const [task, setTask] = useState<WritingPart3Task | null>(null);
     const [userAnswer, setUserAnswer] = useState<string>('');
     const [evaluationResult, setEvaluationResult] = useState<WritingPart3EvaluationResult | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [showHint, setShowHint] = useState(true);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     const wordCount = userAnswer.trim().split(/\s+/).filter(Boolean).length;
@@ -55,6 +74,7 @@ const WritingPart3Screen: React.FC<WritingPart3ScreenProps> = ({ onBack, current
         setPracticeState('generating');
         setError(null);
         setEvaluationResult(null);
+        setShowHint(true);
         try {
             const generatedTask = await generateWritingPart3Task();
             if (generatedTask) {
@@ -111,32 +131,35 @@ const WritingPart3Screen: React.FC<WritingPart3ScreenProps> = ({ onBack, current
         if (!task) return null;
 
         return (
-            <div className="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">Question 8: Opinion Essay</h2>
-                    <Timer initialTime={TOTAL_TIME} onTimeUp={handleSubmitPractice} />
+            <>
+                {showHint && <HintBox onClose={() => setShowHint(false)} />}
+                <div className="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">Question 8: Opinion Essay</h2>
+                        <Timer initialTime={TOTAL_TIME} onTimeUp={handleSubmitPractice} />
+                    </div>
+                    <div className="mb-4 p-4 bg-slate-100 dark:bg-slate-700/50 rounded-lg border dark:border-slate-600">
+                        <h3 className="font-bold text-slate-800 dark:text-slate-200">Directions:</h3>
+                        <p className="text-slate-700 dark:text-slate-300 mt-2">Read the question below. You have 30 minutes to plan, write, and revise your essay. Typically, an effective response will contain a minimum of 300 words.</p>
+                        <p className="font-semibold text-slate-800 dark:text-slate-200 mt-4">{task.question}</p>
+                    </div>
+                    <div>
+                        <textarea
+                            ref={textareaRef}
+                            value={userAnswer}
+                            onChange={(e) => setUserAnswer(e.target.value)}
+                            placeholder="Write your essay here..."
+                            className="w-full h-96 p-4 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-900 dark:text-white"
+                        />
+                         <div className="flex justify-between items-center mt-2">
+                            <p className={`text-sm ${wordCount < 300 ? 'text-yellow-600 dark:text-yellow-400' : 'text-green-600 dark:text-green-400'} font-semibold`}>Word count: {wordCount}</p>
+                            <button onClick={handleSubmitPractice} className="px-8 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-colors">
+                                Submit Essay
+                            </button>
+                         </div>
+                    </div>
                 </div>
-                <div className="mb-4 p-4 bg-slate-100 dark:bg-slate-700/50 rounded-lg border dark:border-slate-600">
-                    <h3 className="font-bold text-slate-800 dark:text-slate-200">Directions:</h3>
-                    <p className="text-slate-700 dark:text-slate-300 mt-2">Read the question below. You have 30 minutes to plan, write, and revise your essay. Typically, an effective response will contain a minimum of 300 words.</p>
-                    <p className="font-semibold text-slate-800 dark:text-slate-200 mt-4">{task.question}</p>
-                </div>
-                <div>
-                    <textarea
-                        ref={textareaRef}
-                        value={userAnswer}
-                        onChange={(e) => setUserAnswer(e.target.value)}
-                        placeholder="Write your essay here..."
-                        className="w-full h-96 p-4 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-900 dark:text-white"
-                    />
-                     <div className="flex justify-between items-center mt-2">
-                        <p className={`text-sm ${wordCount < 300 ? 'text-yellow-600 dark:text-yellow-400' : 'text-green-600 dark:text-green-400'} font-semibold`}>Word count: {wordCount}</p>
-                        <button onClick={handleSubmitPractice} className="px-8 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-colors">
-                            Submit Essay
-                        </button>
-                     </div>
-                </div>
-            </div>
+            </>
         );
     };
 
@@ -207,6 +230,11 @@ const WritingPart3Screen: React.FC<WritingPart3ScreenProps> = ({ onBack, current
     return (
         <div className="container mx-auto px-4 py-12">
             <div className="max-w-4xl mx-auto">
+                {!showHint && practiceState === 'practicing' && (
+                    <button onClick={() => setShowHint(true)} className="fixed top-24 right-4 z-50 p-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700" aria-label="Show hint">
+                        <QuestionMarkCircleIcon className="h-6 w-6" />
+                    </button>
+                )}
                 <button onClick={onBack} className="mb-8 inline-flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-semibold transition-colors disabled:opacity-50" disabled={practiceState !== 'idle'}>
                     <ArrowLeftIcon className="h-5 w-5 mr-2" />
                     Back to Writing Practice

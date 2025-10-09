@@ -1,11 +1,28 @@
+
 import { GoogleGenAI, Type } from "@google/genai";
-// FIX: Import TestData type
-import { DictationExercise, TestData, SpeakingPart1EvaluationResult, SpeakingPart2EvaluationResult, SpeakingPart3EvaluationResult, SpeakingPart4Task, SpeakingPart4EvaluationResult, SpeakingPart5Scenario, SpeakingPart5EvaluationResult, WritingPart1Task, WritingPart1EvaluationResult, WritingPart2Task, WritingPart2EvaluationResult, WritingPart3Task, WritingPart3EvaluationResult, DeterminerExercise } from '../types';
+import { 
+    DictationExercise, 
+    TestData, 
+    SpeakingPart1EvaluationResult, 
+    SpeakingPart2EvaluationResult, 
+    SpeakingPart3EvaluationResult, 
+    SpeakingPart4Task, 
+    SpeakingPart4EvaluationResult, 
+    SpeakingPart5Scenario, 
+    SpeakingPart5EvaluationResult, 
+    WritingPart1Task, 
+    WritingPart1EvaluationResult, 
+    WritingPart2Task, 
+    WritingPart2EvaluationResult, 
+    WritingPart3Task, 
+    WritingPart3EvaluationResult, 
+    DeterminerExercise,
+    TranslationEvaluationResult,
+    VocabItem
+} from '../types';
+import { getRandomVocabularyWords } from './vocabularyLibrary';
 
-const ai = new GoogleGenAI({
-  apiKey: import.meta.env.VITE_GEMINI_API_KEY
-});
-
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
 
 // Interface for the structured response from the speaking evaluation AI
 export interface SpeakingEvaluationResult {
@@ -51,7 +68,6 @@ export const generateDictationExercise = async (): Promise<DictationExercise | n
         `;
         
         const response = await ai.models.generateContent({
-            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -91,7 +107,6 @@ export const generateDictationFromUserInput = async (topic: string): Promise<Dic
         `;
         
         const response = await ai.models.generateContent({
-            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -113,33 +128,7 @@ export const generateDictationFromUserInput = async (topic: string): Promise<Dic
     }
 };
 
-
-// FIX: Add generateTOEICMiniTest function and associated schemas.
-const questionSchema = {
-    type: Type.OBJECT,
-    properties: {
-        id: { type: Type.INTEGER, description: 'A unique integer ID for the question, starting from 101.' },
-        part: { type: Type.INTEGER, description: 'The TOEIC part number (e.g., 1, 2, 5, 6, 7).' },
-        questionText: { type: Type.STRING, description: 'The main text of the question. For fill-in-the-blanks, use "____". For Part 7, this contains the passage for the first question in a set.' },
-        options: {
-            type: Type.OBJECT,
-            properties: {
-                A: { type: Type.STRING },
-                B: { type: Type.STRING },
-                C: { type: Type.STRING },
-                D: { type: Type.STRING },
-            },
-            required: ['A', 'B', 'C', 'D']
-        },
-        correctAnswer: { type: Type.STRING, description: "The correct option key ('A', 'B', 'C', or 'D')." },
-        explanation: { type: Type.STRING, description: 'A brief explanation of why the correct answer is right.' },
-        image: { type: Type.STRING, description: 'Optional. For Part 1, a URL to a relevant image. Use a placeholder like https://placehold.co/600x400.' },
-        audioScript: { type: Type.STRING, description: 'Optional. For listening parts (1-4), the script for the audio.' },
-    },
-    required: ['id', 'part', 'questionText', 'options', 'correctAnswer', 'explanation']
-};
-
-const testSchema = {
+const grammarTestSchema = {
     type: Type.OBJECT,
     properties: {
         testTitle: { type: Type.STRING, description: 'A creative title for this mini-test, e.g., "TOEIC Mini-Test: Business Scenarios".' },
@@ -148,51 +137,73 @@ const testSchema = {
         questions: {
             type: Type.ARRAY,
             description: 'An array of question objects.',
-            items: questionSchema
+            items: {
+                type: Type.OBJECT,
+                properties: {
+                    id: { type: Type.INTEGER, description: 'A unique integer ID for the question, starting from 101.' },
+                    part: { type: Type.INTEGER, description: 'The TOEIC part number (e.g., 1, 2, 5, 6, 7).' },
+                    questionText: { type: Type.STRING, description: 'The main text of the question. For fill-in-the-blanks, use "____".' },
+                    options: {
+                        type: Type.OBJECT,
+                        properties: {
+                            A: { type: Type.STRING },
+                            B: { type: Type.STRING },
+                            C: { type: Type.STRING },
+                            D: { type: Type.STRING },
+                        },
+                        required: ['A', 'B', 'C', 'D']
+                    },
+                    correctAnswer: { type: Type.STRING, description: "The correct option key ('A', 'B', 'C', or 'D')." },
+                    explanation: { type: Type.STRING, description: 'A brief explanation of why the correct answer is right.' },
+                },
+                required: ['id', 'part', 'questionText', 'options', 'correctAnswer', 'explanation']
+            }
         }
     },
     required: ['testTitle', 'duration', 'category', 'questions']
 };
 
+// FIX: Add the missing generateTOEICMiniTest function.
 export const generateTOEICMiniTest = async (): Promise<TestData | null> => {
     try {
         const prompt = `
-            You are an expert TOEIC test creator. Generate a complete mini-TOEIC test in JSON format according to the provided schema.
+            You are an expert TOEIC test creator. Generate a mini-test in JSON format according to the provided schema.
 
             Instructions:
-            1.  Create a test with exactly 5 questions.
-            2.  Include a mix of questions from different TOEIC parts (e.g., Part 5 Incomplete Sentences, Part 7 Reading Comprehension). Do not include listening parts (1-4) or Part 6. Focus on reading comprehension.
-            3.  For each question, provide a unique ID starting from 101.
-            4.  For Part 7, write a short passage (email, notice, article) in the 'questionText' for the first question of the set, and then for subsequent questions related to that passage, write "Refer to the previous passage." in their 'questionText'. All questions for a passage should be grouped together.
-            5.  Ensure all fields in the schema are filled correctly.
-            6.  Set the duration to 375 seconds (5 questions * 75 seconds).
+            1.  Create a test with exactly 10 multiple-choice questions.
+            2.  The questions must be original and should be similar to TOEIC Part 5 (Incomplete Sentences), testing a mix of grammar and vocabulary.
+            3.  The questions must be contextual sentences with a blank (____).
+            4.  For each question, provide a unique integer ID, starting from 101.
+            5.  For the 'part' property of each question, use the number 5.
+            6.  Ensure all fields in the schema are filled correctly.
             7.  Provide a clear and concise explanation for each correct answer.
-            8.  Set the 'category' field to "miniTest".
+            8.  Set the 'testTitle' to "AI-Generated TOEIC Mini-Test".
+            9.  Set the 'duration' to 750 seconds (10 questions * 75 seconds).
+            10. Set the 'category' field to "miniTest".
         `;
 
         const response = await ai.models.generateContent({
-            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
-                responseSchema: testSchema,
+                responseSchema: grammarTestSchema,
             },
         });
 
         const jsonStr = response.text.trim();
         const data = JSON.parse(jsonStr);
 
-        // Basic validation
         if (data && data.questions && data.questions.length > 0) {
             return data as TestData;
         }
         return null;
     } catch (error) {
         console.error("Error generating TOEIC mini-test:", error);
-        throw new Error("Failed to generate test from API.");
+        throw new Error("Failed to generate mini-test from API.");
     }
 };
+
 
 export const generateRandomGrammarQuiz = async (): Promise<TestData | null> => {
     const grammarTopics = [
@@ -228,12 +239,11 @@ export const generateRandomGrammarQuiz = async (): Promise<TestData | null> => {
         `;
 
         const response = await ai.models.generateContent({
-            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
-                responseSchema: testSchema,
+                responseSchema: grammarTestSchema,
             },
         });
 
@@ -269,7 +279,6 @@ export const generateDeterminerExercise = async (): Promise<DeterminerExercise |
         const prompt = `Generate a short English paragraph (about 50-70 words) on a simple topic like daily routines, hobbies, or work. Identify ALL determiners in the paragraph. Determiners include articles (a, an, the), demonstratives (this, that, these, those), possessives (my, your, his, her, its, our, their), quantifiers (some, any, many, few, several, all), and numbers (one, two). Return a JSON object with two keys: "paragraph" containing the text, and "determiners" containing an array of all the identified determiner words in lowercase.`;
         
         const response = await ai.models.generateContent({
-            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -282,7 +291,6 @@ export const generateDeterminerExercise = async (): Promise<DeterminerExercise |
         const data = JSON.parse(jsonStr);
 
         if (data && data.paragraph && Array.isArray(data.determiners)) {
-            // Remove duplicates from the determiners array to be safe
             data.determiners = [...new Set(data.determiners)];
             return data as DeterminerExercise;
         }
@@ -307,7 +315,6 @@ export const getWordDefinition = async (word: string, contextSentence: string = 
         `;
 
         const response = await ai.models.generateContent({
-            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: prompt,
         });
@@ -384,7 +391,6 @@ Your final output must be a JSON object adhering to the provided schema. Do not 
 `;
 
         const response = await ai.models.generateContent({
-            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: {
                 parts: [
@@ -425,7 +431,6 @@ export const generateSpeakingPart1Text = async (): Promise<string | null> => {
         `;
 
         const response = await ai.models.generateContent({
-            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: prompt,
         });
@@ -540,7 +545,6 @@ For each criterion (Grammar, Vocabulary, Cohesion, Delivery), provide a concise 
 Your final output must be a JSON object adhering to the provided schema. Do not add any extra text or explanations outside the JSON structure.`;
 
         const response = await ai.models.generateContent({
-            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: {
                 parts: [
@@ -590,7 +594,6 @@ export const generateSpeakingPart3Questions = async (): Promise<{ topic: string,
         Return the result as a JSON object.`;
 
         const response = await ai.models.generateContent({
-            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -713,7 +716,6 @@ Your final output must be a JSON object adhering to the provided schema.`;
         });
 
         const response = await ai.models.generateContent({
-            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: { parts: parts },
             config: {
@@ -763,7 +765,6 @@ export const generateSpeakingPart4Task = async (): Promise<SpeakingPart4Task | n
         `;
 
         const response = await ai.models.generateContent({
-            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -890,7 +891,6 @@ Your final output must be a JSON object adhering to the provided schema.`;
         });
 
         const response = await ai.models.generateContent({
-            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: { parts: parts },
             config: {
@@ -930,7 +930,6 @@ export const generateSpeakingPart5Scenario = async (): Promise<SpeakingPart5Scen
         Return the result as a single JSON object adhering to the provided schema.`;
 
         const response = await ai.models.generateContent({
-            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -1028,7 +1027,6 @@ Provide concise feedback for each category in **both English and Vietnamese**.
 Your final output must be a JSON object adhering to the provided schema.`;
 
         const response = await ai.models.generateContent({
-            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: {
                 parts: [
@@ -1082,7 +1080,6 @@ export const generateWritingPart1Tasks = async (): Promise<WritingPart1Task[] | 
         Return the result as a JSON array of 5 objects, where each object has a 'picturePrompt' and a 'keywords' array with exactly two strings.`;
         
         const promptResponse = await ai.models.generateContent({
-            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -1116,8 +1113,6 @@ export const generateWritingPart1Tasks = async (): Promise<WritingPart1Task[] | 
                     keywords: task.keywords as [string, string],
                 });
             } else {
-                // If an image fails, we might want to skip it or throw an error.
-                // For simplicity, we'll continue, but this could be handled more robustly.
                 console.warn(`Failed to generate image for prompt: ${task.picturePrompt}`);
             }
         }
@@ -1223,13 +1218,12 @@ Your final output must be a single JSON object adhering to the provided schema.`
             parts.push({
                 inlineData: {
                     mimeType: 'image/jpeg',
-                    data: task.picture.split(',')[1] // remove 'data:image/jpeg;base64,'
+                    data: task.picture.split(',')[1]
                 }
             });
         });
 
         const response = await ai.models.generateContent({
-            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: { parts },
             config: {
@@ -1250,8 +1244,6 @@ Your final output must be a single JSON object adhering to the provided schema.`
         throw new Error("Failed to get evaluation from API.");
     }
 };
-
-// --- Writing Part 2 ---
 
 const writingPart2TaskSchema = {
     type: Type.OBJECT,
@@ -1284,7 +1276,6 @@ export const generateWritingPart2Tasks = async (): Promise<WritingPart2Task | nu
         Return the result as a single JSON object.`;
 
         const response = await ai.models.generateContent({
-            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -1392,7 +1383,6 @@ For each question, provide a short summary of the original request, and then pro
 Your final output must be a single JSON object.`;
         
         const response = await ai.models.generateContent({
-            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: `Evaluate these two written responses for the TOEIC Writing Part 2 task.
 
@@ -1431,7 +1421,6 @@ Text: ${tasks.question7.requestText}
     }
 };
 
-// --- Writing Part 3 ---
 const writingPart3TaskSchema = {
     type: Type.OBJECT,
     properties: {
@@ -1452,7 +1441,6 @@ export const generateWritingPart3Task = async (): Promise<WritingPart3Task | nul
         Return the result as a single JSON object.`;
 
         const response = await ai.models.generateContent({
-            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -1531,7 +1519,6 @@ For each category (Overall, Idea Development, Organization, Grammar/Syntax, Voca
 Your final output must be a single JSON object.`;
 
         const response = await ai.models.generateContent({
-            // FIX: Use current recommended model 'gemini-2.5-flash' instead of deprecated 'gemini-1.5-flash'
             model: "gemini-2.5-flash",
             contents: `Evaluate this essay based on the provided prompt.
             ---
@@ -1555,6 +1542,123 @@ Your final output must be a single JSON object.`;
 
     } catch (error) {
         console.error("Error evaluating Writing Part 3:", error);
+        throw new Error("Failed to get evaluation from API.");
+    }
+};
+
+const sentenceGenerationSchema = {
+    type: Type.OBJECT,
+    properties: {
+        sentence: { type: Type.STRING, description: 'A simple, grammatically correct English sentence between 8 and 15 words long.' },
+    },
+    required: ['sentence'],
+};
+
+export const generateSentenceForTranslation = async (vocabItems?: VocabItem[]): Promise<string | null> => {
+    try {
+        let seedWords: string;
+        let promptPart: string;
+
+        if (vocabItems && vocabItems.length > 0) {
+            const shuffled = [...vocabItems].sort(() => 0.5 - Math.random());
+            const count = Math.min(5, vocabItems.length);
+            seedWords = shuffled.slice(0, count).map(item => item.word).join(', ');
+            promptPart = `Please use at least one of these words if they fit naturally: ${seedWords}.`;
+        } else {
+            seedWords = getRandomVocabularyWords(5).join(', ');
+            promptPart = `Please use some of these words if they fit naturally: ${seedWords}.`;
+        }
+
+        const prompt = `
+            You are an English teacher creating a simple sentence for a translation exercise.
+            Generate a single, grammatically correct English sentence.
+            The sentence must be between 8 and 15 words long.
+            The sentence should be about a common, everyday topic.
+            ${promptPart}
+            Return the result in a JSON object with a single key "sentence".
+        `;
+
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: sentenceGenerationSchema,
+            },
+        });
+
+        const data = JSON.parse(response.text.trim());
+        if (data && data.sentence) {
+            return data.sentence;
+        }
+        return null;
+    } catch (error) {
+        console.error("Error generating sentence for translation:", error);
+        throw new Error("Failed to generate sentence from API.");
+    }
+};
+
+const translationEvaluationSchema = {
+    type: Type.OBJECT,
+    properties: {
+        score: { 
+            type: Type.INTEGER, 
+            description: "A score from 0 to 100 representing the accuracy of the translation." 
+        },
+        feedback_vi: { 
+            type: Type.STRING, 
+            description: "Short, constructive feedback in Vietnamese explaining the score and suggesting improvements."
+        },
+    },
+    required: ['score', 'feedback_vi'],
+};
+
+export const evaluateTranslation = async (originalSentence: string, userTranslation: string): Promise<TranslationEvaluationResult | null> => {
+    try {
+        const systemInstruction = `
+            You are an expert Vietnamese-English language evaluator. Your task is to assess a user's Vietnamese translation of an English sentence.
+            Evaluate the translation based on three criteria:
+            1.  **Meaning and Context:** Does the translation accurately convey the meaning of the original sentence?
+            2.  **Vocabulary Usage:** Is the vocabulary choice appropriate and correct?
+            3.  **Grammar:** Is the Vietnamese grammar correct?
+
+            **Scoring Guide:**
+            - **90-100%:** Excellent. The meaning is perfectly conveyed. Grammar and vocabulary are natural and accurate.
+            - **70-89%:** Good. The main idea is correct, but there are minor errors in vocabulary choice or phrasing.
+            - **50-69%:** Fair. The translation is understandable but contains noticeable grammatical errors or awkward phrasing that affects clarity.
+            - **20-49%:** Poor. Significant parts of the sentence are mistranslated, leading to a loss of meaning.
+            - **0-19%:** Very Poor. The translation is mostly incorrect or does not relate to the original sentence.
+
+            **Feedback:**
+            - Provide a short, constructive feedback message **written entirely in Vietnamese**.
+            - The feedback should explain the score and highlight any key errors or successes. For example: "Dịch nghĩa chính xác. Lưu ý từ 'resilience' có thể dịch thoáng hơn là 'khả năng phục hồi'." or "Sai ngữ pháp cơ bản, cấu trúc câu chưa đúng."
+            
+            Your final output must be a JSON object adhering to the provided schema. Do not add any extra text or explanations outside the JSON structure.
+        `;
+        
+        const prompt = `
+            Original English Sentence: "${originalSentence}"
+            User's Vietnamese Translation: "${userTranslation}"
+            Please evaluate the translation and provide a score and feedback in Vietnamese.
+        `;
+
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: prompt,
+            config: {
+                systemInstruction,
+                responseMimeType: "application/json",
+                responseSchema: translationEvaluationSchema,
+            },
+        });
+
+        const data = JSON.parse(response.text.trim());
+        if (data && typeof data.score === 'number' && data.feedback_vi) {
+            return data as TranslationEvaluationResult;
+        }
+        return null;
+    } catch (error) {
+        console.error("Error evaluating translation:", error);
         throw new Error("Failed to get evaluation from API.");
     }
 };

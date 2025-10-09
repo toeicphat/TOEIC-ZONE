@@ -1,4 +1,5 @@
 
+
 export interface User {
     username: string;
     password: string;
@@ -36,7 +37,6 @@ export enum AppState {
     WritingPart2 = 'WRITING_PART_2',
     WritingPart3 = 'WRITING_PART_3',
     MyProgress = 'MY_PROGRESS',
-    MiniTestHome = 'MINI_TEST_HOME',
     MiniTest = 'MINI_TEST',
     MiniTestResults = 'MINI_TEST_RESULTS',
     StudentManagement = 'STUDENT_MANAGEMENT',
@@ -100,6 +100,12 @@ export interface DictationPart {
     title: string;
     description: string;
     tests: DictationTest[];
+}
+
+// For Listening & Translation
+export interface TranslationEvaluationResult {
+    score: number;
+    feedback_vi: string;
 }
 
 // For Reading Practice
@@ -383,3 +389,12 @@ export interface UserProgress {
     speaking: TestResult[];
     writing: TestResult[];
 }
+
+// --- Unified API Configuration ---
+const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+// In a real-world scenario, this would be set by environment variables during the build process.
+// For this simulation, we'll use the hostname to decide the correct API endpoint.
+export const API_BASE_URL = isDevelopment 
+    ? 'http://localhost:3001' // Assumes a local backend server for development
+    : 'https://your-production-api-domain.com'; // **IMPORTANT**: Replace with your actual production API domain

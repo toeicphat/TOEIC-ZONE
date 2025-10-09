@@ -1,107 +1,135 @@
-import { VocabularyWord, VocabItem } from '../types';
+import { VocabularyWord, VocabItem, API_BASE_URL } from '../types';
+import { mockFetch } from './apiMock';
 
-const VOCAB_STORAGE_KEY = 'toeicAppVocabulary';
+/*
+--- BACKEND API NOTE ---
+The backend should handle CRUD operations for a user's vocabulary list.
 
-// SRS intervals in days. Level 0 is immediate review.
-const srsIntervals = [0, 1, 3, 7, 14, 30, 90, 180, 365];
+Example Database Schema (Vocabulary):
+- id (PK)
+- user_id (FK to users table)
+- word_id (string, unique per user)
+- word (string)
+- definition (string)
+- srsLevel (integer)
+- nextReviewDate (timestamp)
+- lastReviewedDate (timestamp, nullable)
+- sourceText (string, nullable)
 
-const calculateNextReviewDate = (level: number): number => {
-    const intervalDays = srsIntervals[level] || srsIntervals[srsIntervals.length - 1];
-    const nextDate = new Date();
-    nextDate.setDate(nextDate.getDate() + intervalDays);
-    nextDate.setHours(2, 0, 0, 0); // Set to 2 AM to avoid timezone issues with 'today'
-    return nextDate.getTime();
-};
+API Endpoints:
+- GET /api/vocabulary/:username -> Returns all vocabulary words for a user.
+- POST /api/vocabulary/word -> Adds or updates a word.
+- DELETE /api/vocabulary/word/:wordId -> Deletes a word.
+- POST /api/vocabulary/srs -> Updates a word's SRS level based on performance. Backend handles the logic.
+*/
 
-export const getVocabularyList = (): VocabularyWord[] => {
+const getAuthToken = (): string | null => {
     try {
-        const storedVocab = localStorage.getItem(VOCAB_STORAGE_KEY);
-        return storedVocab ? JSON.parse(storedVocab) : [];
+        return localStorage.getItem('authToken');
+    } catch {
+        return null;
+    }
+}
+
+function getCurrentUsername(): string | null {
+    try {
+        const userStr = localStorage.getItem('currentUser');
+        if (userStr) {
+            const user = JSON.parse(userStr);
+            return user.username;
+        }
+        return null;
+    } catch {
+        return null;
+    }
+}
+
+export const getVocabularyList = async (): Promise<VocabularyWord[]> => {
+    const username = getCurrentUsername();
+    const token = getAuthToken();
+    if (!username || !token) return [];
+
+    try {
+        console.log(`[CLIENT] Fetching vocabulary for ${username}`);
+        const response = await mockFetch(`${API_BASE_URL}/api/vocabulary/${username}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) throw new Error(`API Error: ${response.status}`);
+        return await response.json();
     } catch (error) {
-        console.error("Error reading vocabulary from localStorage", error);
+        console.error("[CLIENT] Network error fetching vocabulary. This is expected in a simulated environment. Returning empty list.", error);
         return [];
     }
 };
 
-const saveVocabularyList = (words: VocabularyWord[]): void => {
+export const addOrUpdateVocabularyWord = async (word: VocabularyWord): Promise<void> => {
+    const username = getCurrentUsername();
+    const token = getAuthToken();
+    if (!username || !token) return;
+
     try {
-        localStorage.setItem(VOCAB_STORAGE_KEY, JSON.stringify(words));
+        console.log(`[CLIENT] Saving word "${word.word}" for ${username}`);
+        await mockFetch(`${API_BASE_URL}/api/vocabulary/word`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ username, word })
+        });
     } catch (error) {
-        console.error("Error saving vocabulary to localStorage", error);
+        console.error("[CLIENT] Network error saving word. This is expected in a simulated environment.", error);
     }
 };
 
-export const addOrUpdateVocabularyWord = (word: VocabularyWord): void => {
-    const words = getVocabularyList();
-    const existingIndex = words.findIndex(w => w.id === word.id);
-    if (existingIndex > -1) {
-        words[existingIndex] = { ...words[existingIndex], ...word };
-    } else {
-        words.push(word);
+export const deleteVocabularyWord = async (wordId: string): Promise<void> => {
+    const username = getCurrentUsername();
+    const token = getAuthToken();
+    if (!username || !token) return;
+
+    try {
+        console.log(`[CLIENT] Deleting word ID "${wordId}" for ${username}`);
+        await mockFetch(`${API_BASE_URL}/api/vocabulary/word/${encodeURIComponent(wordId)}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ username }) // Send username for backend authorization
+        });
+    } catch (error) {
+        console.error("[CLIENT] Network error deleting word. This is expected in a simulated environment.", error);
     }
-    saveVocabularyList(words.sort((a, b) => a.word.localeCompare(b.word)));
 };
 
-export const deleteVocabularyWord = (wordId: string): void => {
-    let words = getVocabularyList();
-    words = words.filter(w => w.id !== wordId);
-    saveVocabularyList(words);
+export const updateWordSrsLevel = async (wordId: string, performance: 'hard' | 'good' | 'easy', wordDetails?: VocabItem, source?: string): Promise<VocabularyWord | null> => {
+    const username = getCurrentUsername();
+    const token = getAuthToken();
+    if (!username || !token) return null;
+
+    try {
+        console.log(`[CLIENT] Updating SRS for word ID "${wordId}" for ${username} with performance: ${performance}`);
+        const response = await mockFetch(`${API_BASE_URL}/api/vocabulary/srs`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            // The backend will handle the SRS logic (calculating new level, next review date, etc.)
+            // It also handles creating the word if it doesn't exist.
+            body: JSON.stringify({ username, wordId, performance, wordDetails, source })
+        });
+        if (!response.ok) throw new Error(`API Error: ${response.status}`);
+        return await response.json(); // Backend should return the updated word
+    } catch (error) {
+        console.error("[CLIENT] Network error updating SRS level. This is expected in a simulated environment.", error);
+        return null;
+    }
 };
 
-export const getWordsForReview = (): VocabularyWord[] => {
-    const words = getVocabularyList();
+// This client-side function is kept for filtering already-fetched data in the UI.
+export const getWordsForReview = (allWords: VocabularyWord[]): VocabularyWord[] => {
     const now = new Date();
     now.setHours(23, 59, 59, 999); // End of today
-    return words.filter(w => w.nextReviewDate <= now.getTime());
-};
-
-export const updateWordSrsLevel = (wordId: string, performance: 'hard' | 'good' | 'easy', wordDetails?: VocabItem, source?: string): VocabularyWord | null => {
-    const words = getVocabularyList();
-    const existingWord = words.find(w => w.id === wordId);
-
-    if (!existingWord) {
-        // Word not found, create it if details are provided
-        if (!wordDetails) return null;
-
-        let newLevel = 0;
-        if (performance === 'good') newLevel = 1;
-        if (performance === 'easy') newLevel = 2;
-
-        const newWord: VocabularyWord = {
-            id: wordId,
-            word: wordDetails.word,
-            definition: wordDetails.definition,
-            srsLevel: newLevel,
-            nextReviewDate: calculateNextReviewDate(newLevel),
-            lastReviewedDate: Date.now(),
-            sourceText: wordDetails.example || source,
-        };
-        addOrUpdateVocabularyWord(newWord);
-        return newWord;
-    }
-
-    // Word found, update it
-    let newLevel = existingWord.srsLevel;
-
-    switch (performance) {
-        case 'hard':
-            newLevel = 0;
-            break;
-        case 'good':
-            newLevel = Math.min(srsIntervals.length - 1, newLevel + 1);
-            break;
-        case 'easy':
-            newLevel = Math.min(srsIntervals.length - 1, newLevel + 2);
-            break;
-    }
-    
-    const updatedWord: VocabularyWord = {
-        ...existingWord,
-        srsLevel: newLevel,
-        lastReviewedDate: Date.now(),
-        nextReviewDate: calculateNextReviewDate(newLevel),
-    };
-    
-    addOrUpdateVocabularyWord(updatedWord);
-    return updatedWord;
+    return allWords.filter(w => w.nextReviewDate <= now.getTime());
 };

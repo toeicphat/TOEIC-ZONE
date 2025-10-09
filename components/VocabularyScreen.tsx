@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
+
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { getVocabularyList, getWordsForReview, updateWordSrsLevel, deleteVocabularyWord } from '../services/vocabularyService';
 import { VocabularyWord, VocabularyPart } from '../types';
 import { LoadingIcon, BrainIcon, BookOpenIcon, TrashIcon, LightBulbIcon } from './icons';
@@ -19,14 +20,12 @@ const VocabularyScreen: React.FC<VocabularyScreenProps> = ({ onSelectPart }) => 
     const [isDefinitionVisible, setIsDefinitionVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
-    const wordsDueForReview = useMemo(() => getWordsForReview(), [allWords]);
-
-    const loadSrsWords = () => {
+    const loadSrsWords = useCallback(async () => {
         setIsLoading(true);
-        const words = getVocabularyList();
+        const words = await getVocabularyList();
         setAllWords(words);
         setIsLoading(false);
-    };
+    }, []);
 
     useEffect(() => {
         if (view !== 'main_hub') {
@@ -34,7 +33,9 @@ const VocabularyScreen: React.FC<VocabularyScreenProps> = ({ onSelectPart }) => 
         } else {
             setIsLoading(false);
         }
-    }, [view]);
+    }, [view, loadSrsWords]);
+    
+    const wordsDueForReview = useMemo(() => getWordsForReview(allWords), [allWords]);
 
     const startReviewSession = () => {
         setReviewQueue(wordsDueForReview);
@@ -43,24 +44,24 @@ const VocabularyScreen: React.FC<VocabularyScreenProps> = ({ onSelectPart }) => 
         setView('srs_review');
     };
 
-    const handleReviewAction = (performance: 'hard' | 'good' | 'easy') => {
+    const handleReviewAction = async (performance: 'hard' | 'good' | 'easy') => {
         if (currentReviewIndex >= reviewQueue.length) return;
         const currentWord = reviewQueue[currentReviewIndex];
-        updateWordSrsLevel(currentWord.id, performance);
+        await updateWordSrsLevel(currentWord.id, performance);
         
         if (currentReviewIndex + 1 < reviewQueue.length) {
             setCurrentReviewIndex(prev => prev + 1);
             setIsDefinitionVisible(false);
         } else {
-            // End of session
+            // End of session, go back to hub which will trigger a refetch
             setView('srs_hub');
         }
     };
     
-    const handleDeleteWord = (wordId: string) => {
+    const handleDeleteWord = async (wordId: string) => {
         if (window.confirm("Are you sure you want to delete this word? This action cannot be undone.")) {
-            deleteVocabularyWord(wordId);
-            loadSrsWords();
+            await deleteVocabularyWord(wordId);
+            loadSrsWords(); // Refetch the list
         }
     };
     

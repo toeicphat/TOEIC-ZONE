@@ -3,7 +3,7 @@ import { LibraryDictationExercise, UserAnswers, User } from '../types';
 import AudioPlayer from './AudioPlayer';
 import QuestionPalette from './QuestionPalette';
 import { addTestResult } from '../services/progressService';
-import { ArrowLeftIcon } from './icons';
+import { ArrowLeftIcon, LightBulbIcon, XCircleIcon, QuestionMarkCircleIcon } from './icons';
 
 interface DictationTestScreenProps {
     testData: { id: number; title: string; exercises: LibraryDictationExercise[] };
@@ -12,10 +12,28 @@ interface DictationTestScreenProps {
     isAiTest?: boolean;
 }
 
+const HintBox: React.FC<{onClose: () => void}> = ({onClose}) => (
+    <div className="bg-blue-50 dark:bg-slate-800 border-l-4 border-blue-500 text-blue-800 dark:text-blue-300 p-4 rounded-r-lg mb-6 relative">
+        <div className="flex">
+            <div className="flex-shrink-0">
+                <LightBulbIcon className="h-6 w-6 text-blue-500" />
+            </div>
+            <div className="ml-3">
+                <h3 className="text-lg font-bold">Pro Tip for Dictation</h3>
+                <p className="text-sm mt-1">Listen to the full sentence first to understand the context. Then, focus on the sounds of the missing words. Don't worry about perfect spelling on the first try; you can correct it before checking.</p>
+            </div>
+        </div>
+        <button onClick={onClose} className="absolute top-2 right-2 p-1 rounded-full hover:bg-blue-100 dark:hover:bg-slate-700" aria-label="Close hint">
+            <XCircleIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+        </button>
+    </div>
+);
+
 const DictationTestScreen: React.FC<DictationTestScreenProps> = ({ testData, currentUser, onBack, isAiTest = false }) => {
     const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
     const [allUserAnswers, setAllUserAnswers] = useState<{ [exerciseId: number]: string[] }>({});
     const [checkedExercises, setCheckedExercises] = useState<{ [exerciseId: number]: boolean }>({});
+    const [showHint, setShowHint] = useState(true);
     const exerciseRefs = useRef<Record<number, HTMLDivElement | null>>({});
 
     useEffect(() => {
@@ -164,11 +182,17 @@ const DictationTestScreen: React.FC<DictationTestScreenProps> = ({ testData, cur
     return (
         <div className="container mx-auto p-4 lg:p-8">
              <div className="max-w-7xl mx-auto">
+                { !showHint && (
+                    <button onClick={() => setShowHint(true)} className="fixed top-24 right-4 z-50 p-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700" aria-label="Show hint">
+                        <QuestionMarkCircleIcon className="h-6 w-6" />
+                    </button>
+                )}
                 <button onClick={onBack} className="mb-8 inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold transition-colors">
                     <ArrowLeftIcon className="h-5 w-5 mr-2" />
                     {isAiTest ? 'Back to Dictation Hub' : 'Back to Part Selection'}
                 </button>
                 <h2 className="text-3xl font-bold text-center mb-6 text-slate-900">{testData.title}</h2>
+                { showHint && <HintBox onClose={() => setShowHint(false)} /> }
                 <div className="lg:grid lg:grid-cols-3 lg:gap-8">
                     {/* Main Content */}
                     <div className="lg:col-span-2 space-y-8">

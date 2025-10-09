@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { ArrowLeftIcon, LoadingIcon, RefreshIcon, StopIcon, TrophyIcon, MicrophoneIcon, PauseIcon, PlayIcon } from './icons';
+import { ArrowLeftIcon, LoadingIcon, RefreshIcon, StopIcon, TrophyIcon, MicrophoneIcon, PauseIcon, PlayIcon, LightBulbIcon, XCircleIcon, QuestionMarkCircleIcon } from './icons';
 import { evaluateSpeakingPart3, generateSpeakingPart3Questions } from '../services/geminiService';
 import { SpeakingPart3EvaluationResult, User } from '../types';
 import { addTestResult } from '../services/progressService';
@@ -31,6 +31,24 @@ interface SpeakingPart3ScreenProps {
   currentUser: User;
 }
 
+const HintBox: React.FC<{onClose: () => void}> = ({onClose}) => (
+    <div className="bg-blue-50 dark:bg-slate-800/50 border-l-4 border-blue-500 text-blue-800 dark:text-blue-300 p-4 rounded-r-lg mb-6 relative">
+        <div className="flex">
+            <div className="flex-shrink-0">
+                <LightBulbIcon className="h-6 w-6 text-blue-500" />
+            </div>
+            <div className="ml-3">
+                <h3 className="text-lg font-bold">Pro Tip: Respond to Questions</h3>
+                <p className="text-sm mt-1">Listen carefully to each question. For the first two questions (15 seconds), give a direct answer with a brief reason or example. For the last question (30 seconds), provide a more developed answer with supporting details.</p>
+            </div>
+        </div>
+        <button onClick={onClose} className="absolute top-2 right-2 p-1 rounded-full hover:bg-blue-100 dark:hover:bg-slate-700" aria-label="Close hint">
+            <XCircleIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+        </button>
+    </div>
+);
+
+
 const SpeakingPart3Screen: React.FC<SpeakingPart3ScreenProps> = ({ onBack, currentUser }) => {
     const [practiceState, setPracticeState] = useState<PracticeState>('idle');
     const [questions, setQuestions] = useState<{ topic: string, question5: string, question6: string, question7: string } | null>(null);
@@ -39,6 +57,7 @@ const SpeakingPart3Screen: React.FC<SpeakingPart3ScreenProps> = ({ onBack, curre
     const [results, setResults] = useState<SpeakingPart3EvaluationResult | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [isTimerPaused, setIsTimerPaused] = useState(false);
+    const [showHint, setShowHint] = useState(true);
 
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const audioChunksRef = useRef<Blob[][]>([[], [], []]);
@@ -147,6 +166,7 @@ const SpeakingPart3Screen: React.FC<SpeakingPart3ScreenProps> = ({ onBack, curre
         setError(null);
         setResults(null);
         audioChunksRef.current = [[], [], []];
+        setShowHint(true);
         try {
             const generatedQuestions = await generateSpeakingPart3Questions();
             if (generatedQuestions) {
@@ -253,6 +273,7 @@ const SpeakingPart3Screen: React.FC<SpeakingPart3ScreenProps> = ({ onBack, curre
     const renderIdle = () => (
         <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 text-center">
             <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-4">Part 3: Respond to questions</h2>
+            {showHint && <HintBox onClose={() => setShowHint(false)} />}
             <p className="text-slate-600 dark:text-slate-400 mb-8">You will answer three questions about a single topic. You will have 3 seconds to prepare for each response. You have 15 seconds to respond to questions 5 and 6, and 30 seconds to respond to question 7.</p>
             {error && <p className="text-red-500 mb-4 font-semibold">{error}</p>}
             <button
@@ -397,6 +418,11 @@ const SpeakingPart3Screen: React.FC<SpeakingPart3ScreenProps> = ({ onBack, curre
     return (
         <div className="container mx-auto px-4 py-12">
             <div className="max-w-4xl mx-auto">
+                {!showHint && practiceState === 'idle' && (
+                    <button onClick={() => setShowHint(true)} className="fixed top-24 right-4 z-50 p-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700" aria-label="Show hint">
+                        <QuestionMarkCircleIcon className="h-6 w-6" />
+                    </button>
+                )}
                 <button onClick={onBack} className="mb-8 inline-flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-semibold transition-colors disabled:opacity-50" disabled={practiceState !== 'idle'}>
                     <ArrowLeftIcon className="h-5 w-5 mr-2" />
                     Back to Speaking Hub

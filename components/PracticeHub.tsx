@@ -1,7 +1,6 @@
 import React from 'react';
 
 interface PracticeHubProps {
-  onNavigateToPracticeTest: () => void;
   onNavigateToDictation: () => void;
   onNavigateToReadingPractice: () => void;
   onNavigateToGrammar: () => void;
@@ -21,7 +20,14 @@ const PracticeCard: React.FC<{title: string, description: string, onClick: () =>
 );
 
 
-const PracticeHub: React.FC<PracticeHubProps> = ({ onNavigateToPracticeTest, onNavigateToDictation, onNavigateToReadingPractice, onNavigateToGrammar, onNavigateToVocabulary, onNavigateToSpeaking, onNavigateToWritingPractice }) => {
+const PracticeHub: React.FC<PracticeHubProps> = ({ 
+    onNavigateToDictation, 
+    onNavigateToReadingPractice, 
+    onNavigateToGrammar, 
+    onNavigateToVocabulary, 
+    onNavigateToSpeaking, 
+    onNavigateToWritingPractice 
+}) => {
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-4xl mx-auto text-center mb-12">
@@ -31,11 +37,6 @@ const PracticeHub: React.FC<PracticeHubProps> = ({ onNavigateToPracticeTest, onN
         </p>
       </div>
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <PracticeCard 
-            title="Luyện tập Test (AI)"
-            description="Take a mini-TOEIC test with AI-generated questions covering various parts of the exam."
-            onClick={onNavigateToPracticeTest}
-        />
         <PracticeCard 
             title="Nghe chép chính tả"
             description="Listen to sentences and type what you hear to improve your listening and spelling."

@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useEffect } from 'react';
 import PracticeHub from './components/PracticeHub';
 import DictationScreen from './components/DictationScreen';
@@ -23,7 +24,6 @@ import StatsFooter from './components/StatsFooter';
 import LoginScreen from './components/LoginScreen';
 import MyProgressScreen from './components/MyProgressScreen';
 import StudentManagementScreen from './components/StudentManagementScreen';
-import HomeScreen from './components/HomeScreen';
 import TestScreen from './components/TestScreen';
 import ResultsScreen from './components/ResultsScreen';
 import SettingsScreen from './components/SettingsScreen';
@@ -32,13 +32,27 @@ import { getReadingTest, allReadingTests } from './services/readingLibrary';
 import { getVocabularyPart, getVocabularyTest } from './services/vocabularyLibrary';
 import { addTestResult } from './services/progressService';
 import { getSettings, saveSettings } from './services/settingsService';
-import { LogoIcon } from './components/icons';
+import { LogoIcon, LoadingIcon } from './components/icons';
 import { allDictationTests, getDictationExercisesForParts } from './services/dictationLibrary';
 import DictationPracticeSetupScreen from './components/DictationPracticeSetupScreen';
 import DictationTestScreen from './components/DictationTestScreen';
 
+const NavButton: React.FC<{ onClick: () => void, children: React.ReactNode, isActive: boolean }> = ({ onClick, children, isActive }) => (
+    <button
+        onClick={onClick}
+        className={`px-4 py-2 text-sm font-semibold rounded-lg transition-colors ${
+            isActive ? 'bg-blue-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+        }`}
+    >
+        {children}
+    </button>
+);
+
+
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
   const [users, setUsers] = useState<User[]>([
     { username: 'tester2', password: '123456' },
     { username: 'admin', password: 'phattoeic' },
@@ -82,20 +96,53 @@ const App: React.FC = () => {
   // Writing State
   const [selectedWritingPart, setSelectedWritingPart] = useState<number | null>(null);
 
-  // AI Mini-Test State
+  // Mini-Test State (used by Grammar)
   const [miniTestData, setMiniTestData] = useState<TestData | null>(null);
   const [miniTestUserAnswers, setMiniTestUserAnswers] = useState<UserAnswers>({});
   
   // Admin State
   const [selectedStudent, setSelectedStudent] = useState<User | null>(null);
 
+ useEffect(() => {
+    const initializeApp = async () => {
+        try {
+            const storedUser = localStorage.getItem('currentUser');
+            if (storedUser) {
+                const user: User = JSON.parse(storedUser);
+                const settings = await getSettings(user.username);
+                setCurrentUser(user);
+                setUserSettings(settings);
+                setIsAuthenticated(true);
+            }
+        } catch (error) {
+            console.error("Failed to initialize app from storage", error);
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('authToken');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    initializeApp();
+}, []);
 
-  const handleLoginSuccess = useCallback((user: User) => {
-    setIsAuthenticated(true);
-    setCurrentUser(user);
-    setUserSettings(getSettings(user.username));
-    setAppState(AppState.PracticeHub);
-  }, []);
+  const handleLoginSuccess = useCallback(async (user: User) => {
+    setIsLoggingIn(true);
+    try {
+        const settings = await getSettings(user.username);
+        
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        localStorage.setItem('authToken', `dummy-token-for-${user.username}`);
+        
+        setUserSettings(settings);
+        setCurrentUser(user);
+        setIsAuthenticated(true);
+        setAppState(AppState.PracticeHub);
+    } catch (error) {
+        console.error("Failed to fetch user data on login:", error);
+    } finally {
+        setIsLoggingIn(false);
+    }
+}, []);
   
   useEffect(() => {
     if (userSettings?.darkMode) {
@@ -109,6 +156,9 @@ const App: React.FC = () => {
     setIsAuthenticated(false);
     setCurrentUser(null);
     setUserSettings(null);
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('authToken');
+    setAppState(AppState.PracticeHub);
   }, []);
 
   const handleGoHome = useCallback(() => {
@@ -127,12 +177,6 @@ const App: React.FC = () => {
     setSelectedDictationTestData(null);
     setAppState(AppState.PracticeHub);
   }, []);
-
-  const handleStartMiniTest = useCallback((testData: TestData) => {
-      setMiniTestData(testData);
-      setMiniTestUserAnswers({});
-      setAppState(AppState.MiniTest);
-  }, []);
   
   const handleStartRandomGrammarTest = useCallback((testData: TestData) => {
     setMiniTestData(testData);
@@ -140,12 +184,12 @@ const App: React.FC = () => {
     setAppState(AppState.MiniTest);
   }, []);
 
-  const handleSubmitMiniTest = useCallback((answers: UserAnswers) => {
+  const handleSubmitMiniTest = useCallback(async (answers: UserAnswers) => {
       if (miniTestData && currentUser) {
           const score = miniTestData.questions.reduce((acc, q) => {
               return answers[q.id] === q.correctAnswer ? acc + 1 : acc;
           }, 0);
-          addTestResult(currentUser.username, miniTestData.category, {
+          await addTestResult(currentUser.username, miniTestData.category, {
               id: `${miniTestData.category}-${Date.now()}`,
               title: miniTestData.testTitle,
               score,
@@ -318,245 +362,168 @@ const App: React.FC = () => {
         setSelectedWritingPart(null);
         setAppState(AppState.WritingPracticeHome);
     }, []);
+    
+    const handleNavigateToDictation = useCallback(() => setAppState(AppState.DictationPracticeHome), []);
+    const handleNavigateToReadingPractice = useCallback(() => setAppState(AppState.ReadingPracticeHome), []);
+    const handleNavigateToGrammar = useCallback(() => setAppState(AppState.GrammarHome), []);
+    const handleNavigateToVocabulary = useCallback(() => setAppState(AppState.VocabularyHome), []);
+    const handleNavigateToSpeaking = useCallback(() => setAppState(AppState.SpeakingHome), []);
 
-    const handleSettingsChange = useCallback((newSettings: Partial<UserSettings>) => {
-        if (currentUser && userSettings) {
-            const updatedSettings = { ...userSettings, ...newSettings };
-            setUserSettings(updatedSettings);
-            saveSettings(currentUser.username, updatedSettings);
+    const renderContent = () => {
+        if (!currentUser) return null;
+        // FIX: The prop names for PracticeHub need to be assigned from the handler functions.
+        const practiceHubProps = {
+            onNavigateToDictation: handleNavigateToDictation,
+            onNavigateToReadingPractice: handleNavigateToReadingPractice,
+            onNavigateToGrammar: handleNavigateToGrammar,
+            onNavigateToVocabulary: handleNavigateToVocabulary,
+            onNavigateToSpeaking: handleNavigateToSpeaking,
+            onNavigateToWritingPractice: handleNavigateToWritingPractice,
+        };
+        switch (appState) {
+            case AppState.PracticeHub:
+                return <PracticeHub {...practiceHubProps} />;
+            case AppState.MiniTest:
+                if (!miniTestData) return <PracticeHub {...practiceHubProps} />;
+                return <TestScreen testData={miniTestData} userAnswers={miniTestUserAnswers} onSubmit={handleSubmitMiniTest} />;
+            case AppState.MiniTestResults:
+                if (!miniTestData) return <PracticeHub {...practiceHubProps} />;
+                return <ResultsScreen testData={miniTestData} userAnswers={miniTestUserAnswers} onGoHome={handleGoHome} />;
+            case AppState.DictationPracticeHome:
+                return <DictationScreen currentUser={currentUser} onSelectTestSet={handleSelectDictationTestSet} />;
+            case AppState.DictationPracticeSetup:
+                if (selectedDictationTestId === null) return null;
+                return <DictationPracticeSetupScreen testId={selectedDictationTestId} onStartPractice={handleStartDictationPractice} onBack={handleBackToDictationPracticeHome} />;
+            case AppState.DictationTest:
+                if (!selectedDictationTestData) return null;
+                return <DictationTestScreen testData={selectedDictationTestData} currentUser={currentUser} onBack={handleBackToDictationSetup} />;
+            case AppState.ReadingPracticeHome:
+                return <ReadingPracticeScreen onSelectTestSet={handleSelectReadingTestSet} />;
+            case AppState.ReadingPracticeSetup:
+                if (selectedReadingTestId === null) return null;
+                return <ReadingPracticeSetupScreen testId={selectedReadingTestId} onStartPractice={handleStartReadingPractice} onBack={handleBackToReadingPracticeHome} />;
+            case AppState.ReadingTest:
+                if (!selectedReadingTestData) return null;
+                return <ReadingTestScreen testData={selectedReadingTestData} onBack={handleBackToReadingSetup} currentUser={currentUser} durationInSeconds={selectedReadingTimeLimit} />;
+            case AppState.GrammarHome:
+                return <GrammarScreen onSelectTopic={handleNavigateToGrammarTopic} onStartRandomTest={handleStartRandomGrammarTest} />;
+            case AppState.GrammarTopic:
+                if (!selectedGrammarTopic) return null;
+                return <GrammarTopicScreen topic={selectedGrammarTopic} onBack={handleBackToGrammarHome} currentUser={currentUser} />;
+            case AppState.VocabularyHome:
+                return <VocabularyScreen onSelectPart={handleSelectVocabularyPart} />;
+            case AppState.VocabularyPartHome:
+                if (!selectedVocabularyPart) return null;
+                return <VocabularyPartScreen partData={selectedVocabularyPart} onSelectTest={handleSelectVocabularyTest} onBack={handleBackToVocabularyHome} />;
+            case AppState.VocabularyTest:
+                if (!selectedVocabularyTest) return null;
+                return <VocabularyTestScreen testData={selectedVocabularyTest} onBack={handleBackToVocabularyPartHome} currentUser={currentUser} />;
+            case AppState.SpeakingHome:
+                return <SpeakingScreen onSelectPart={handleSelectSpeakingPart} />;
+            case AppState.SpeakingPart1:
+                return <SpeakingPart1Screen onBack={handleBackToSpeakingHome} currentUser={currentUser} />;
+            case AppState.SpeakingPart2:
+                return <SpeakingPart2Screen onBack={handleBackToSpeakingHome} currentUser={currentUser} />;
+            case AppState.SpeakingPart3:
+                return <SpeakingPart3Screen onBack={handleBackToSpeakingHome} currentUser={currentUser} />;
+            case AppState.SpeakingPart4:
+                return <SpeakingPart4Screen onBack={handleBackToSpeakingHome} currentUser={currentUser} />;
+            case AppState.SpeakingPart5:
+                return <SpeakingPart5Screen onBack={handleBackToSpeakingHome} currentUser={currentUser} />;
+            case AppState.WritingPracticeHome:
+                return <WritingPracticeScreen onSelectPart={handleSelectWritingPart} />;
+            case AppState.WritingPart1:
+                return <WritingPart1Screen onBack={handleBackToWritingHome} currentUser={currentUser} />;
+            case AppState.WritingPart2:
+                return <WritingPart2Screen onBack={handleBackToWritingHome} currentUser={currentUser} />;
+            case AppState.WritingPart3:
+                return <WritingPart3Screen onBack={handleBackToWritingHome} currentUser={currentUser} />;
+            case AppState.MyProgress:
+                if (selectedStudent) {
+                    return <MyProgressScreen 
+                        viewingUser={selectedStudent} 
+                        onBack={() => {
+                            setSelectedStudent(null);
+                            setAppState(AppState.StudentManagement);
+                        }} 
+                        isOwnProgress={false} 
+                    />;
+                }
+                return <MyProgressScreen viewingUser={currentUser} onBack={handleGoHome} isOwnProgress={true} />;
+            case AppState.StudentManagement:
+                if (currentUser?.username !== 'admin') {
+                    setAppState(AppState.PracticeHub);
+                    return null;
+                }
+                return <StudentManagementScreen users={users} onViewStudentProgress={(user) => { setSelectedStudent(user); setAppState(AppState.MyProgress) }} />;
+            case AppState.Settings:
+                if (!userSettings) return null;
+                return <SettingsScreen
+                    currentUser={currentUser}
+                    userSettings={userSettings}
+                    onSettingsChange={async (newSettings) => {
+                        const updatedSettings = { ...userSettings, ...newSettings };
+                        setUserSettings(updatedSettings);
+                        await saveSettings(currentUser.username, updatedSettings);
+                    }}
+                    onPasswordChanged={async (newPassword) => {
+                        const updatedUser = { ...currentUser, password: newPassword };
+                        const updatedUsers = users.map(u => u.username === currentUser.username ? updatedUser : u);
+                        setUsers(updatedUsers);
+                        setCurrentUser(updatedUser);
+                        localStorage.setItem('currentUser', JSON.stringify(updatedUser)); 
+                    }}
+                    onBack={handleGoHome}
+                />;
+            default:
+                return <PracticeHub {...practiceHubProps} />;
         }
-    }, [currentUser, userSettings]);
+    };
 
-  const handlePasswordChanged = useCallback((newPassword: string) => {
-    if (currentUser) {
-        setUsers(prevUsers => prevUsers.map(u => 
-            u.username === currentUser.username ? { ...u, password: newPassword } : u
-        ));
-        setCurrentUser(prevUser => prevUser ? { ...prevUser, password: newPassword } : null);
-    }
-  }, [currentUser]);
-
-  const handleNavigateToMyProgress = useCallback(() => {
-    setSelectedStudent(null);
-    setAppState(AppState.MyProgress);
-  }, []);
-  
-  const handleNavigateToSettings = useCallback(() => {
-    setAppState(AppState.Settings);
-  }, []);
-
-  const handleNavigateToStudentManagement = useCallback(() => {
-    setAppState(AppState.StudentManagement);
-  }, []);
-
-  const handleViewStudentProgress = useCallback((user: User) => {
-    setSelectedStudent(user);
-    setAppState(AppState.MyProgress);
-  }, []);
-
-
-  const renderContent = () => {
-    switch (appState) {
-      case AppState.DictationPracticeHome:
-        return <DictationScreen currentUser={currentUser!} onSelectTestSet={handleSelectDictationTestSet} />;
-      case AppState.DictationPracticeSetup:
-        if (selectedDictationTestId) {
-            return <DictationPracticeSetupScreen 
-                testId={selectedDictationTestId}
-                onStartPractice={handleStartDictationPractice}
-                onBack={handleBackToDictationPracticeHome}
-            />
-        }
-        handleGoHome();
-        return null;
-      case AppState.DictationTest:
-        if (selectedDictationTestData) {
-            return <DictationTestScreen
-                testData={selectedDictationTestData}
-                currentUser={currentUser!}
-                onBack={handleBackToDictationSetup}
-            />
-        }
-        handleBackToDictationSetup();
-        return null;
-      case AppState.ReadingPracticeHome:
-        return <ReadingPracticeScreen onSelectTestSet={handleSelectReadingTestSet} />;
-      case AppState.ReadingPracticeSetup:
-        if (selectedReadingTestId) {
-          return <ReadingPracticeSetupScreen testId={selectedReadingTestId} onStartPractice={handleStartReadingPractice} onBack={handleBackToReadingPracticeHome} />;
-        }
-        handleGoHome();
-        return null;
-      case AppState.ReadingTest:
-        if (selectedReadingTestData) {
-          return <ReadingTestScreen testData={selectedReadingTestData} onBack={handleBackToReadingSetup} currentUser={currentUser!} durationInSeconds={selectedReadingTimeLimit} />;
-        }
-        handleBackToReadingSetup();
-        return null;
-      case AppState.GrammarHome:
-        return <GrammarScreen onSelectTopic={handleNavigateToGrammarTopic} onStartRandomTest={handleStartRandomGrammarTest} />;
-      case AppState.GrammarTopic:
-        if (selectedGrammarTopic) {
-          return <GrammarTopicScreen topic={selectedGrammarTopic} onBack={handleBackToGrammarHome} currentUser={currentUser!} />;
-        }
-        handleBackToGrammarHome();
-        return null;
-      case AppState.VocabularyHome:
-          return <VocabularyScreen onSelectPart={handleSelectVocabularyPart} />;
-      case AppState.VocabularyPartHome:
-        if(selectedVocabularyPart) {
-            return <VocabularyPartScreen partData={selectedVocabularyPart} onSelectTest={handleSelectVocabularyTest} onBack={handleBackToVocabularyHome} />
-        }
-        handleBackToVocabularyHome();
-        return null;
-      case AppState.VocabularyTest:
-        if(selectedVocabularyTest && currentUser) {
-            return <VocabularyTestScreen testData={selectedVocabularyTest} onBack={handleBackToVocabularyPartHome} currentUser={currentUser} />
-        }
-        handleBackToVocabularyPartHome();
-        return null;
-       case AppState.SpeakingHome:
-            return <SpeakingScreen onSelectPart={handleSelectSpeakingPart} />;
-        case AppState.SpeakingPart1:
-            if (selectedSpeakingPart === 1) return <SpeakingPart1Screen onBack={handleBackToSpeakingHome} currentUser={currentUser!} />;
-            handleBackToSpeakingHome(); return null;
-        case AppState.SpeakingPart2:
-            if (selectedSpeakingPart === 2) return <SpeakingPart2Screen onBack={handleBackToSpeakingHome} currentUser={currentUser!} />;
-            handleBackToSpeakingHome(); return null;
-        case AppState.SpeakingPart3:
-            if (selectedSpeakingPart === 3) return <SpeakingPart3Screen onBack={handleBackToSpeakingHome} currentUser={currentUser!} />;
-            handleBackToSpeakingHome(); return null;
-        case AppState.SpeakingPart4:
-            if (selectedSpeakingPart === 4) return <SpeakingPart4Screen onBack={handleBackToSpeakingHome} currentUser={currentUser!} />;
-            handleBackToSpeakingHome(); return null;
-        case AppState.SpeakingPart5:
-            if (selectedSpeakingPart === 5) return <SpeakingPart5Screen onBack={handleBackToSpeakingHome} currentUser={currentUser!} />;
-            handleBackToSpeakingHome(); return null;
-        case AppState.WritingPracticeHome:
-            return <WritingPracticeScreen onSelectPart={handleSelectWritingPart} />;
-        case AppState.WritingPart1:
-            if (selectedWritingPart === 1) return <WritingPart1Screen onBack={handleBackToWritingHome} currentUser={currentUser!} />;
-            handleBackToWritingHome(); return null;
-        case AppState.WritingPart2:
-            if (selectedWritingPart === 2) return <WritingPart2Screen onBack={handleBackToWritingHome} currentUser={currentUser!} />;
-            handleBackToWritingHome(); return null;
-        case AppState.WritingPart3:
-            if (selectedWritingPart === 3) return <WritingPart3Screen onBack={handleBackToWritingHome} currentUser={currentUser!} />;
-            handleBackToWritingHome(); return null;
-      case AppState.Settings:
-        if (currentUser && userSettings) {
-            return <SettingsScreen
-                currentUser={currentUser}
-                userSettings={userSettings}
-                onSettingsChange={handleSettingsChange}
-                onPasswordChanged={handlePasswordChanged}
-                onBack={handleGoHome}
-            />;
-        }
-        handleGoHome();
-        return null;
-      case AppState.MiniTestHome:
-        return <HomeScreen onStartTest={handleStartMiniTest} />;
-      case AppState.MiniTest:
-        if (miniTestData) {
-            return <TestScreen testData={miniTestData} userAnswers={miniTestUserAnswers} onSubmit={handleSubmitMiniTest} />;
-        }
-        return <HomeScreen onStartTest={handleStartMiniTest} />;
-      case AppState.MiniTestResults:
-        if (miniTestData) {
-            return <ResultsScreen testData={miniTestData} userAnswers={miniTestUserAnswers} onGoHome={handleGoHome} />;
-        }
-        return <HomeScreen onStartTest={handleStartMiniTest} />;
-      case AppState.StudentManagement:
-        if (currentUser?.username === 'admin') {
-            return <StudentManagementScreen users={users} onViewStudentProgress={handleViewStudentProgress} />;
-        }
-        handleGoHome();
-        return null;
-      case AppState.MyProgress:
-        if (currentUser) {
-            const isAdminViewingStudent = currentUser.username === 'admin' && selectedStudent;
-            const userToView = isAdminViewingStudent ? selectedStudent : currentUser;
-            const onBackAction = isAdminViewingStudent ? handleNavigateToStudentManagement : handleGoHome;
-            return <MyProgressScreen viewingUser={userToView!} isOwnProgress={!isAdminViewingStudent} onBack={onBackAction} />;
-        }
-        handleGoHome();
-        return null;
-      case AppState.PracticeHub:
-      default:
-        return <PracticeHub 
-          onNavigateToPracticeTest={() => setAppState(AppState.MiniTestHome)}
-          onNavigateToDictation={() => setAppState(AppState.DictationPracticeHome)}
-          onNavigateToReadingPractice={() => setAppState(AppState.ReadingPracticeHome)}
-          onNavigateToGrammar={() => setAppState(AppState.GrammarHome)}
-          onNavigateToVocabulary={() => setAppState(AppState.VocabularyHome)}
-          onNavigateToSpeaking={() => setAppState(AppState.SpeakingHome)}
-          onNavigateToWritingPractice={handleNavigateToWritingPractice}
-        />;
-    }
-  };
-
-  if (!isAuthenticated || !currentUser) {
-    return <LoginScreen onLoginSuccess={handleLoginSuccess} users={users} />;
-  }
-
-  return (
-    <div className="min-h-screen bg-slate-100 dark:bg-slate-900 font-sans text-slate-800 dark:text-slate-200 flex flex-col">
-      <header className="bg-white dark:bg-slate-800 shadow-md sticky top-0 z-10 border-b border-slate-200 dark:border-slate-700">
-        <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center cursor-pointer" onClick={handleGoHome}>
-              <LogoIcon className="h-8 w-8 text-blue-600" />
-              <h1 className="ml-3 text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">TOEIC Zone with Mr. Phat</h1>
-            </div>
-            <div className="flex items-center space-x-2 md:space-x-4">
-                <button 
-                    onClick={handleGoHome}
-                    className="font-semibold text-slate-600 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400 transition-colors"
-                    aria-label="Go to home page"
-                >
-                    Home
-                </button>
-                {currentUser.username === 'admin' && (
-                    <button
-                        onClick={handleNavigateToStudentManagement}
-                        className="font-semibold text-slate-600 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400 transition-colors"
-                        aria-label="Manage students"
-                    >
-                        Quản lý học viên
-                    </button>
-                )}
-                 <button
-                    onClick={handleNavigateToMyProgress}
-                    className="font-semibold text-slate-600 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400 transition-colors"
-                    aria-label="View my progress"
-                >
-                    Kết quả học của tôi
-                </button>
-                <button
-                    onClick={handleNavigateToSettings}
-                    className="font-semibold text-slate-600 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400 transition-colors"
-                    aria-label="Settings"
-                >
-                    Settings
-                </button>
-                <button
-                    onClick={handleLogout}
-                    className="font-semibold text-slate-600 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400 transition-colors"
-                    aria-label="Log out"
-                >
-                    Log Out
-                </button>
-            </div>
+    if (isLoading) {
+        return (
+          <div className="flex justify-center items-center h-screen bg-slate-50 dark:bg-slate-900">
+            <LoadingIcon className="h-12 w-12 text-blue-600 animate-spin" />
           </div>
-        </nav>
-      </header>
-      <main className="flex-grow">
-        {renderContent()}
-      </main>
-      <StatsFooter />
-    </div>
-  );
+        );
+    }
+    
+    if (!isAuthenticated) {
+        return <LoginScreen onLoginSuccess={handleLoginSuccess} users={users} isLoggingIn={isLoggingIn} />;
+    }
+
+    return (
+        <div className="bg-slate-50 dark:bg-slate-900 min-h-screen font-sans text-slate-900 dark:text-slate-200">
+            <header className="bg-white dark:bg-slate-800 shadow-md border-b border-slate-200 dark:border-slate-700 sticky top-0 z-40">
+                <nav className="container mx-auto px-4 py-3 flex justify-between items-center">
+                    <div className="flex items-center gap-2 cursor-pointer" onClick={handleGoHome}>
+                        <LogoIcon className="h-8 w-8 text-blue-600" />
+                        <span className="text-xl font-bold text-slate-800 dark:text-slate-100">TOEIC Zone</span>
+                    </div>
+                    <div className="hidden md:flex items-center gap-2">
+                        <NavButton onClick={handleGoHome} isActive={appState === AppState.PracticeHub || appState.startsWith('MINI_TEST')}>Practice Hub</NavButton>
+                        <NavButton onClick={() => setAppState(AppState.MyProgress)} isActive={appState === AppState.MyProgress}>My Progress</NavButton>
+                        {currentUser?.username === 'admin' && (
+                            <NavButton onClick={() => setAppState(AppState.StudentManagement)} isActive={appState === AppState.StudentManagement}>Students</NavButton>
+                        )}
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <span className="hidden sm:inline text-sm font-medium text-slate-600 dark:text-slate-300">Welcome, {currentUser?.username}</span>
+                        <NavButton onClick={() => setAppState(AppState.Settings)} isActive={appState === AppState.Settings}>Settings</NavButton>
+                        <button onClick={handleLogout} className="px-4 py-2 text-sm font-semibold text-red-600 bg-red-100 dark:bg-red-900/50 dark:text-red-300 rounded-lg hover:bg-red-200 dark:hover:bg-red-800/50 transition-colors">
+                            Logout
+                        </button>
+                    </div>
+                </nav>
+            </header>
+    
+            <main className="py-8">
+                {renderContent()}
+            </main>
+            
+            <StatsFooter />
+        </div>
+    );
 };
 
 export default App;

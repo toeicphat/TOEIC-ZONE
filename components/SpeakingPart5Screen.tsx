@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { ArrowLeftIcon, LoadingIcon, RefreshIcon, StopIcon, TrophyIcon, MicrophoneIcon, PlayIcon, PauseIcon } from './icons';
+import { ArrowLeftIcon, LoadingIcon, RefreshIcon, StopIcon, TrophyIcon, MicrophoneIcon, PlayIcon, PauseIcon, LightBulbIcon, XCircleIcon, QuestionMarkCircleIcon } from './icons';
 import { generateSpeakingPart5Scenario, evaluateSpeakingPart5 } from '../services/geminiService';
 import { SpeakingPart5Scenario, SpeakingPart5EvaluationResult, User } from '../types';
 import AudioPlayer from './AudioPlayer';
@@ -31,6 +31,23 @@ interface SpeakingPart5ScreenProps {
   currentUser: User;
 }
 
+const HintBox: React.FC<{onClose: () => void}> = ({onClose}) => (
+    <div className="bg-blue-50 dark:bg-slate-800/50 border-l-4 border-blue-500 text-blue-800 dark:text-blue-300 p-4 rounded-r-lg mt-6 relative">
+        <div className="flex">
+            <div className="flex-shrink-0">
+                <LightBulbIcon className="h-6 w-6 text-blue-500" />
+            </div>
+            <div className="ml-3">
+                <h3 className="text-lg font-bold">Pro Tip: Propose a Solution</h3>
+                <p className="text-sm mt-1">Structure your response like a professional voicemail. 1) Greet the caller and acknowledge you understand the problem. 2) Propose a clear, logical solution with one or two steps. 3) End with a polite closing statement.</p>
+            </div>
+        </div>
+        <button onClick={onClose} className="absolute top-2 right-2 p-1 rounded-full hover:bg-blue-100 dark:hover:bg-slate-700" aria-label="Close hint">
+            <XCircleIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+        </button>
+    </div>
+);
+
 const SpeakingPart5Screen: React.FC<SpeakingPart5ScreenProps> = ({ onBack, currentUser }) => {
     const [practiceState, setPracticeState] = useState<PracticeState>('idle');
     const [taskData, setTaskData] = useState<SpeakingPart5Scenario | null>(null);
@@ -38,6 +55,7 @@ const SpeakingPart5Screen: React.FC<SpeakingPart5ScreenProps> = ({ onBack, curre
     const [results, setResults] = useState<SpeakingPart5EvaluationResult | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [isTimerPaused, setIsTimerPaused] = useState(false);
+    const [showHint, setShowHint] = useState(true);
 
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const audioChunksRef = useRef<Blob[]>([]);
@@ -104,6 +122,7 @@ const SpeakingPart5Screen: React.FC<SpeakingPart5ScreenProps> = ({ onBack, curre
         setError(null);
         setResults(null);
         setTaskData(null);
+        setShowHint(true);
         try {
             const data = await generateSpeakingPart5Scenario();
             if (data) {
@@ -273,6 +292,7 @@ const SpeakingPart5Screen: React.FC<SpeakingPart5ScreenProps> = ({ onBack, curre
                     Start Preparation
                 </button>
             </div>
+            {showHint && <HintBox onClose={() => setShowHint(false)} />}
         </div>
     );
     
@@ -388,6 +408,11 @@ const SpeakingPart5Screen: React.FC<SpeakingPart5ScreenProps> = ({ onBack, curre
     return (
         <div className="container mx-auto px-4 py-12">
             <div className="max-w-4xl mx-auto">
+                {!showHint && practiceState === 'task_ready' && (
+                    <button onClick={() => setShowHint(true)} className="fixed top-24 right-4 z-50 p-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700" aria-label="Show hint">
+                        <QuestionMarkCircleIcon className="h-6 w-6" />
+                    </button>
+                )}
                 <button onClick={onBack} className="mb-8 inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold disabled:opacity-50" disabled={practiceState !== 'idle'}>
                     <ArrowLeftIcon className="h-5 w-5 mr-2" />
                     Back to Speaking Hub

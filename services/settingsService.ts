@@ -1,6 +1,31 @@
-import { UserSettings } from '../types';
+import { UserSettings, API_BASE_URL } from '../types';
+import { mockFetch } from './apiMock';
 
-const getSettingsStorageKey = (username: string): string => `toeicAppUserSettings_${username}`;
+/*
+--- BACKEND API NOTE ---
+The backend should handle storing and retrieving user settings.
+
+Example Database Schema (Settings): A table where each row is a user's settings.
+- user_id (PK, FK to users table)
+- name (string, nullable)
+- email (string, nullable)
+- scoreTarget (string, nullable)
+- examDate (string, nullable)
+- darkMode (boolean, default: false)
+
+API Endpoints:
+- GET /api/settings/:username -> Returns the settings object for a user.
+- POST /api/settings -> Creates or updates the settings for a user.
+*/
+
+
+const getAuthToken = (): string | null => {
+    try {
+        return localStorage.getItem('authToken');
+    } catch {
+        return null;
+    }
+};
 
 const defaultSettings: UserSettings = {
     name: '',
@@ -10,25 +35,46 @@ const defaultSettings: UserSettings = {
     darkMode: false,
 };
 
-export const getSettings = (username: string): UserSettings => {
+
+export const getSettings = async (username: string): Promise<UserSettings> => {
+    const token = getAuthToken();
+    if (!token) return { ...defaultSettings };
+    
     try {
-        const storedSettings = localStorage.getItem(getSettingsStorageKey(username));
-        if (storedSettings) {
-            const parsed = JSON.parse(storedSettings);
-            // Ensure all keys exist to prevent errors with older settings formats
-            return { ...defaultSettings, ...parsed };
+        console.log(`[CLIENT] Fetching settings for ${username}`);
+        const response = await mockFetch(`${API_BASE_URL}/api/settings/${username}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) {
+            console.error(`API Error fetching settings: ${response.status}`);
+            return { ...defaultSettings };
         }
-        return { ...defaultSettings };
+        const settings = await response.json();
+        return { ...defaultSettings, ...settings };
     } catch (error) {
-        console.error("Error reading settings from localStorage", error);
+        console.error("[CLIENT] Network error fetching settings. This is expected in a simulated environment. Returning default settings.", error);
         return { ...defaultSettings };
     }
 };
 
-export const saveSettings = (username: string, settings: UserSettings): void => {
+export const saveSettings = async (username: string, settings: UserSettings): Promise<void> => {
+    const token = getAuthToken();
+    if (!token) return;
+    
     try {
-        localStorage.setItem(getSettingsStorageKey(username), JSON.stringify(settings));
+        console.log(`[CLIENT] Saving settings for ${username}`);
+        const response = await mockFetch(`${API_BASE_URL}/api/settings`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ username, settings })
+        });
+        if (!response.ok) {
+            console.error(`API Error saving settings: ${response.status}`);
+        }
     } catch (error) {
-        console.error("Error saving settings to localStorage", error);
+        console.error("[CLIENT] Network error saving settings. This is expected in a simulated environment.", error);
     }
 };
