@@ -4,15 +4,16 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "build": "tsc -p server && vite build",
+    "start": "node dist-server/index.js",
     "preview": "vite preview --port 3000 --host 0.0.0.0",
     "start": "vite preview --port 3000 --host 0.0.0.0"
   },
   "dependencies": {
-    "react": "^19.1.1",
-    "@google/genai": "^1.21.0",
-    "react-dom": "^19.1.1"
+    "express": "^4.19.2",
+    "node-fetch": "^3.3.2",
+    "dotenv": "^16.4.5"
+
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
