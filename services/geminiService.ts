@@ -23,9 +23,37 @@ import {
 } from '../types';
 import { getRandomVocabularyWords } from './vocabularyLibrary';
 
-const ai = new GoogleGenAI({
-  apiKey: import.meta.env.VITE_GOOGLE_API_KEY as string,
-});
+// ✅ Gọi Google API qua proxy để tránh lộ key
+export async function queryGemini(prompt: string) {
+  const PROXY_URL = "https://toeic-zone-proxy.onrender.com/api/gemini"; // ⚠️ sửa đúng URL proxy của bạn
+
+  try {
+    const response = await fetch(PROXY_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt }),
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      console.error("❌ Proxy API error:", response.status, text);
+      throw new Error(`Proxy API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("✅ Proxy response:", data);
+    return (
+      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      data?.output?.[0]?.generated_text ||
+      data?.result ||
+      JSON.stringify(data)
+    );
+  } catch (error) {
+    console.error("❌ Lỗi khi gọi Gemini qua proxy:", error);
+    return "Không thể kết nối AI. Vui lòng thử lại.";
+  }
+}
+
 
 
 
