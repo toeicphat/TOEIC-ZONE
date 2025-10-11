@@ -7,6 +7,8 @@ import { dictationTest5Data } from './dictation/dictationTest5';
 import { dictationTest6Data } from './dictation/dictationTest6';
 import { dictationTest7Data } from './dictation/dictationTest7';
 import { dictationTest8Data } from './dictation/dictationTest8';
+import { dictationTest9Data } from './dictation/dictationTest9';
+import { dictationTest10Data } from './dictation/dictationTest10';
 
 export interface DictationTestSet {
     id: number;
@@ -68,6 +70,18 @@ export const allDictationTests: DictationTestSet[] = [
         title: `ETS 2024 Test 8`,
         description: "Complete dictation test with Part 1, 2, 3, and 4.",
         parts: dictationTest8Data
+    },
+    {
+        id: 9,
+        title: `ETS 2024 Test 9`,
+        description: "Complete dictation test with Part 1, 2, 3, and 4.",
+        parts: dictationTest9Data
+    },
+    {
+        id: 10,
+        title: `ETS 2024 Test 10`,
+        description: "Complete dictation test with Part 1, 2, 3, and 4.",
+        parts: dictationTest10Data
     },
 ];
 

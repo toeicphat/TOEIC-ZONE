@@ -1,4 +1,5 @@
 
+
 import { GoogleGenAI, Type } from "@google/genai";
 import { 
     DictationExercise, 
@@ -22,9 +23,7 @@ import {
 } from '../types';
 import { getRandomVocabularyWords } from './vocabularyLibrary';
 
-const ai = new GoogleGenAI({
-  apiKey: import.meta.env.VITE_GEMINI_API_KEY
-});
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
 
 // Interface for the structured response from the speaking evaluation AI
 export interface SpeakingEvaluationResult {
@@ -303,6 +302,87 @@ export const generateDeterminerExercise = async (): Promise<DeterminerExercise |
     }
 };
 
+const translationEvaluationSchema = {
+    type: Type.OBJECT,
+    properties: {
+        score: { 
+            type: Type.INTEGER,
+            description: "A score from 0 to 100 evaluating the translation's accuracy, grammar, and naturalness. 100 is a perfect translation."
+        },
+        feedback_vi: { 
+            type: Type.STRING,
+            description: "Concise feedback in Vietnamese explaining what is good about the translation and what could be improved. Mention grammar, vocabulary choice, and natural phrasing."
+        }
+    },
+    required: ['score', 'feedback_vi']
+};
+
+export const evaluateTranslation = async (originalSentence: string, userTranslation: string): Promise<TranslationEvaluationResult | null> => {
+    try {
+        const prompt = `
+            You are an expert English to Vietnamese translator and teacher.
+            The user was given the following English sentence to translate: "${originalSentence}"
+            The user provided this Vietnamese translation: "${userTranslation}"
+
+            Please evaluate the user's translation.
+            1.  Assign a score from 0 to 100 based on accuracy, grammar, and naturalness.
+            2.  Provide brief, constructive feedback in Vietnamese. Point out strengths and areas for improvement.
+
+            Return the evaluation in JSON format according to the schema.
+        `;
+        
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: translationEvaluationSchema,
+            },
+        });
+
+        const jsonStr = response.text.trim();
+        const data = JSON.parse(jsonStr);
+
+        if (data && typeof data.score === 'number' && typeof data.feedback_vi === 'string') {
+            return data as TranslationEvaluationResult;
+        }
+        return null;
+    } catch (error) {
+        console.error("Error evaluating translation:", error);
+        throw new Error("Failed to get translation evaluation from API.");
+    }
+};
+
+export const generateSentenceForTranslation = async (vocabList?: VocabItem[]): Promise<string | null> => {
+    try {
+        let vocabPrompt = '';
+        if (vocabList && vocabList.length > 0) {
+            const words = vocabList.map(v => v.word).join(', ');
+            vocabPrompt = `The sentence MUST include at least one of the following words: ${words}.`;
+        }
+
+        const prompt = `
+            You are an English teacher creating a practice sentence for an intermediate-level student to translate into Vietnamese.
+            Generate a single, clear, and natural-sounding English sentence.
+            The sentence should be between 10 and 20 words long.
+            The topic should be about business, daily life, or technology.
+            ${vocabPrompt}
+            Provide only the sentence itself, without any quotation marks or introductory phrases.
+        `;
+
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: prompt,
+        });
+
+        const text = response.text.trim();
+        return text || null;
+
+    } catch (error) {
+        console.error("Error generating sentence for translation:", error);
+        throw new Error("Failed to generate sentence from API.");
+    }
+};
 
 export const getWordDefinition = async (word: string, contextSentence: string = ''): Promise<string | null> => {
     try {
@@ -529,20 +609,27 @@ Your evaluation must be based on the official criteria for this task:
 Based on your evaluation, you must provide a structured JSON response.
 
 **Step 1: Assign a Task Score (0-3 Scale)**
-- **3 (Highest):** The description is relevant, clear, and coherent. It uses accurate and varied grammar and vocabulary. Delivery is generally clear and fluid.
-- **2 (Medium):** The description is relevant but may have some inaccuracies or limitations in grammar and vocabulary. Delivery may have some noticeable issues.
-- **1 (Low):** The description is limited and difficult to understand due to significant errors in grammar, vocabulary, or delivery.
+- **3 (Highest):** Speech is highly intelligible and relevant to the picture. Description is well-organized, uses a range of grammar and vocabulary.
+- **2 (Medium):** Speech is generally intelligible. Description is relevant but may have some limitations in organization, grammar, or vocabulary.
+- **1 (Low):** Speech is not generally intelligible. Description is very limited or irrelevant.
 - **0:** No intelligible speech or no attempt.
 
 **Step 2: Estimate Overall Score Band and Proficiency Level**
 Use the Task Score to estimate an overall TOEIC Speaking Scale Score and Proficiency Level.
-- Task Score 3 -> Level 7-8 (160-200)
-- Task Score 2 -> Level 5-6 (110-150)
-- Task Score 1 -> Level 3-4 (60-100)
-- Task Score 0 -> Level 1-2 (0-50)
+- **Level 8 (190-200):** Strong Task Score of 3.
+- **Level 7 (160-180):** Solid Task Score of 3.
+- **Level 6 (130-150):** Strong Task Score of 2.
+- **Level 5 (110-120):** Standard Task Score of 2.
+- **Level 4 (80-100):** Task Score of 1.
+- **Level 3 (60-70):** Low Task Score of 1.
+- **Levels 1-2 (0-50):** Task Score of 0.
 
-**Step 3: Provide Detailed, Bilingual Feedback**
-For each criterion (Grammar, Vocabulary, Cohesion, Delivery), provide a concise summary of strengths and weaknesses. **Your feedback for each section must be provided in both English and Vietnamese.**
+**Step 3: Provide Detailed Feedback in both English and Vietnamese**
+For each criterion (Grammar, Vocabulary, Cohesion, Delivery), provide constructive feedback in English and a concise Vietnamese translation.
+- **Grammar (Ngữ pháp):** Comment on accuracy, range, and complexity.
+- **Vocabulary (Từ vựng):** Comment on appropriate, accurate, and varied word choice.
+- **Cohesion (Tính mạch lạc):** Comment on logical organization and flow.
+- **Delivery (Phát âm, Ngữ điệu và Trọng âm):** Comment on pronunciation, intonation, and stress.
 
 Your final output must be a JSON object adhering to the provided schema. Do not add any extra text or explanations outside the JSON structure.`;
 
@@ -550,7 +637,7 @@ Your final output must be a JSON object adhering to the provided schema. Do not 
             model: "gemini-2.5-flash",
             contents: {
                 parts: [
-                    { text: `Evaluate my speech for the TOEIC Speaking Part 2 task.` },
+                    { text: "Evaluate my spoken description of a picture." },
                     { inlineData: { mimeType: mimeType, data: audioBase64 } }
                 ]
             },
@@ -567,33 +654,37 @@ Your final output must be a JSON object adhering to the provided schema. Do not 
         if (data && typeof data.taskScore === 'number') {
             return data as SpeakingPart2EvaluationResult;
         }
+
         return null;
 
     } catch (error) {
-        console.error("Error evaluating speaking part 2 performance:", error);
+        console.error("Error evaluating speaking part 2:", error);
         throw new Error("Failed to get evaluation from API.");
     }
-}
+};
 
+// FIX: Add missing schemas and functions for Speaking parts 3, 4, 5 and Writing parts 1, 2, 3.
+
+// --- Speaking Part 3 ---
 const speakingPart3QuestionsSchema = {
     type: Type.OBJECT,
     properties: {
-        topic: { type: Type.STRING, description: "The general topic for the set of questions (e.g., 'Shopping for clothes')." },
-        question5: { type: Type.STRING, description: "Question 5: A simple, factual, or frequency question." },
-        question6: { type: Type.STRING, description: "Question 6: A 'wh-' question asking for reasons, opinions, or specific details." },
-        question7: { type: Type.STRING, description: "Question 7: A hypothetical, comparison, or detailed opinion question requiring an extended answer." },
+        topic: { type: Type.STRING, description: "A familiar topic for discussion, e.g., 'Work-Life Balance' or 'Online Shopping'."},
+        question5: { type: Type.STRING, description: "Question 5, a simple question about the topic."},
+        question6: { type: Type.STRING, description: "Question 6, another simple question related to the topic and question 5."},
+        question7: { type: Type.STRING, description: "Question 7, a more complex question asking for an opinion or explanation about the topic."},
     },
-    required: ['topic', 'question5', 'question6', 'question7'],
+    required: ['topic', 'question5', 'question6', 'question7']
 };
 
 export const generateSpeakingPart3Questions = async (): Promise<{ topic: string, question5: string, question6: string, question7: string } | null> => {
     try {
-        const prompt = `Generate a set of three interconnected, spoken questions typical of TOEIC Speaking Part 3 (Questions 5-7).
-        1. First, select a common everyday topic (e.g., shopping, transportation, movies, or dining out).
-        2. Create Question 5: A simple, factual, or frequency question (e.g., "How often do you go shopping for clothes?").
-        3. Create Question 6: A "wh-" question asking for reasons or details, related to Q5 (e.g., "What kind of clothing stores do you prefer, and why?").
-        4. Create Question 7: A hypothetical, comparison, or detailed opinion question requiring a more extended answer, related to the topic (e.g., "If you had to choose between shopping online or in a physical store, which would you choose and why?").
-        Return the result as a JSON object.`;
+        const prompt = `Generate a set of 3 related questions for a TOEIC Speaking Test Part 3 (Respond to questions).
+        1. Choose a common, familiar topic suitable for an intermediate English learner (e.g., 'Workplace Communication', 'Traveling', 'Using Technology').
+        2. Create three questions (Q5, Q6, Q7) related to this topic.
+        3. Q5 and Q6 should be simpler questions that can be answered in 15 seconds.
+        4. Q7 should be a more open-ended question that requires a more developed 30-second response (e.g., asking for an opinion, advantages/disadvantages, or a preference with reasons).
+        5. Return the result in JSON format according to the schema.`;
 
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
@@ -604,8 +695,9 @@ export const generateSpeakingPart3Questions = async (): Promise<{ topic: string,
             },
         });
 
-        const data = JSON.parse(response.text.trim());
-        if (data && data.question5 && data.question6 && data.question7) {
+        const jsonStr = response.text.trim();
+        const data = JSON.parse(jsonStr);
+        if (data && data.topic) {
             return data;
         }
         return null;
@@ -615,156 +707,135 @@ export const generateSpeakingPart3Questions = async (): Promise<{ topic: string,
     }
 };
 
-const speakingPart3EvaluationSchema = {
+const speakingPart3FeedbackSchema = {
     type: Type.OBJECT,
     properties: {
-        taskScore: { type: Type.INTEGER, description: "The raw score from 0 to 5 for the set of three responses." },
+        english: { type: Type.STRING },
+        vietnamese: { type: Type.STRING }
+    },
+    required: ['english', 'vietnamese']
+};
+
+const speakingPart3Schema = {
+    type: Type.OBJECT,
+    properties: {
+        taskScore: { type: Type.INTEGER, description: "The raw score from 0 to 5 based on overall performance." },
         estimatedScoreBand: { type: Type.STRING, description: "The estimated TOEIC Speaking Scale Score Range (e.g., '130-150')." },
         proficiencyLevel: { type: Type.STRING, description: "The corresponding TOEIC Proficiency Level (e.g., 'Level 6')." },
-        generalSummary: {
-            type: Type.OBJECT,
-            properties: {
-                english: { type: Type.STRING, description: "A general summary of the performance in English, noting relevance and completeness." },
-                vietnamese: { type: Type.STRING, description: "A general summary in Vietnamese (Tóm tắt chung)." },
-            },
-            required: ['english', 'vietnamese'],
-        },
-        grammarAndVocab: {
-            type: Type.OBJECT,
-            properties: {
-                english: { type: Type.STRING, description: "Feedback on grammar and vocabulary in English." },
-                vietnamese: { type: Type.STRING, description: "Feedback on grammar and vocabulary in Vietnamese (Ngữ pháp & Từ vựng)." },
-            },
-            required: ['english', 'vietnamese'],
-        },
-        fluencyAndCohesion: {
-            type: Type.OBJECT,
-            properties: {
-                english: { type: Type.STRING, description: "Feedback on fluency and cohesion in English." },
-                vietnamese: { type: Type.STRING, description: "Feedback on fluency and cohesion in Vietnamese (Độ trôi chảy & Mạch lạc)." },
-            },
-            required: ['english', 'vietnamese'],
-        },
-        pronunciation: {
-            type: Type.OBJECT,
-            properties: {
-                english: { type: Type.STRING, description: "Feedback on pronunciation in English." },
-                vietnamese: { type: Type.STRING, description: "Feedback on pronunciation in Vietnamese (Phát âm)." },
-            },
-            required: ['english', 'vietnamese'],
-        },
-        responseToQ7: {
-            type: Type.OBJECT,
-            properties: {
-                english: { type: Type.STRING, description: "Specific feedback on the content and development of the answer to Question 7." },
-                vietnamese: { type: Type.STRING, description: "Specific feedback on the content for Question 7 in Vietnamese (Phản hồi cho Câu 7)." },
-            },
-            required: ['english', 'vietnamese'],
-        },
+        generalSummary: speakingPart3FeedbackSchema,
+        grammarAndVocab: speakingPart3FeedbackSchema,
+        fluencyAndCohesion: speakingPart3FeedbackSchema,
+        pronunciation: speakingPart3FeedbackSchema,
+        responseToQ7: speakingPart3FeedbackSchema,
     },
-    required: ['taskScore', 'estimatedScoreBand', 'proficiencyLevel', 'generalSummary', 'grammarAndVocab', 'fluencyAndCohesion', 'pronunciation', 'responseToQ7'],
+    required: ['taskScore', 'estimatedScoreBand', 'proficiencyLevel', 'generalSummary', 'grammarAndVocab', 'fluencyAndCohesion', 'pronunciation', 'responseToQ7']
 };
 
 export const evaluateSpeakingPart3 = async (
-    questions: { question5: string; question6: string; question7: string; }, 
-    audioBase64s: (string | null)[], 
+    questions: { topic: string; question5: string; question6: string; question7: string; },
+    audioBase64s: (string | null)[],
     mimeTypes: string[]
 ): Promise<SpeakingPart3EvaluationResult | null> => {
     try {
-        const systemInstruction = `You are a certified rater for the TOEIC Speaking Test, specializing in "Part 3: Respond to Questions" (Questions 5-7). Evaluate the user's cumulative performance across three spoken audio responses to a set of related questions.
+        const systemInstruction = `You are a certified TOEIC Speaking Test rater, specializing in "Part 3: Respond to Questions". You will evaluate a user's spoken audio responses to three related questions.
 
-**Evaluation Criteria:**
-- **Relevance & Completeness:** Did the user directly answer all three questions?
-- **Language Use:** Assess grammar accuracy/range and vocabulary appropriateness/variety.
-- **Cohesion & Fluency:** Evaluate the flow, pacing, and use of connecting words.
-- **Delivery:** Rate overall pronunciation, intonation, and stress.
+Your evaluation must be based on the official criteria:
+1.  **Relevance and Completeness:** How well the response addresses the prompt.
+2.  **Grammar and Vocabulary:** Accuracy and range of language used.
+3.  **Fluency and Cohesion:** Smoothness of speech and logical flow of ideas.
+4.  **Pronunciation:** Clarity and intelligibility.
 
 **Step 1: Assign a Task Score (0-5 Scale)**
-Based on the overall communicative effectiveness across all three responses, assign a score:
-- **5 (Highest):** Responses are appropriate, fluent, and coherent. Excellent grammar/vocab. Delivery is highly intelligible.
-- **4:** Responses are mostly appropriate and clear. Good control of grammar/vocab. Intelligible delivery.
-- **3 (Medium):** Responses are generally appropriate but may have limitations. Some errors in grammar/vocab. Delivery is generally intelligible but may have noticeable issues.
-- **2:** Responses are limited. Significant errors in grammar, vocabulary, or delivery make them difficult to understand.
-- **1 (Low):** Responses are mostly unintelligible or irrelevant.
+- **5:** Response is highly intelligible, relevant, and well-developed. Uses a good range of grammar and vocabulary with few errors.
+- **3-4:** Response is generally intelligible and relevant. May have some limitations in language use or development.
+- **1-2:** Response is limited, not always intelligible or relevant. Significant errors in language.
 - **0:** No intelligible speech.
 
-**Step 2: Estimate Overall Score Band and Proficiency Level**
-Use the Task Score to estimate an overall TOEIC Speaking Scale Score and Proficiency Level.
-- Task Score 5 -> Level 8 (190-200)
-- Task Score 4 -> Level 6-7 (130-180)
-- Task Score 3 -> Level 5 (110-120)
-- Task Score 2 -> Level 4 (80-100)
-- Task Score 1 -> Level 3 (60-70)
-- Task Score 0 -> Level 1-2 (0-50)
+**Step 2: Estimate Score Band and Proficiency Level**
+- **Level 8 (190-200):** Strong Task Score of 5.
+- **Level 7 (160-180):** Solid Task Score of 4-5.
+- **Level 6 (130-150):** Strong Task Score of 3-4.
+- **Level 5 (110-120):** Standard Task Score of 3.
+- **Levels 1-4:** Task Score of 0-2.
 
-**Step 3: Provide Detailed, Bilingual Feedback**
-Provide concise feedback for each category in **both English and Vietnamese**. Specifically comment on the longest answer (Q7) in its own section.
+**Step 3: Provide Detailed Feedback in English and Vietnamese**
+- **General Summary (Tóm tắt chung):** Overall strengths and weaknesses.
+- **Grammar & Vocabulary (Ngữ pháp & Từ vựng):** Comments on accuracy and range.
+- **Fluency & Cohesion (Độ trôi chảy & Mạch lạc):** Comments on flow and clarity.
+- **Pronunciation (Phát âm):** Comments on clarity.
+- **Response to Q7 (Phản hồi cho Câu 7):** Specific feedback on the more developed answer.
 
-Your final output must be a JSON object adhering to the provided schema.`;
+Your final output must be a JSON object adhering to the schema.`;
 
-        const parts: any[] = [{ text: `Evaluate my three responses to these questions:
-        Q5: "${questions.question5}"
-        Q6: "${questions.question6}"
-        Q7: "${questions.question7}"
-        Here are my audio responses.` }];
-        
-        audioBase64s.forEach((audio, index) => {
-            if (audio) {
-                parts.push({ text: `Audio for Q${index + 5}:` });
-                parts.push({ inlineData: { mimeType: mimeTypes[index], data: audio } });
-            } else {
-                parts.push({ text: `No audio was provided for Q${index + 5}.` });
-            }
-        });
+        const parts: any[] = [
+            { text: `Evaluate my spoken responses. The topic was "${questions.topic}".
+            Question 5: "${questions.question5}" (15 sec response)
+            Question 6: "${questions.question6}" (15 sec response)
+            Question 7: "${questions.question7}" (30 sec response)
+            
+            Here are my audio responses for Q5, Q6, and Q7 respectively.` },
+        ];
+
+        if (audioBase64s[0]) {
+            parts.push({ text: "Audio for Question 5:" });
+            parts.push({ inlineData: { mimeType: mimeTypes[0], data: audioBase64s[0] } });
+        }
+        if (audioBase64s[1]) {
+            parts.push({ text: "Audio for Question 6:" });
+            parts.push({ inlineData: { mimeType: mimeTypes[1], data: audioBase64s[1] } });
+        }
+        if (audioBase64s[2]) {
+            parts.push({ text: "Audio for Question 7:" });
+            parts.push({ inlineData: { mimeType: mimeTypes[2], data: audioBase64s[2] } });
+        }
 
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
-            contents: { parts: parts },
+            contents: { parts },
             config: {
                 systemInstruction: systemInstruction,
                 responseMimeType: "application/json",
-                responseSchema: speakingPart3EvaluationSchema,
+                responseSchema: speakingPart3Schema,
             },
         });
 
-        const data = JSON.parse(response.text.trim());
+        const jsonStr = response.text.trim();
+        const data = JSON.parse(jsonStr);
+
         if (data && typeof data.taskScore === 'number') {
             return data as SpeakingPart3EvaluationResult;
         }
         return null;
 
     } catch (error) {
-        console.error("Error evaluating Speaking Part 3 performance:", error);
+        console.error("Error evaluating speaking part 3:", error);
         throw new Error("Failed to get evaluation from API.");
     }
 };
 
+// --- Speaking Part 4 ---
+
 const speakingPart4TaskSchema = {
     type: Type.OBJECT,
     properties: {
-        documentTitle: { type: Type.STRING, description: "A professional title for the document, e.g., 'Weekly Project Status Meeting Agenda'." },
-        documentContent: { type: Type.STRING, description: "A multi-line text representing the schedule or document. Use markdown for simple formatting like lists or bolding. CRITICAL: This document MUST contain a conflict or error, such as a scheduling conflict, a cancelled session, or incorrect information that can be corrected by referencing other parts of the document." },
-        question8: { type: Type.STRING, description: "Question 8: A simple, fact-finding question about basic information from the document (e.g., 'What time does the conference start?')." },
-        question9: { type: Type.STRING, description: "Question 9: A specific, detailed question requiring extraction of multiple related facts (e.g., 'Can you list the times and speakers for the marketing sessions?')." },
-        question10: { type: Type.STRING, description: "Question 10: A complex question that requires the user to correct a misunderstanding based on the conflict in the document (e.g., 'I was told the keynote is on Friday morning. Is that correct?')." },
+        documentTitle: { type: Type.STRING, description: "The title of the document, e.g., 'Conference Schedule' or 'Library Information'." },
+        documentContent: { type: Type.STRING, description: "The full text content of the document. Use markdown for simple formatting like headers with '***' and tables with '|'." },
+        question8: { type: Type.STRING, description: "Question 8, a simple question about specific information in the document."},
+        question9: { type: Type.STRING, description: "Question 9, another simple question about different information in the document."},
+        question10: { type: Type.STRING, description: "Question 10, a more complex question requiring the user to synthesize information from the document."},
     },
-    required: ['documentTitle', 'documentContent', 'question8', 'question9', 'question10'],
+    required: ['documentTitle', 'documentContent', 'question8', 'question9', 'question10']
 };
-
 
 export const generateSpeakingPart4Task = async (): Promise<SpeakingPart4Task | null> => {
     try {
-        const prompt = `
-            You are a TOEIC test creator. Generate a complete practice task for TOEIC Speaking Part 4 (Questions 8-10).
-            The task consists of a document (like a schedule, agenda, or itinerary) and three related questions.
-
-            Instructions:
-            1.  **Create a Document:** Design a realistic business document. It must contain a clear conflict, error, or change. For example, a session is cancelled but a question refers to it, two events are scheduled at the same time, or an announcement contradicts a listed item.
-            2.  **Create Question 8:** Ask a simple, direct question about one piece of information from the document.
-            3.  **Create Question 9:** Ask a more detailed question that requires finding two or three pieces of related information.
-            4.  **Create Question 10:** Create a question based on a misunderstanding that can be corrected using the conflict/error you placed in the document.
-            5.  Return the result as a single JSON object adhering to the provided schema.
-        `;
+        const prompt = `Generate a task for a TOEIC Speaking Test Part 4 (Respond to questions using provided information).
+        1. Create a realistic document such as a conference schedule, a meeting agenda, an itinerary, or a public announcement.
+        2. The document should contain enough detail to answer three questions. Use simple markdown for structure (e.g., '***Header***' for titles, '|' for tables).
+        3. Create three questions (Q8, Q9, Q10) based on the document.
+        4. Q8 and Q9 should ask for specific pieces of information found in the text.
+        5. Q10 should require the test-taker to combine or infer information from two or more parts of the document.
+        6. Return the result in JSON format according to the schema.`;
 
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
@@ -775,8 +846,9 @@ export const generateSpeakingPart4Task = async (): Promise<SpeakingPart4Task | n
             },
         });
 
-        const data = JSON.parse(response.text.trim());
-        if (data && data.documentTitle && data.question8) {
+        const jsonStr = response.text.trim();
+        const data = JSON.parse(jsonStr);
+        if (data && data.documentTitle) {
             return data as SpeakingPart4Task;
         }
         return null;
@@ -786,150 +858,128 @@ export const generateSpeakingPart4Task = async (): Promise<SpeakingPart4Task | n
     }
 };
 
-const speakingPart4EvaluationSchema = {
+const speakingPart4FeedbackSchema = {
     type: Type.OBJECT,
     properties: {
-        taskScore: { type: Type.INTEGER, description: "The raw score from 0 to 5 for the set of three responses." },
+        english: { type: Type.STRING },
+        vietnamese: { type: Type.STRING }
+    },
+    required: ['english', 'vietnamese']
+};
+
+const speakingPart4Schema = {
+    type: Type.OBJECT,
+    properties: {
+        taskScore: { type: Type.INTEGER, description: "The raw score from 0 to 5 based on overall performance." },
         estimatedScoreBand: { type: Type.STRING, description: "The estimated TOEIC Speaking Scale Score Range (e.g., '130-150')." },
         proficiencyLevel: { type: Type.STRING, description: "The corresponding TOEIC Proficiency Level (e.g., 'Level 6')." },
-        generalSummary: {
-            type: Type.OBJECT,
-            properties: {
-                english: { type: Type.STRING },
-                vietnamese: { type: Type.STRING },
-            },
-            required: ['english', 'vietnamese'],
-        },
-        accuracy: {
-            type: Type.OBJECT,
-            properties: {
-                english: { type: Type.STRING, description: "Feedback on factual correctness for Q8 and Q9." },
-                vietnamese: { type: Type.STRING, description: "Feedback on factual correctness for Q8 and Q9 in Vietnamese (Độ chính xác)." },
-            },
-            required: ['english', 'vietnamese'],
-        },
-        responseToQ10: {
-            type: Type.OBJECT,
-            properties: {
-                english: { type: Type.STRING, description: "Specific feedback on synthesizing/correcting the complex question 10." },
-                vietnamese: { type: Type.STRING, description: "Specific feedback for Question 10 in Vietnamese (Phản hồi Q10)." },
-            },
-            required: ['english', 'vietnamese'],
-        },
-        languageUse: {
-            type: Type.OBJECT,
-            properties: {
-                english: { type: Type.STRING },
-                vietnamese: { type: Type.STRING, description: "Feedback in Vietnamese (Sử dụng ngôn ngữ)." },
-            },
-            required: ['english', 'vietnamese'],
-        },
-        delivery: {
-            type: Type.OBJECT,
-            properties: {
-                english: { type: Type.STRING },
-                vietnamese: { type: Type.STRING, description: "Feedback in Vietnamese (Cách trình bày)." },
-            },
-            required: ['english', 'vietnamese'],
-        },
+        generalSummary: speakingPart4FeedbackSchema,
+        accuracy: speakingPart4FeedbackSchema,
+        responseToQ10: speakingPart4FeedbackSchema,
+        languageUse: speakingPart4FeedbackSchema,
+        delivery: speakingPart4FeedbackSchema,
     },
-    required: ['taskScore', 'estimatedScoreBand', 'proficiencyLevel', 'generalSummary', 'accuracy', 'responseToQ10', 'languageUse', 'delivery'],
+    required: ['taskScore', 'estimatedScoreBand', 'proficiencyLevel', 'generalSummary', 'accuracy', 'responseToQ10', 'languageUse', 'delivery']
 };
 
 export const evaluateSpeakingPart4 = async (
-    taskData: SpeakingPart4Task, 
-    audioBase64s: (string | null)[], 
+    task: SpeakingPart4Task,
+    audioBase64s: (string | null)[],
     mimeTypes: string[]
 ): Promise<SpeakingPart4EvaluationResult | null> => {
     try {
-        const systemInstruction = `You are a certified rater for the TOEIC Speaking Test, specializing in "Part 4: Respond to Questions using Information Provided" (Questions 8-10). Evaluate the user's cumulative performance across three spoken audio responses based on a provided document.
+        const systemInstruction = `You are a certified TOEIC Speaking Test rater, specializing in "Part 4: Respond to Questions using Provided Information". You will evaluate a user's spoken audio responses to three questions based on a provided document.
 
-**Evaluation Criteria:**
-- **Relevance & Accuracy:** Did the user provide the correct information from the document for all three questions? Critically, did they correctly identify and explain the conflict/correction for Q10? This is the most important factor.
-- **Completeness:** Did they answer all parts of the questions?
-- **Language Use:** Assess grammar, vocabulary, and cohesion.
-- **Delivery:** Rate overall pronunciation, intonation, and pacing.
+Your evaluation must be based on:
+1.  **Accuracy and Completeness:** How accurately and completely the response answers the questions using information from the document.
+2.  **Language Use:** Grammar and vocabulary accuracy and range.
+3.  **Delivery:** Pronunciation, intonation, and stress.
 
 **Step 1: Assign a Task Score (0-5 Scale)**
-- **5 (Highest):** All information is conveyed accurately and completely. High-level language use and clear delivery.
-- **4:** All information is conveyed accurately. Minor issues with language or delivery.
-- **3 (Medium):** The gist of the information is conveyed, but there may be some significant inaccuracies (especially in Q10) or limitations in language/delivery.
-- **2:** Only conveys some information accurately. Significant errors make the response difficult to understand.
-- **1 (Low):** Mostly unintelligible or irrelevant.
+- **5:** Responses are highly intelligible, accurate, and complete. Language use is strong.
+- **3-4:** Responses are generally intelligible and mostly accurate. Some limitations in language or completeness.
+- **1-2:** Responses are limited, often inaccurate, or difficult to understand.
 - **0:** No intelligible speech.
 
 **Step 2: Estimate Score Band and Proficiency Level**
-Use the Task Score to estimate an overall TOEIC Speaking Scale Score and Proficiency Level.
-- Task Score 5 -> Level 7-8 (160-200)
-- Task Score 4 -> Level 6 (130-150)
-- Task Score 3 -> Level 5 (110-120)
-- Task Score 2 -> Level 4 (80-100)
-- Task Score 1 -> Level 3 (60-70)
-- Task Score 0 -> Level 1-2 (0-50)
+- Use the Task Score to estimate an overall score. Levels range from 1 to 8 (Scores 0-200).
 
-**Step 3: Provide Detailed, Bilingual Feedback**
-Provide concise feedback for each category in **both English and Vietnamese**.
+**Step 3: Provide Detailed Feedback in English and Vietnamese**
+- **General Summary (Tóm tắt chung):** Overall performance.
+- **Accuracy (Q8 & Q9) (Độ chính xác - Câu 8 & 9):** Comment on how well the user extracted specific information.
+- **Response to Q10 (Phản hồi cho Câu 10):** Specific feedback on the more complex answer.
+- **Language Use (Sử dụng ngôn ngữ):** Comments on grammar and vocabulary.
+- **Delivery (Trình bày):** Comments on pronunciation, intonation, and stress.
 
-Your final output must be a JSON object adhering to the provided schema.`;
+Your final output must be a JSON object adhering to the schema.`;
+        
+        const parts: any[] = [
+            { text: `Evaluate my spoken responses based on the following document.
+            Document Title: "${task.documentTitle}"
+            Document Content: "${task.documentContent}"
 
-        const parts: any[] = [{ text: `Evaluate my three responses based on this document:
-        Title: ${taskData.documentTitle}
-        Content: ${taskData.documentContent}
-        
-        The questions were:
-        Q8: "${taskData.question8}"
-        Q9: "${taskData.question9}"
-        Q10: "${taskData.question10}"
-        
-        Here are my audio responses.` }];
-        
-        audioBase64s.forEach((audio, index) => {
-            if (audio) {
-                parts.push({ text: `Audio for Q${index + 8}:` });
-                parts.push({ inlineData: { mimeType: mimeTypes[index], data: audio } });
-            } else {
-                parts.push({ text: `No audio was provided for Q${index + 8}.` });
-            }
-        });
+            Questions:
+            Q8: "${task.question8}" (15 sec response)
+            Q9: "${task.question9}" (15 sec response)
+            Q10: "${task.question10}" (30 sec response)
+            
+            Here are my audio responses for Q8, Q9, and Q10 respectively.` },
+        ];
+
+        if (audioBase64s[0]) {
+            parts.push({ text: "Audio for Question 8:" });
+            parts.push({ inlineData: { mimeType: mimeTypes[0], data: audioBase64s[0] } });
+        }
+        if (audioBase64s[1]) {
+            parts.push({ text: "Audio for Question 9:" });
+            parts.push({ inlineData: { mimeType: mimeTypes[1], data: audioBase64s[1] } });
+        }
+        if (audioBase64s[2]) {
+            parts.push({ text: "Audio for Question 10:" });
+            parts.push({ inlineData: { mimeType: mimeTypes[2], data: audioBase64s[2] } });
+        }
 
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
-            contents: { parts: parts },
+            contents: { parts },
             config: {
                 systemInstruction: systemInstruction,
                 responseMimeType: "application/json",
-                responseSchema: speakingPart4EvaluationSchema,
+                responseSchema: speakingPart4Schema,
             },
         });
 
-        const data = JSON.parse(response.text.trim());
+        const jsonStr = response.text.trim();
+        const data = JSON.parse(jsonStr);
+
         if (data && typeof data.taskScore === 'number') {
             return data as SpeakingPart4EvaluationResult;
         }
         return null;
 
     } catch (error) {
-        console.error("Error evaluating Speaking Part 4 performance:", error);
+        console.error("Error evaluating speaking part 4:", error);
         throw new Error("Failed to get evaluation from API.");
     }
 };
 
+// --- Speaking Part 5 ---
 const speakingPart5ScenarioSchema = {
     type: Type.OBJECT,
     properties: {
-        callerName: { type: Type.STRING, description: "The name of the person leaving the voicemail (e.g., 'Sarah from Accounting')." },
-        problem: { type: Type.STRING, description: "A detailed voicemail message, about 4-6 sentences long, describing a common workplace problem that requires a solution. The tone should be slightly concerned or urgent. Examples: a scheduling conflict for an important meeting, a delayed shipment affecting a deadline, a technical issue with equipment before a presentation, or a customer complaint that needs to be addressed." },
+        callerName: { type: Type.STRING, description: "The name of the person leaving the voicemail, e.g., 'Mr. Smith' or 'Jane from Accounting'." },
+        problem: { type: Type.STRING, description: "The text of the voicemail message, which should describe a problem clearly and concisely (around 40-60 words)." },
     },
-    required: ['callerName', 'problem'],
+    required: ['callerName', 'problem']
 };
 
 export const generateSpeakingPart5Scenario = async (): Promise<SpeakingPart5Scenario | null> => {
     try {
-        const prompt = `Generate a scenario for a TOEIC Speaking Test Question 11 (Propose a Solution).
-        The scenario should be in the form of a voicemail message from a colleague or client.
-        It must describe a clear, common workplace problem and imply that a solution is needed.
-        The message should be about 4-6 sentences long.
-        Return the result as a single JSON object adhering to the provided schema.`;
+        const prompt = `Generate a scenario for a TOEIC Speaking Test Part 5 (Propose a solution).
+        1. Create a short and realistic voicemail message (40-60 words) from a person describing a common business or customer service problem.
+        2. The problem should be clear enough that a test-taker can propose a logical solution.
+        3. Assign a name to the caller.
+        4. Return the result in JSON format according to the schema.`;
 
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
@@ -940,8 +990,9 @@ export const generateSpeakingPart5Scenario = async (): Promise<SpeakingPart5Scen
             },
         });
 
-        const data = JSON.parse(response.text.trim());
-        if (data && data.callerName && data.problem) {
+        const jsonStr = response.text.trim();
+        const data = JSON.parse(jsonStr);
+        if (data && data.problem) {
             return data as SpeakingPart5Scenario;
         }
         return null;
@@ -951,136 +1002,115 @@ export const generateSpeakingPart5Scenario = async (): Promise<SpeakingPart5Scen
     }
 };
 
-
-const speakingPart5EvaluationSchema = {
+const speakingPart5FeedbackSchema = {
     type: Type.OBJECT,
     properties: {
-        taskScore: { type: Type.INTEGER, description: "The raw score from 0 to 5 for the response." },
-        estimatedScoreBand: { type: Type.STRING, description: "The estimated TOEIC Speaking Scale Score Range (e.g., '160-180')." },
-        proficiencyLevel: { type: Type.STRING, description: "The corresponding TOEIC Proficiency Level (e.g., 'Level 7')." },
-        generalSummary: {
-            type: Type.OBJECT, properties: {
-                english: { type: Type.STRING, description: "A general summary of the performance in English, noting if the user identified the problem and provided a solution." },
-                vietnamese: { type: Type.STRING, description: "A general summary in Vietnamese (Tóm tắt chung)." },
-            }, required: ['english', 'vietnamese'],
-        },
-        solutionStructure: {
-            type: Type.OBJECT, properties: {
-                english: { type: Type.STRING, description: "Feedback on the structure: greeting, acknowledging the problem, proposing a clear solution, and closing." },
-                vietnamese: { type: Type.STRING, description: "Feedback on structure in Vietnamese (Cấu trúc giải pháp)." },
-            }, required: ['english', 'vietnamese'],
-        },
-        languageUse: {
-            type: Type.OBJECT, properties: {
-                english: { type: Type.STRING, description: "Feedback on grammar, vocabulary, and professional language." },
-                vietnamese: { type: Type.STRING, description: "Feedback on language use in Vietnamese (Sử dụng ngôn ngữ)." },
-            }, required: ['english', 'vietnamese'],
-        },
-        fluencyAndCohesion: {
-            type: Type.OBJECT, properties: {
-                english: { type: Type.STRING, description: "Feedback on fluency, pacing, and use of transition phrases." },
-                vietnamese: { type: Type.STRING, description: "Feedback on fluency and cohesion in Vietnamese (Độ trôi chảy & Mạch lạc)." },
-            }, required: ['english', 'vietnamese'],
-        },
-        intonationAndTone: {
-            type: Type.OBJECT, properties: {
-                english: { type: Type.STRING, description: "Feedback on professional, helpful, and reassuring tone and intonation." },
-                vietnamese: { type: Type.STRING, description: "Feedback on intonation and tone in Vietnamese (Ngữ điệu & Giọng điệu)." },
-            }, required: ['english', 'vietnamese'],
-        },
+        english: { type: Type.STRING },
+        vietnamese: { type: Type.STRING }
     },
-    required: ['taskScore', 'estimatedScoreBand', 'proficiencyLevel', 'generalSummary', 'solutionStructure', 'languageUse', 'fluencyAndCohesion', 'intonationAndTone'],
+    required: ['english', 'vietnamese']
+};
+
+const speakingPart5Schema = {
+    type: Type.OBJECT,
+    properties: {
+        taskScore: { type: Type.INTEGER, description: "The raw score from 0 to 5 based on overall performance." },
+        estimatedScoreBand: { type: Type.STRING, description: "The estimated TOEIC Speaking Scale Score Range." },
+        proficiencyLevel: { type: Type.STRING, description: "The corresponding TOEIC Proficiency Level." },
+        generalSummary: speakingPart5FeedbackSchema,
+        solutionStructure: speakingPart5FeedbackSchema,
+        languageUse: speakingPart5FeedbackSchema,
+        fluencyAndCohesion: speakingPart5FeedbackSchema,
+        intonationAndTone: speakingPart5FeedbackSchema,
+    },
+    required: ['taskScore', 'estimatedScoreBand', 'proficiencyLevel', 'generalSummary', 'solutionStructure', 'languageUse', 'fluencyAndCohesion', 'intonationAndTone']
 };
 
 export const evaluateSpeakingPart5 = async (
     problemText: string,
-    audioBase64: string, 
+    audioBase64: string,
     mimeType: string
 ): Promise<SpeakingPart5EvaluationResult | null> => {
     try {
-        const systemInstruction = `You are a certified rater for the TOEIC Speaking Test, specializing in Question 11, "Propose a Solution". Evaluate the user's spoken audio response to a voicemail message problem.
+        const systemInstruction = `You are a certified TOEIC Speaking Test rater for "Part 5: Propose a Solution". You will evaluate a user's spoken response to a voicemail message describing a problem.
 
-**Evaluation Criteria:**
-1.  **Solution Effectiveness:** Did the user clearly state the problem and propose a logical, appropriate, and detailed solution?
-2.  **Completeness & Structure:** Did the response follow a professional structure: greeting, acknowledging the problem, presenting a clear solution (with steps/details), and closing the message?
-3.  **Language Use:** Assess grammar accuracy, range of vocabulary, and professional tone.
-4.  **Cohesion & Fluency:** Evaluate the flow, pacing, and use of functional language (e.g., "First, I suggest...", "To address your concern...").
-5.  **Pronunciation & Intonation:** Rate overall clarity and professional, helpful, and reassuring tone.
+Your evaluation is based on:
+1.  **Task Fulfillment:** Did the user acknowledge the problem and propose a clear, appropriate solution?
+2.  **Solution Structure:** Is the response well-organized (greeting, summary of problem, solution, closing)?
+3.  **Language Use:** Grammar and vocabulary accuracy and appropriateness.
+4.  **Delivery:** Fluency, cohesion, pronunciation, intonation, and tone.
 
 **Step 1: Assign a Task Score (0-5 Scale)**
-- **5 (Highest):** Response is highly effective, relevant, and well-developed. Excellent language and clear delivery.
-- **4:** Response is effective and clear. Good control of language and mostly clear delivery.
-- **3 (Medium):** Response addresses the task but with limitations. Some language errors or delivery issues may be present.
-- **2:** Response is limited. Significant errors in content, language, or delivery.
-- **1 (Low):** Mostly unintelligible or irrelevant.
+- **5:** Clear, well-structured solution with strong language use and delivery.
+- **3-4:** Generally clear and appropriate solution with some limitations in structure, language, or delivery.
+- **1-2:** Limited or inappropriate solution. Significant language or delivery issues.
 - **0:** No intelligible speech.
 
 **Step 2: Estimate Score Band and Proficiency Level**
-Use the Task Score to estimate an overall TOEIC Speaking Scale Score and Proficiency Level.
-- Task Score 5 -> Level 8 (190-200)
-- Task Score 4 -> Level 7 (160-180)
-- Task Score 3 -> Level 5-6 (110-150)
-- Task Score 1-2 -> Level 3-4 (60-100)
-- Task Score 0 -> Level 1-2 (0-50)
 
-**Step 3: Provide Detailed, Bilingual Feedback**
-Provide concise feedback for each category in **both English and Vietnamese**.
+**Step 3: Provide Detailed Feedback in English and Vietnamese**
+- **General Summary (Tóm tắt chung):** Overall performance.
+- **Solution Structure (Cấu trúc giải pháp):** Comments on organization and clarity of the proposed solution.
+- **Language Use (Sử dụng ngôn ngữ):** Comments on grammar and vocabulary.
+- **Fluency & Cohesion (Độ trôi chảy & Mạch lạc):** Comments on flow and clarity.
+- **Intonation & Tone (Ngữ điệu & Giọng điệu):** Comments on professional tone.
 
-Your final output must be a JSON object adhering to the provided schema.`;
+Your final output must be a JSON object adhering to the schema.`;
 
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
             contents: {
                 parts: [
-                    { text: `The user was responding to this problem: "${problemText}". Here is their audio response. Evaluate it.` },
+                    { text: `Evaluate my spoken response to this voicemail problem: "${problemText}"` },
                     { inlineData: { mimeType: mimeType, data: audioBase64 } }
                 ]
             },
             config: {
                 systemInstruction: systemInstruction,
                 responseMimeType: "application/json",
-                responseSchema: speakingPart5EvaluationSchema,
+                responseSchema: speakingPart5Schema,
             },
         });
 
-        const data = JSON.parse(response.text.trim());
+        const jsonStr = response.text.trim();
+        const data = JSON.parse(jsonStr);
+
         if (data && typeof data.taskScore === 'number') {
             return data as SpeakingPart5EvaluationResult;
         }
         return null;
 
     } catch (error) {
-        console.error("Error evaluating Speaking Part 5 performance:", error);
+        console.error("Error evaluating speaking part 5:", error);
         throw new Error("Failed to get evaluation from API.");
     }
 };
 
-// Writing Part 1
+// --- Writing Part 1 ---
 const writingPart1TaskPromptsSchema = {
     type: Type.ARRAY,
     items: {
-        type: Type.OBJECT,
-        properties: {
-            picturePrompt: { type: Type.STRING, description: "A detailed prompt to generate a realistic image for TOEIC Writing Part 1." },
-            keywords: {
-                type: Type.ARRAY,
-                items: { type: Type.STRING },
-                description: "An array of exactly two keywords related to the picture."
-            }
-        },
-        required: ['picturePrompt', 'keywords']
+      type: Type.OBJECT,
+      properties: {
+        imagePrompt: { type: Type.STRING, description: "A detailed prompt for an image generator to create a realistic photo for TOEIC Writing Part 1." },
+        keywords: {
+          type: Type.ARRAY,
+          items: { type: Type.STRING },
+          description: "An array of exactly two simple keywords (e.g., verbs, nouns) related to the image prompt."
+        }
+      },
+      required: ['imagePrompt', 'keywords']
     }
 };
 
 export const generateWritingPart1Tasks = async (): Promise<WritingPart1Task[] | null> => {
     try {
-        const prompt = `You are a TOEIC test creator. Generate a set of 5 distinct tasks for "Part 1: Write a Sentence Based on a Picture".
-        For each of the 5 tasks, provide:
-        1.  A detailed prompt for an image generator to create a realistic, high-quality photograph of a common, everyday scene (e.g., people in an office, an outdoor market, a street view). The prompt should describe a clear central action.
-        2.  Two relevant keywords (single words or short phrases) that a test-taker would use to describe the main action or objects in the image.
+        const prompt = `Generate 5 distinct tasks for a TOEIC Writing Test Part 1 (Write a sentence based on a picture). Each task needs an image prompt and two keywords.
+        1. For each of the 5 tasks, create a detailed prompt for an AI image generator. The prompt should describe a common, clear action or scene (e.g., 'A man is pointing at a chart during a business meeting', 'A woman is watering plants on a balcony').
+        2. For each image prompt, provide exactly two simple, related keywords (e.g., ['point', 'chart'], ['woman', 'water']).
+        3. Ensure the keywords are different for each task.
+        4. Return the result as a JSON array of 5 objects, according to the schema.`;
 
-        Return the result as a JSON array of 5 objects, where each object has a 'picturePrompt' and a 'keywords' array with exactly two strings.`;
-        
         const promptResponse = await ai.models.generateContent({
             model: "gemini-2.5-flash",
             contents: prompt,
@@ -1089,41 +1119,42 @@ export const generateWritingPart1Tasks = async (): Promise<WritingPart1Task[] | 
                 responseSchema: writingPart1TaskPromptsSchema,
             },
         });
-        
-        const taskPrompts = JSON.parse(promptResponse.text.trim());
-        if (!taskPrompts || taskPrompts.length !== 5) {
-            throw new Error("Failed to generate the correct number of task prompts.");
+
+        const jsonStr = promptResponse.text.trim();
+        const taskPrompts = JSON.parse(jsonStr);
+
+        if (!taskPrompts || taskPrompts.length < 5) {
+            throw new Error("Failed to generate valid task prompts.");
         }
 
         const tasks: WritingPart1Task[] = [];
 
-        for (const task of taskPrompts) {
+        for (const taskPrompt of taskPrompts) {
             const imageResponse = await ai.models.generateImages({
                 model: 'imagen-4.0-generate-001',
-                prompt: task.picturePrompt,
+                prompt: taskPrompt.imagePrompt,
                 config: {
-                    numberOfImages: 1,
-                    outputMimeType: 'image/jpeg',
-                    aspectRatio: '4:3',
+                  numberOfImages: 1,
+                  outputMimeType: 'image/jpeg',
+                  aspectRatio: '4:3',
                 },
             });
-
             const base64ImageBytes = imageResponse.generatedImages?.[0]?.image?.imageBytes;
-            if (base64ImageBytes) {
+            if (base64ImageBytes && taskPrompt.keywords.length === 2) {
                 tasks.push({
-                    picture: `data:image/jpeg;base64,${base64ImageBytes}`,
-                    keywords: task.keywords as [string, string],
+                    picture: base64ImageBytes,
+                    keywords: taskPrompt.keywords as [string, string]
                 });
             } else {
-                console.warn(`Failed to generate image for prompt: ${task.picturePrompt}`);
+                console.warn("Skipping a task due to failed image generation or incorrect keyword count.");
             }
         }
-        
-        if (tasks.length < 5) {
-             throw new Error("Failed to generate all 5 required images.");
+
+        if (tasks.length > 0) {
+            return tasks;
         }
 
-        return tasks;
+        return null;
 
     } catch (error) {
         console.error("Error generating Writing Part 1 tasks:", error);
@@ -1131,151 +1162,130 @@ export const generateWritingPart1Tasks = async (): Promise<WritingPart1Task[] | 
     }
 };
 
-const writingPart1EvaluationSchema = {
+const writingPart1SingleEvalSchema = {
+    type: Type.OBJECT,
+    properties: {
+        score: { type: Type.INTEGER, description: "Score from 0-3." },
+        grammar: { 
+            type: Type.OBJECT,
+            properties: { english: { type: Type.STRING }, vietnamese: { type: Type.STRING } },
+            required: ['english', 'vietnamese']
+        },
+        relevance: { 
+            type: Type.OBJECT,
+            properties: { english: { type: Type.STRING }, vietnamese: { type: Type.STRING } },
+            required: ['english', 'vietnamese']
+        }
+    },
+    required: ['score', 'grammar', 'relevance']
+};
+
+const writingPart1Schema = {
     type: Type.OBJECT,
     properties: {
         totalRawScore: { type: Type.INTEGER },
         estimatedScoreBand: { type: Type.STRING },
         proficiencyLevel: { type: Type.STRING },
         overallSummary: {
-            type: Type.OBJECT,
-            properties: {
-                english: { type: Type.STRING },
-                vietnamese: { type: Type.STRING }
-            },
+             type: Type.OBJECT,
+            properties: { english: { type: Type.STRING }, vietnamese: { type: Type.STRING } },
             required: ['english', 'vietnamese']
         },
         questionFeedback: {
             type: Type.ARRAY,
-            items: {
-                type: Type.OBJECT,
-                properties: {
-                    score: { type: Type.INTEGER },
-                    grammar: {
-                        type: Type.OBJECT,
-                        properties: {
-                            english: { type: Type.STRING },
-                            vietnamese: { type: Type.STRING }
-                        },
-                        required: ['english', 'vietnamese']
-                    },
-                    relevance: {
-                        type: Type.OBJECT,
-                        properties: {
-                            english: { type: Type.STRING },
-                            vietnamese: { type: Type.STRING }
-                        },
-                        required: ['english', 'vietnamese']
-                    }
-                },
-                required: ['score', 'grammar', 'relevance']
-            }
+            items: writingPart1SingleEvalSchema
         }
     },
     required: ['totalRawScore', 'estimatedScoreBand', 'proficiencyLevel', 'overallSummary', 'questionFeedback']
 };
 
-
-export const evaluateWritingPart1 = async (tasks: WritingPart1Task[], userSentences: string[]): Promise<WritingPart1EvaluationResult | null> => {
+export const evaluateWritingPart1 = async (
+    tasks: WritingPart1Task[],
+    userAnswers: string[]
+): Promise<WritingPart1EvaluationResult | null> => {
     try {
-        const systemInstruction = `You are a certified rater for the TOEIC Writing Test, specializing in "Part 1: Write a Sentence Based on a Picture". Evaluate a set of 5 sentences written by a user.
+        const systemInstruction = `You are a certified TOEIC Writing Test rater for "Part 1: Write a sentence based on a picture". You will evaluate 5 sentences written by a user. For each sentence, the user was shown a picture and given two keywords. You will only be provided with the keywords and the user's written sentence.
 
-**Evaluation Criteria (for each sentence):**
-1.  **Grammar (0-3 scale):** Evaluate accuracy in sentence structure, verb tense, subject-verb agreement, punctuation, etc.
-2.  **Relevance (0-3 scale):** Evaluate if the sentence accurately describes the picture and correctly uses both provided keywords.
+Your evaluation for each sentence must be based on:
+1.  **Grammar:** Is the sentence grammatically correct?
+2.  **Relevance:** Does the sentence use BOTH keywords and logically relate them to each other in a plausible sentence that could describe a picture?
 
-**Step 1: Assign a Score for Each of the 5 Sentences (0-3 Scale)**
-- **3 (High):** The sentence is grammatically correct and highly relevant.
-- **2 (Medium):** The sentence has minor grammatical errors or is only partially relevant.
-- **1 (Low):** The sentence has significant grammatical errors or is largely irrelevant.
-- **0 (None):** The response is blank, incomprehensible, or completely irrelevant.
+**Step 1: Score Each Sentence (0-3 Scale)**
+- **3:** Grammatically correct sentence that uses both keywords appropriately.
+- **2:** Minor grammar error OR one keyword is used incorrectly.
+- **1:** Significant grammar errors OR only one keyword is used.
+- **0:** No response, sentence is incomprehensible, or neither keyword is used.
 
-**Step 2: Calculate Total Raw Score**
-Sum the scores from the 5 questions to get a total raw score out of 15.
+**Step 2: Calculate Total Score and Estimate Band/Level**
+- **Total Raw Score:** Sum of the 5 individual scores (0-15).
+- **Estimate Score Band:** (e.g., 170-190 for high scores, 110-130 for mid scores, etc.)
+- **Proficiency Level:** (e.g., Level 8, Level 5, etc.)
 
-**Step 3: Estimate Overall Score Band and Proficiency Level**
-Use the total raw score to estimate an overall TOEIC Writing Scale Score (0-200) and Proficiency Level (1-9) based on this mapping:
-- Raw Score 14-15 -> 190-200 (Level 9)
-- Raw Score 12-13 -> 170-180 (Level 8)
-- Raw Score 10-11 -> 140-160 (Level 7)
-- Raw Score 8-9   -> 110-130 (Level 6)
-- Raw Score 6-7   -> 90-100 (Level 5)
-- Raw Score 4-5   -> 70-80 (Level 4)
-- Raw Score 0-3   -> 0-60 (Levels 1-3)
+**Step 3: Provide Detailed Feedback**
+- Create an **Overall Summary** in English and Vietnamese.
+- For each of the 5 questions, provide specific feedback on **Grammar** and **Relevance** in both English and Vietnamese.
 
-**Step 4: Provide Detailed, Bilingual Feedback**
-For each of the 5 questions, provide feedback on Grammar and Relevance in **both English and Vietnamese**. Also provide an overall summary.
+Your final output must be a JSON object with feedback for exactly 5 questions, adhering to the provided schema.`;
 
-Your final output must be a single JSON object adhering to the provided schema.`;
-
-        const parts: any[] = [{ text: "Evaluate these 5 written responses for the TOEIC Writing Part 1 task. For each question, I'll provide the keywords and the user's sentence, followed by the image." }];
-        
+        // FIX: Changed promptText from const to let to allow modification.
+        let promptText = "Please evaluate these 5 sentences for the TOEIC Writing Part 1 task.\n\n";
         tasks.forEach((task, index) => {
-            parts.push({
-                text: `Question ${index + 1}:
-                Keywords: [${task.keywords.join(', ')}]
-                User Sentence: "${userSentences[index] || '(No answer provided)'}"
-                Image for Question ${index + 1}:`
-            });
-            parts.push({
-                inlineData: {
-                    mimeType: 'image/jpeg',
-                    data: task.picture.split(',')[1]
-                }
-            });
+            promptText += `Question ${index + 1}:\n`;
+            promptText += `- Keywords: ${task.keywords[0]}, ${task.keywords[1]}\n`;
+            promptText += `- User Sentence: "${userAnswers[index] || '(No answer)'}"\n\n`;
         });
-
+        
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
-            contents: { parts },
+            contents: promptText,
             config: {
-                systemInstruction,
+                systemInstruction: systemInstruction,
                 responseMimeType: "application/json",
-                responseSchema: writingPart1EvaluationSchema,
+                responseSchema: writingPart1Schema,
             },
         });
-        
-        const data = JSON.parse(response.text.trim());
-        if (data && data.questionFeedback?.length === 5) {
+
+        const jsonStr = response.text.trim();
+        const data = JSON.parse(jsonStr);
+
+        if (data && data.questionFeedback && data.questionFeedback.length === 5) {
             return data as WritingPart1EvaluationResult;
         }
         return null;
 
     } catch (error) {
-        console.error("Error evaluating Writing Part 1:", error);
+        console.error("Error evaluating writing part 1:", error);
         throw new Error("Failed to get evaluation from API.");
     }
+};
+
+// --- Writing Part 2 ---
+
+const writingPart2RequestSchema = {
+    type: Type.OBJECT,
+    properties: {
+        title: { type: Type.STRING, description: "The title/sender line of the email, e.g., 'From: David Smith, Subject: Inquiry about your order'." },
+        requestText: { type: Type.STRING, description: "The body of the email, which should contain specific questions or requests." },
+    },
+    required: ['title', 'requestText']
 };
 
 const writingPart2TaskSchema = {
     type: Type.OBJECT,
     properties: {
-        question6: {
-            type: Type.OBJECT,
-            properties: {
-                title: { type: Type.STRING, description: "Title for the request (e.g., 'Request for Information')." },
-                requestText: { type: Type.STRING, description: "The full text of a simple, straightforward email/memo request for Question 6." }
-            },
-            required: ['title', 'requestText']
-        },
-        question7: {
-            type: Type.OBJECT,
-            properties: {
-                title: { type: Type.STRING, description: "Title for the request (e.g., 'Problem with Schedule')." },
-                requestText: { type: Type.STRING, description: "The full text of a more complex email/memo for Question 7, requiring a solution or justification." }
-            },
-            required: ['title', 'requestText']
-        }
+        question6: writingPart2RequestSchema,
+        question7: writingPart2RequestSchema,
     },
     required: ['question6', 'question7']
 };
 
 export const generateWritingPart2Tasks = async (): Promise<WritingPart2Task | null> => {
     try {
-        const prompt = `You are a TOEIC test creator. Generate a set of 2 tasks for "Part 2: Respond to a Written Request".
-        1. For Question 6, create a simple, straightforward request email that requires providing information or confirming details.
-        2. For Question 7, create a more complex request email that requires resolving a conflict, proposing a solution, or offering an opinion/justification.
-        Return the result as a single JSON object.`;
+        const prompt = `Generate a task for a TOEIC Writing Test Part 2 (Respond to a written request). This consists of two separate email requests (Question 6 and Question 7).
+        1.  **For Question 6:** Create an email of 2-3 sentences that makes 1 or 2 simple requests (e.g., asking for information, confirming details).
+        2.  **For Question 7:** Create another email of 3-4 sentences that presents a problem and makes 2 or 3 requests for information or action.
+        3.  The topics should be common business scenarios (e.g., orders, scheduling, complaints, inquiries).
+        4.  Return the result as a single JSON object according to the schema.`;
 
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
@@ -1286,161 +1296,131 @@ export const generateWritingPart2Tasks = async (): Promise<WritingPart2Task | nu
             },
         });
 
-        const data = JSON.parse(response.text.trim());
+        const jsonStr = response.text.trim();
+        const data = JSON.parse(jsonStr);
         if (data && data.question6 && data.question7) {
             return data as WritingPart2Task;
         }
         return null;
-
     } catch (error) {
         console.error("Error generating Writing Part 2 tasks:", error);
         throw new Error("Failed to generate tasks from API.");
     }
 };
 
-const writingPart2EvaluationSchema = {
+const writingPart2FeedbackDetailSchema = {
     type: Type.OBJECT,
     properties: {
-        totalRawScore: { type: Type.INTEGER },
+        english: { type: Type.STRING },
+        vietnamese: { type: Type.STRING }
+    },
+    required: ['english', 'vietnamese']
+};
+
+const writingPart2SingleEvalSchema = {
+    type: Type.OBJECT,
+    properties: {
+        score: { type: Type.INTEGER, description: "Score from 0-4." },
+        requestSummary: { type: Type.STRING, description: "A brief summary of what the original email requested." },
+        completeness: writingPart2FeedbackDetailSchema,
+        languageUse: writingPart2FeedbackDetailSchema,
+        organization: { ...writingPart2FeedbackDetailSchema, description: "Optional for Q6" },
+        tone: { ...writingPart2FeedbackDetailSchema, description: "Optional for Q6" },
+    },
+    required: ['score', 'requestSummary', 'completeness', 'languageUse']
+};
+
+const writingPart2Schema = {
+    type: Type.OBJECT,
+    properties: {
+        totalRawScore: { type: Type.INTEGER, description: "Sum of scores for Q6 and Q7 (0-8)." },
         estimatedScoreBand: { type: Type.STRING },
-        overallSummary: {
-            type: Type.OBJECT,
-            properties: {
-                english: { type: Type.STRING },
-                vietnamese: { type: Type.STRING }
-            },
-            required: ['english', 'vietnamese']
-        },
-        question6Feedback: {
-            type: Type.OBJECT,
-            properties: {
-                score: { type: Type.INTEGER },
-                requestSummary: { type: Type.STRING },
-                completeness: {
-                    type: Type.OBJECT, properties: { english: { type: Type.STRING }, vietnamese: { type: Type.STRING }}, required: ['english', 'vietnamese']
-                },
-                languageUse: {
-                    type: Type.OBJECT, properties: { english: { type: Type.STRING }, vietnamese: { type: Type.STRING }}, required: ['english', 'vietnamese']
-                }
-            },
-            required: ['score', 'requestSummary', 'completeness', 'languageUse']
-        },
-        question7Feedback: {
-            type: Type.OBJECT,
-            properties: {
-                score: { type: Type.INTEGER },
-                requestSummary: { type: Type.STRING },
-                completeness: {
-                    type: Type.OBJECT, properties: { english: { type: Type.STRING }, vietnamese: { type: Type.STRING }}, required: ['english', 'vietnamese']
-                },
-                languageUse: {
-                    type: Type.OBJECT, properties: { english: { type: Type.STRING }, vietnamese: { type: Type.STRING }}, required: ['english', 'vietnamese']
-                },
-                organization: {
-                    type: Type.OBJECT, properties: { english: { type: Type.STRING }, vietnamese: { type: Type.STRING }}, required: ['english', 'vietnamese']
-                },
-                tone: {
-                    type: Type.OBJECT, properties: { english: { type: Type.STRING }, vietnamese: { type: Type.STRING }}, required: ['english', 'vietnamese']
-                }
-            },
-            required: ['score', 'requestSummary', 'completeness', 'languageUse', 'organization', 'tone']
-        }
+        overallSummary: writingPart2FeedbackDetailSchema,
+        question6Feedback: writingPart2SingleEvalSchema,
+        question7Feedback: writingPart2SingleEvalSchema,
     },
     required: ['totalRawScore', 'estimatedScoreBand', 'overallSummary', 'question6Feedback', 'question7Feedback']
 };
 
+export const evaluateWritingPart2 = async (
+    tasks: WritingPart2Task,
+    userAnswers: string[]
+): Promise<WritingPart2EvaluationResult | null> => {
+    try {
+        const systemInstruction = `You are a certified TOEIC Writing Test rater for "Part 2: Respond to a written request". Evaluate two email responses from a user.
 
-export const evaluateWritingPart2 = async (tasks: WritingPart2Task, userResponses: string[]): Promise<WritingPart2EvaluationResult | null> => {
-     try {
-        const systemInstruction = `You are a certified rater for the TOEIC Writing Test, specializing in "Part 2: Respond to a Written Request". Evaluate two user-written emails based on two provided request prompts.
+**Evaluation Criteria:**
+- **Task Completion:** Did the user address all parts of the original request?
+- **Organization & Cohesion:** Is the response well-structured like an email?
+- **Language Use:** Grammar, vocabulary, and sentence variety.
+- **Tone:** Is the tone appropriate for a business email?
 
-**Evaluation Criteria (for each response):**
-1.  **Completeness & Organization:** Does the response address all parts of the request? Is it logically organized with a clear greeting, main points, and closing?
-2.  **Language Use (Grammar & Vocabulary):** Is the grammar accurate? Is the vocabulary appropriate, varied, and precise for a business context?
-3.  **Tone & Register:** Is the tone suitable for a professional communication?
-4.  **Sentence Quality:** Is there a variety of clear, effective sentence structures?
+**Step 1: Score Each Response**
+- **Question 6 (Score 0-4):**
+  - 4: Effectively addresses the task with good organization and language.
+  - 3: Generally addresses the task, minor issues with clarity or language.
+  - 1-2: Limited response, major errors, or does not address the task.
+- **Question 7 (Score 0-4):** Same criteria as Q6.
 
-**Step 1: Assign a Score for Each of the 2 Responses (0-4 Scale)**
-- **4 (High):** Clearly and effectively addresses the task. Well-organized, good control of grammar and vocabulary.
-- **3 (Good):** Addresses the task. Generally organized, good grammar/vocab with some minor errors.
-- **2 (Fair):** Addresses the task, but with limitations. May have issues with organization, grammar, or vocabulary that obscure meaning.
-- **1 (Limited):** Attempts to address the task, but is very limited and difficult to understand.
-- **0 (None):** Blank, incomprehensible, or completely irrelevant.
+**Step 2: Calculate Total Score and Estimate Band**
+- **Total Raw Score:** Sum of scores (0-8).
+- **Estimate Score Band:** (e.g., 180-200 for high scores).
 
-**Step 2: Calculate Total Raw Score**
-Sum the scores from the 2 questions to get a total raw score out of 8.
+**Step 3: Provide Detailed Feedback in English and Vietnamese**
+- Create an **Overall Summary**.
+- For each question, provide specific feedback on **Completeness**, **Language Use**, **Organization**, and **Tone**.
 
-**Step 3: Estimate Overall Score Band**
-Use the total raw score to estimate an overall TOEIC Writing Scale Score (0-200) and Proficiency Level.
-- Raw Score 7-8 -> 180-200 (Level 9)
-- Raw Score 6   -> 150-170 (Level 8)
-- Raw Score 5   -> 120-140 (Level 7)
-- Raw Score 4   -> 90-110 (Level 6)
-- Raw Score 3   -> 70-80 (Level 5)
-- Raw Score 0-2 -> 0-60 (Levels 1-4)
-
-**Step 4: Provide Detailed, Bilingual Feedback**
-For each question, provide a short summary of the original request, and then provide feedback on Completeness, Language Use, Organization, and Tone in **both English and Vietnamese**. Also provide an overall summary.
-
-Your final output must be a single JSON object.`;
+Your final output must be a JSON object adhering to the schema.`;
         
+        // FIX: Changed promptText from const to let to allow modification.
+        let promptText = `Please evaluate these 2 email responses for the TOEIC Writing Part 2 task.\n\n`;
+        promptText += `--- QUESTION 6 ---\n`;
+        promptText += `Original Email Request: "${tasks.question6.requestText}"\n`;
+        promptText += `User's Response: "${userAnswers[0] || '(No answer)'}"\n\n`;
+        promptText += `--- QUESTION 7 ---\n`;
+        promptText += `Original Email Request: "${tasks.question7.requestText}"\n`;
+        promptText += `User's Response: "${userAnswers[1] || '(No answer)'}"\n`;
+
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
-            contents: `Evaluate these two written responses for the TOEIC Writing Part 2 task.
-
----
-**Question 6 Request:**
-Title: ${tasks.question6.title}
-Text: ${tasks.question6.requestText}
-
-**User Response for Question 6:**
-"${userResponses[0] || '(No answer provided)'}"
----
-**Question 7 Request:**
-Title: ${tasks.question7.title}
-Text: ${tasks.question7.requestText}
-
-**User Response for Question 7:**
-"${userResponses[1] || '(No answer provided)'}"
----
-`,
+            contents: promptText,
             config: {
-                systemInstruction,
+                systemInstruction: systemInstruction,
                 responseMimeType: "application/json",
-                responseSchema: writingPart2EvaluationSchema,
+                responseSchema: writingPart2Schema,
             },
         });
-        
-        const data = JSON.parse(response.text.trim());
+
+        const jsonStr = response.text.trim();
+        const data = JSON.parse(jsonStr);
+
         if (data && data.question6Feedback && data.question7Feedback) {
             return data as WritingPart2EvaluationResult;
         }
         return null;
 
     } catch (error) {
-        console.error("Error evaluating Writing Part 2:", error);
+        console.error("Error evaluating writing part 2:", error);
         throw new Error("Failed to get evaluation from API.");
     }
 };
 
+// --- Writing Part 3 ---
 const writingPart3TaskSchema = {
     type: Type.OBJECT,
     properties: {
-        question: {
-            type: Type.STRING,
-            description: "The full text of an opinion essay prompt for TOEIC Writing Question 8. It should present a debatable statement and ask for the user's opinion with reasons and examples."
-        }
+        question: { type: Type.STRING, description: "An opinion essay question for the TOEIC Writing test." },
     },
     required: ['question']
 };
 
 export const generateWritingPart3Task = async (): Promise<WritingPart3Task | null> => {
     try {
-        const prompt = `Generate an opinion essay prompt for the TOEIC Writing test (Question 8). 
-        The prompt should present a debatable statement on a common social, professional, or general interest topic. 
-        It must ask the test-taker to state, support, and explain their opinion, using specific reasons and examples.
-        Example topic areas: technology in the workplace, urban vs. rural living, education policies, environmental issues.
-        Return the result as a single JSON object.`;
+        const prompt = `Generate one opinion essay prompt for a TOEIC Writing Test Part 3 (Write an opinion essay).
+        1. The question should present a statement and ask the test-taker whether they agree or disagree, and to support their opinion with reasons and examples.
+        2. The topic should be related to work, technology, or modern life (e.g., 'Do you agree or disagree with the statement that remote work is more productive than working in an office?').
+        3. The prompt should clearly state the requirement to provide reasons and examples.
+        4. Return the result in JSON format according to the schema.`;
 
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
@@ -1450,217 +1430,95 @@ export const generateWritingPart3Task = async (): Promise<WritingPart3Task | nul
                 responseSchema: writingPart3TaskSchema,
             },
         });
-
-        const data = JSON.parse(response.text.trim());
+        
+        const jsonStr = response.text.trim();
+        const data = JSON.parse(jsonStr);
         if (data && data.question) {
             return data as WritingPart3Task;
         }
         return null;
-
     } catch (error) {
         console.error("Error generating Writing Part 3 task:", error);
         throw new Error("Failed to generate task from API.");
     }
 };
 
-
-const writingPart3EvaluationSchema = {
+const writingPart3FeedbackDetailSchema = {
     type: Type.OBJECT,
     properties: {
-        taskScore: { type: Type.INTEGER },
+        english: { type: Type.STRING },
+        vietnamese: { type: Type.STRING }
+    },
+    required: ['english', 'vietnamese']
+};
+
+const writingPart3Schema = {
+    type: Type.OBJECT,
+    properties: {
+        taskScore: { type: Type.INTEGER, description: "Score from 0-5." },
         estimatedScoreBand: { type: Type.STRING },
-        overallSummary: {
-            type: Type.OBJECT, properties: { english: { type: Type.STRING }, vietnamese: { type: Type.STRING } }, required: ['english', 'vietnamese']
-        },
-        ideaDevelopment: {
-            type: Type.OBJECT, properties: { english: { type: Type.STRING }, vietnamese: { type: Type.STRING } }, required: ['english', 'vietnamese']
-        },
-        organization: {
-            type: Type.OBJECT, properties: { english: { type: Type.STRING }, vietnamese: { type: Type.STRING } }, required: ['english', 'vietnamese']
-        },
-        grammarAndSyntax: {
-            type: Type.OBJECT, properties: { english: { type: Type.STRING }, vietnamese: { type: Type.STRING } }, required: ['english', 'vietnamese']
-        },
-        vocabulary: {
-            type: Type.OBJECT, properties: { english: { type: Type.STRING }, vietnamese: { type: Type.STRING } }, required: ['english', 'vietnamese']
-        }
+        overallSummary: writingPart3FeedbackDetailSchema,
+        ideaDevelopment: writingPart3FeedbackDetailSchema,
+        organization: writingPart3FeedbackDetailSchema,
+        grammarAndSyntax: writingPart3FeedbackDetailSchema,
+        vocabulary: writingPart3FeedbackDetailSchema,
     },
     required: ['taskScore', 'estimatedScoreBand', 'overallSummary', 'ideaDevelopment', 'organization', 'grammarAndSyntax', 'vocabulary']
 };
 
-export const evaluateWritingPart3 = async (prompt: string, userEssay: string): Promise<WritingPart3EvaluationResult | null> => {
+export const evaluateWritingPart3 = async (
+    question: string,
+    userAnswer: string
+): Promise<WritingPart3EvaluationResult | null> => {
     try {
-        const systemInstruction = `You are a certified rater for the TOEIC Writing Test, specializing in "Question 8: Write an Opinion Essay". Evaluate the user's essay based on the provided prompt.
+        const systemInstruction = `You are a certified TOEIC Writing Test rater for "Part 3: Write an opinion essay". Evaluate one essay from a user based on a given prompt.
 
 **Evaluation Criteria:**
-1.  **Idea Development & Relevance:** Does the essay address the prompt? Is the opinion clear and well-supported with relevant reasons and examples?
-2.  **Organization:** Is there a clear introduction, body, and conclusion? Are ideas logically connected with transitions?
-3.  **Grammar & Syntax:** Assess accuracy, range, and complexity of grammatical structures.
-4.  **Vocabulary:** Assess the appropriateness, accuracy, and variety of word choice.
+- **Task Fulfillment:** Does the essay state a clear opinion and support it with relevant reasons and examples?
+- **Organization:** Is the essay well-structured with an introduction, body paragraphs, and conclusion?
+- **Idea Development:** Are the supporting ideas well-explained and detailed?
+- **Grammar & Syntax:** Accuracy and complexity of sentence structures.
+- **Vocabulary:** Range and appropriateness of vocabulary.
 
-**Step 1: Assign a Task Score (0-5 Scale)**
-- **5:** Well-organized and developed, clear opinion, strong support, varied sentence structures, rich vocabulary.
-- **4:** Generally well-organized and developed, opinion is clear, support is adequate, some minor errors in grammar/vocab.
-- **3:** Addresses the topic, opinion is stated, some development, but may have organization issues or noticeable errors.
-- **2:** Limited development, weak organization, frequent errors obscure meaning.
-- **1:** Fails to address topic, disorganized, severe errors.
-- **0:** Blank, irrelevant, or incomprehensible.
+**Step 1: Score the Essay (0-5 Scale)**
+- **5:** Well-organized, well-developed, clear opinion, strong language use.
+- **3-4:** Generally addresses the task with adequate organization and support. Some language errors.
+- **1-2:** Weakly developed, disorganized, or contains significant language errors that obscure meaning.
+- **0:** No response or off-topic.
 
-**Step 2: Estimate Overall Score Band (0-200 Scale)**
-Use the Task Score to estimate an overall TOEIC Writing Scale Score and Proficiency Level.
-- Score 5 -> 170-200 (Level 8-9)
-- Score 4 -> 140-160 (Level 7)
-- Score 3 -> 110-130 (Level 6)
-- Score 2 -> 90-100 (Level 5)
-- Score 1 -> 70-80 (Level 4)
-- Score 0 -> 0-60 (Levels 1-3)
+**Step 2: Estimate Score Band**
 
-**Step 3: Provide Detailed, Bilingual Feedback**
-For each category (Overall, Idea Development, Organization, Grammar/Syntax, Vocabulary), provide a concise critique in **both English and Vietnamese**.
+**Step 3: Provide Detailed Feedback in English and Vietnamese**
+- Provide an **Overall Summary**.
+- Provide specific feedback on **Idea Development**, **Organization**, **Grammar & Syntax**, and **Vocabulary**.
 
-Your final output must be a single JSON object.`;
+Your final output must be a JSON object adhering to the schema.`;
+        
+        // FIX: Changed promptText from const to let to allow modification.
+        let promptText = `Please evaluate this opinion essay for the TOEIC Writing Part 3 task.\n\n`;
+        promptText += `Essay Question: "${question}"\n\n`;
+        promptText += `User's Essay: "${userAnswer || '(No answer)'}"\n`;
 
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
-            contents: `Evaluate this essay based on the provided prompt.
-            ---
-            **Prompt:** ${prompt}
-            ---
-            **User's Essay:**
-            "${userEssay || '(No answer provided)'}"
-            ---`,
+            contents: promptText,
             config: {
-                systemInstruction,
+                systemInstruction: systemInstruction,
                 responseMimeType: "application/json",
-                responseSchema: writingPart3EvaluationSchema,
+                responseSchema: writingPart3Schema,
             },
         });
 
-        const data = JSON.parse(response.text.trim());
+        const jsonStr = response.text.trim();
+        const data = JSON.parse(jsonStr);
+
         if (data && typeof data.taskScore === 'number') {
             return data as WritingPart3EvaluationResult;
         }
         return null;
 
     } catch (error) {
-        console.error("Error evaluating Writing Part 3:", error);
-        throw new Error("Failed to get evaluation from API.");
-    }
-};
-
-const sentenceGenerationSchema = {
-    type: Type.OBJECT,
-    properties: {
-        sentence: { type: Type.STRING, description: 'A simple, grammatically correct English sentence between 8 and 15 words long.' },
-    },
-    required: ['sentence'],
-};
-
-export const generateSentenceForTranslation = async (vocabItems?: VocabItem[]): Promise<string | null> => {
-    try {
-        let seedWords: string;
-        let promptPart: string;
-
-        if (vocabItems && vocabItems.length > 0) {
-            const shuffled = [...vocabItems].sort(() => 0.5 - Math.random());
-            const count = Math.min(5, vocabItems.length);
-            seedWords = shuffled.slice(0, count).map(item => item.word).join(', ');
-            promptPart = `Please use at least one of these words if they fit naturally: ${seedWords}.`;
-        } else {
-            seedWords = getRandomVocabularyWords(5).join(', ');
-            promptPart = `Please use some of these words if they fit naturally: ${seedWords}.`;
-        }
-
-        const prompt = `
-            You are an English teacher creating a simple sentence for a translation exercise.
-            Generate a single, grammatically correct English sentence.
-            The sentence must be between 8 and 15 words long.
-            The sentence should be about a common, everyday topic.
-            ${promptPart}
-            Return the result in a JSON object with a single key "sentence".
-        `;
-
-        const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: prompt,
-            config: {
-                responseMimeType: "application/json",
-                responseSchema: sentenceGenerationSchema,
-            },
-        });
-
-        const data = JSON.parse(response.text.trim());
-        if (data && data.sentence) {
-            return data.sentence;
-        }
-        return null;
-    } catch (error) {
-        console.error("Error generating sentence for translation:", error);
-        throw new Error("Failed to generate sentence from API.");
-    }
-};
-
-const translationEvaluationSchema = {
-    type: Type.OBJECT,
-    properties: {
-        score: { 
-            type: Type.INTEGER, 
-            description: "A score from 0 to 100 representing the accuracy of the translation." 
-        },
-        feedback_vi: { 
-            type: Type.STRING, 
-            description: "Short, constructive feedback in Vietnamese explaining the score and suggesting improvements."
-        },
-    },
-    required: ['score', 'feedback_vi'],
-};
-
-export const evaluateTranslation = async (originalSentence: string, userTranslation: string): Promise<TranslationEvaluationResult | null> => {
-    try {
-        const systemInstruction = `
-            You are an expert Vietnamese-English language evaluator. Your task is to assess a user's Vietnamese translation of an English sentence.
-            Evaluate the translation based on three criteria:
-            1.  **Meaning and Context:** Does the translation accurately convey the meaning of the original sentence?
-            2.  **Vocabulary Usage:** Is the vocabulary choice appropriate and correct?
-            3.  **Grammar:** Is the Vietnamese grammar correct?
-
-            **Scoring Guide:**
-            - **90-100%:** Excellent. The meaning is perfectly conveyed. Grammar and vocabulary are natural and accurate.
-            - **70-89%:** Good. The main idea is correct, but there are minor errors in vocabulary choice or phrasing.
-            - **50-69%:** Fair. The translation is understandable but contains noticeable grammatical errors or awkward phrasing that affects clarity.
-            - **20-49%:** Poor. Significant parts of the sentence are mistranslated, leading to a loss of meaning.
-            - **0-19%:** Very Poor. The translation is mostly incorrect or does not relate to the original sentence.
-
-            **Feedback:**
-            - Provide a short, constructive feedback message **written entirely in Vietnamese**.
-            - The feedback should explain the score and highlight any key errors or successes. For example: "Dịch nghĩa chính xác. Lưu ý từ 'resilience' có thể dịch thoáng hơn là 'khả năng phục hồi'." or "Sai ngữ pháp cơ bản, cấu trúc câu chưa đúng."
-            
-            Your final output must be a JSON object adhering to the provided schema. Do not add any extra text or explanations outside the JSON structure.
-        `;
-        
-        const prompt = `
-            Original English Sentence: "${originalSentence}"
-            User's Vietnamese Translation: "${userTranslation}"
-            Please evaluate the translation and provide a score and feedback in Vietnamese.
-        `;
-
-        const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: prompt,
-            config: {
-                systemInstruction,
-                responseMimeType: "application/json",
-                responseSchema: translationEvaluationSchema,
-            },
-        });
-
-        const data = JSON.parse(response.text.trim());
-        if (data && typeof data.score === 'number' && data.feedback_vi) {
-            return data as TranslationEvaluationResult;
-        }
-        return null;
-    } catch (error) {
-        console.error("Error evaluating translation:", error);
+        console.error("Error evaluating writing part 3:", error);
         throw new Error("Failed to get evaluation from API.");
     }
 };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ArrowLeftIcon, LoadingIcon, RefreshIcon, TrophyIcon, LightBulbIcon, XCircleIcon, QuestionMarkCircleIcon } from './icons';
+// FIX: Corrected import for generateWritingPart1Tasks and evaluateWritingPart1
 import { generateWritingPart1Tasks, evaluateWritingPart1 } from '../services/geminiService';
-// FIX: Import the missing WritingPart1SingleEvaluation and User types to resolve the TypeScript error.
 import { WritingPart1Task, WritingPart1EvaluationResult, WritingPart1SingleEvaluation, User } from '../types';
 import Timer from './Timer';
 import { addTestResult } from '../services/progressService';
@@ -75,8 +75,8 @@ const WritingPart1Screen: React.FC<WritingPart1ScreenProps> = ({ onBack, current
         setShowHint(true);
         try {
             const generatedTasks = await generateWritingPart1Tasks();
-            if (generatedTasks && generatedTasks.length === 5) {
-                setTasks(generatedTasks);
+            if (generatedTasks && generatedTasks.length > 0) {
+                setTasks(generatedTasks.slice(0, 5)); // Ensure only 5 tasks
                 setUserAnswers(new Array(5).fill(''));
                 setCurrentQuestionIndex(0);
                 setPracticeState('practicing');
@@ -154,7 +154,7 @@ const WritingPart1Screen: React.FC<WritingPart1ScreenProps> = ({ onBack, current
                         <Timer initialTime={TOTAL_TIME} onTimeUp={handleSubmitPractice} />
                     </div>
                     <div className="mb-4 rounded-lg overflow-hidden border dark:border-slate-700">
-                        <img src={currentTask.picture} alt="TOEIC Writing Practice" className="w-full h-auto object-contain" />
+                        <img src={`data:image/jpeg;base64,${currentTask.picture}`} alt="TOEIC Writing Practice" className="w-full h-auto object-contain" />
                     </div>
                     <div className="text-center mb-4 p-3 bg-slate-100 dark:bg-slate-700 rounded-lg">
                         <p className="font-semibold text-slate-800 dark:text-slate-200">
@@ -188,7 +188,7 @@ const WritingPart1Screen: React.FC<WritingPart1ScreenProps> = ({ onBack, current
         <div className="border-t dark:border-slate-700 py-6">
             <h4 className="text-xl font-bold text-slate-800 dark:text-slate-200 mb-3">Question {questionNumber} (Score: {feedback.score}/3)</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <img src={task.picture} alt={`Question ${questionNumber}`} className="rounded-lg border dark:border-slate-700" />
+                <img src={`data:image/jpeg;base64,${task.picture}`} alt={`Question ${questionNumber}`} className="rounded-lg border dark:border-slate-700" />
                 <div className="space-y-3">
                     <p><span className="font-semibold">Keywords:</span> {task.keywords.join(' / ')}</p>
                     <p><span className="font-semibold">Your Sentence:</span> {userSentence || <span className="italic text-slate-500">No answer provided.</span>}</p>

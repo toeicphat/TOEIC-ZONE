@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { ArrowLeftIcon, LoadingIcon, RefreshIcon, StopIcon, TrophyIcon, MicrophoneIcon, PlayIcon, PauseIcon, LightBulbIcon, XCircleIcon, QuestionMarkCircleIcon } from './icons';
+// FIX: Corrected import for generateSpeakingPart5Scenario and evaluateSpeakingPart5
 import { generateSpeakingPart5Scenario, evaluateSpeakingPart5 } from '../services/geminiService';
 import { SpeakingPart5Scenario, SpeakingPart5EvaluationResult, User } from '../types';
 import AudioPlayer from './AudioPlayer';

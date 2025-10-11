@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ArrowLeftIcon, LoadingIcon, RefreshIcon, TrophyIcon, LightBulbIcon, XCircleIcon, QuestionMarkCircleIcon } from './icons';
+// FIX: Corrected import for generateWritingPart2Tasks and evaluateWritingPart2
 import { generateWritingPart2Tasks, evaluateWritingPart2 } from '../services/geminiService';
 import { WritingPart2Task, WritingPart2EvaluationResult, WritingPart2SingleEvaluation, User } from '../types';
 import Timer from './Timer';
@@ -168,9 +169,9 @@ const WritingPart2Screen: React.FC<WritingPart2ScreenProps> = ({ onBack, current
                             className="w-full h-64 p-4 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-900 dark:text-white"
                         />
                          <div className="flex justify-between items-center mt-2">
-                            <p className="text-sm text-slate-500 dark:text-slate-400">Word count: {wordCount}</p>
+                            <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Word count: {wordCount}</p>
                             <button onClick={handleNextQuestion} className="px-8 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-colors">
-                                {currentQuestionIndex === 0 ? "Next" : "Submit"}
+                                {currentQuestionIndex < 1 ? "Next Question" : "Submit"}
                             </button>
                          </div>
                     </div>
@@ -179,43 +180,35 @@ const WritingPart2Screen: React.FC<WritingPart2ScreenProps> = ({ onBack, current
         );
     };
 
-     const FeedbackItem: React.FC<{
+    const FeedbackSection: React.FC<{
+        title: string,
         feedback: WritingPart2SingleEvaluation,
-        questionNumber: number
-    }> = ({ feedback, questionNumber }) => (
+    }> = ({ title, feedback }) => (
         <div className="border-t dark:border-slate-700 py-6">
-            <h4 className="text-xl font-bold text-slate-800 dark:text-slate-200 mb-3">Question {questionNumber} Feedback (Score: {feedback.score}/4)</h4>
-            <p className="text-sm italic text-slate-500 dark:text-slate-400 mb-3"><strong>Original Request:</strong> {feedback.requestSummary}</p>
+            <h4 className="text-xl font-bold text-slate-800 dark:text-slate-200 mb-3">{title} (Score: {feedback.score}/4)</h4>
             <div className="space-y-3">
                 <div className="bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg">
-                    <h5 className="font-semibold text-slate-700 dark:text-slate-300">Completeness & Organization:</h5>
+                    <h5 className="font-semibold text-slate-700 dark:text-slate-300">Completeness (Hoàn thành):</h5>
                     <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{feedback.completeness.english}</p>
                     <p className="text-sm text-slate-600 dark:text-slate-400 mt-1 italic">{feedback.completeness.vietnamese}</p>
                 </div>
                 <div className="bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg">
-                    <h5 className="font-semibold text-slate-700 dark:text-slate-300">Language Use (Grammar & Vocab):</h5>
+                    <h5 className="font-semibold text-slate-700 dark:text-slate-300">Language Use (Sử dụng ngôn ngữ):</h5>
                     <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{feedback.languageUse.english}</p>
                     <p className="text-sm text-slate-600 dark:text-slate-400 mt-1 italic">{feedback.languageUse.vietnamese}</p>
                 </div>
                 {feedback.organization && (
                     <div className="bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg">
-                        <h5 className="font-semibold text-slate-700 dark:text-slate-300">Organization:</h5>
+                        <h5 className="font-semibold text-slate-700 dark:text-slate-300">Organization (Tổ chức):</h5>
                         <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{feedback.organization.english}</p>
                         <p className="text-sm text-slate-600 dark:text-slate-400 mt-1 italic">{feedback.organization.vietnamese}</p>
-                    </div>
-                )}
-                 {feedback.tone && (
-                    <div className="bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg">
-                        <h5 className="font-semibold text-slate-700 dark:text-slate-300">Tone & Register:</h5>
-                        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{feedback.tone.english}</p>
-                        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1 italic">{feedback.tone.vietnamese}</p>
                     </div>
                 )}
             </div>
         </div>
     );
-
-    const renderResults = () => {
+    
+     const renderResults = () => {
         if (!evaluationResult) return null;
         return (
             <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
@@ -223,7 +216,6 @@ const WritingPart2Screen: React.FC<WritingPart2ScreenProps> = ({ onBack, current
                     <TrophyIcon className="h-16 w-16 text-yellow-500 mx-auto" />
                     <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mt-4">Evaluation Results</h2>
                 </div>
-
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center mb-8">
                     <div className="bg-blue-50 dark:bg-blue-900/50 p-4 rounded-lg">
                         <p className="text-sm font-semibold text-blue-700 dark:text-blue-300">Total Raw Score</p>
@@ -234,19 +226,16 @@ const WritingPart2Screen: React.FC<WritingPart2ScreenProps> = ({ onBack, current
                         <p className="text-4xl font-bold text-blue-600 dark:text-blue-400">{evaluationResult.estimatedScoreBand}</p>
                     </div>
                 </div>
-                
-                 <div className="bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg mb-6">
+                <div className="bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg mb-6">
                     <h5 className="font-semibold text-slate-700 dark:text-slate-300">Overall Summary:</h5>
                     <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{evaluationResult.overallSummary.english}</p>
                     <p className="text-sm text-slate-600 dark:text-slate-400 mt-1 italic">{evaluationResult.overallSummary.vietnamese}</p>
                 </div>
-
                 <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-4">Detailed Feedback</h3>
                 <div className="space-y-4 mb-8">
-                   <FeedbackItem feedback={evaluationResult.question6Feedback} questionNumber={6} />
-                   <FeedbackItem feedback={evaluationResult.question7Feedback} questionNumber={7} />
+                    <FeedbackSection title="Question 6 Feedback" feedback={evaluationResult.question6Feedback} />
+                    <FeedbackSection title="Question 7 Feedback" feedback={evaluationResult.question7Feedback} />
                 </div>
-                
                 <button onClick={handleReset} className="w-full flex items-center justify-center gap-3 py-4 px-6 bg-blue-600 text-white font-bold text-lg rounded-lg hover:bg-blue-700 transition-colors">
                     <RefreshIcon className="h-6 w-6" />
                     Practice Again
@@ -258,9 +247,9 @@ const WritingPart2Screen: React.FC<WritingPart2ScreenProps> = ({ onBack, current
     const renderContent = () => {
         switch (practiceState) {
             case 'idle': return renderIdle();
-            case 'generating': return renderLoading("Generating Your Test...", "Please wait a moment.");
+            case 'generating': return renderLoading("Generating Your Test...", "The AI is creating 2 email prompts. Please wait.");
             case 'practicing': return renderPractice();
-            case 'evaluating': return renderLoading("Evaluating Your Writing...", "The AI is analyzing your responses.");
+            case 'evaluating': return renderLoading("Evaluating Your Emails...", "The AI is analyzing your responses.");
             case 'results': return renderResults();
             default: return null;
         }
@@ -269,12 +258,12 @@ const WritingPart2Screen: React.FC<WritingPart2ScreenProps> = ({ onBack, current
     return (
         <div className="container mx-auto px-4 py-12">
             <div className="max-w-4xl mx-auto">
-                 {!showHint && practiceState === 'practicing' && (
+                {!showHint && practiceState === 'practicing' && (
                     <button onClick={() => setShowHint(true)} className="fixed top-24 right-4 z-50 p-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700" aria-label="Show hint">
                         <QuestionMarkCircleIcon className="h-6 w-6" />
                     </button>
                 )}
-                <button onClick={onBack} className="mb-8 inline-flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-semibold transition-colors">
+                <button onClick={onBack} className="mb-8 inline-flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-semibold transition-colors disabled:opacity-50" disabled={practiceState !== 'idle'}>
                     <ArrowLeftIcon className="h-5 w-5 mr-2" />
                     Back to Writing Practice
                 </button>

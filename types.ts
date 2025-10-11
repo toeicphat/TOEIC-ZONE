@@ -85,7 +85,7 @@ export interface DictationExercise {
 // For library exercises
 export interface LibraryDictationExercise extends DictationExercise {
     id: number;
-    audioSrc: string;
+    audioSrc?: string;
 }
 
 // FIX: Added missing DictationTest and DictationPart interfaces.

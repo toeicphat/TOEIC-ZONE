@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { ArrowLeftIcon, LoadingIcon, RefreshIcon, StopIcon, TrophyIcon, MicrophoneIcon, PlayIcon, PauseIcon } from './icons';
+// FIX: Corrected import for generateSpeakingPart4Task and evaluateSpeakingPart4
 import { generateSpeakingPart4Task, evaluateSpeakingPart4 } from '../services/geminiService';
 import { SpeakingPart4Task, SpeakingPart4EvaluationResult, User } from '../types';
 import AudioPlayer from './AudioPlayer';

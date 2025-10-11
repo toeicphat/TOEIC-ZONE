@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { ArrowLeftIcon, LoadingIcon, RefreshIcon, StopIcon, TrophyIcon, MicrophoneIcon, PauseIcon, PlayIcon, LightBulbIcon, XCircleIcon, QuestionMarkCircleIcon } from './icons';
-import { evaluateSpeakingPart3, generateSpeakingPart3Questions } from '../services/geminiService';
+// FIX: Corrected import for generateSpeakingPart3Questions and evaluateSpeakingPart3
+import { generateSpeakingPart3Questions, evaluateSpeakingPart3 } from '../services/geminiService';
 import { SpeakingPart3EvaluationResult, User } from '../types';
 import { addTestResult } from '../services/progressService';
 
