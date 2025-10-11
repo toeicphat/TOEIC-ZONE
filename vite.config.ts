@@ -12,6 +12,15 @@ export default defineConfig(({ mode }) => {
     },
     base: './',
     plugins: [react()],
+    server: {
+    proxy: {
+    "/api": {
+      target: "http://localhost:8080",
+      changeOrigin: true,
+    },
+  },
+},
+
     // Không cần define process.env ở đây nữa
     resolve: {
       alias: {
