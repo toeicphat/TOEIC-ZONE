@@ -25,41 +25,33 @@ import { getRandomVocabularyWords } from './vocabularyLibrary';
 
 // ✅ Gọi Google API qua proxy để tránh lộ key
 export async function queryGemini(prompt: string) {
-  const response = await fetch("https://toeic-zone-proxy.onrender.com/api/gemini", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ prompt }),
-  });
+  try {
+    const response = await fetch("https://toeic-zone-proxy.onrender.com/api/gemini", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ prompt }),
+    });
 
-  if (!response.ok) throw new Error("Failed to fetch from proxy");
-
-  const data = await response.json();
-
-  // ✅ Dòng này là fix lỗi trim:
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No response";
-
-  return text.trim();
-}
-
+    if (!response.ok) {
+      throw new Error("Failed to fetch from proxy");
+    }
 
     const data = await response.json();
-    console.log("✅ Proxy response:", data);
-    return (
-      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-      data?.output?.[0]?.generated_text ||
-      data?.result ||
-      JSON.stringify(data)
-    );
+
+    // ✅ Log để debug trong console
+    console.log("Gemini proxy raw response:", data);
+
+    // ✅ Đọc nội dung chính xác theo cấu trúc trả về từ Gemini API
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No response";
+
+    return text.trim();
   } catch (error) {
     console.error("❌ Lỗi khi gọi Gemini qua proxy:", error);
-    return "Không thể kết nối AI. Vui lòng thử lại.";
+    return "Không thể kết nối với AI. Vui lòng thử lại.";
   }
 }
-
-
-
 
 // Interface for the structured response from the speaking evaluation AI
 export interface SpeakingEvaluationResult {
