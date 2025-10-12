@@ -44,9 +44,14 @@ export async function queryGemini(prompt: string) {
     console.log("Gemini proxy raw response:", data);
 
     // ✅ Đọc nội dung chính xác theo cấu trúc trả về từ Gemini API
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No response";
+    const text =
+  data?.candidates?.[0]?.content?.parts?.[0]?.text ??
+  data?.output ??
+  data?.message ??
+  "No response";
 
-    return text.trim();
+return text?.trim?.() || "Không có phản hồi từ AI.";
+
   } catch (error) {
     console.error("❌ Lỗi khi gọi Gemini qua proxy:", error);
     return "Không thể kết nối với AI. Vui lòng thử lại.";
