@@ -100,7 +100,7 @@ export const generateDictationExercise = async (): Promise<DictationExercise | n
             5. Ensure the number of '____' placeholders in 'textWithBlanks' exactly matches the number of words in the 'missingWords' array.
         `;
         
-        const response = await ai.models.generateContent({
+        const response = await queryGemini({
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -139,7 +139,7 @@ export const generateDictationFromUserInput = async (topic: string): Promise<Dic
             5. Ensure the number of '____' placeholders exactly matches the number of words in the 'missingWords' array.
         `;
         
-        const response = await ai.models.generateContent({
+        const response = await queryGemini({
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -215,7 +215,7 @@ export const generateTOEICMiniTest = async (): Promise<TestData | null> => {
             10. Set the 'category' field to "miniTest".
         `;
 
-        const response = await ai.models.generateContent({
+        const response = await queryGemini({
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -271,7 +271,7 @@ export const generateRandomGrammarQuiz = async (): Promise<TestData | null> => {
             10. Set the 'category' field to "grammar".
         `;
 
-        const response = await ai.models.generateContent({
+        const response = await queryGemini({
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -311,7 +311,7 @@ export const generateDeterminerExercise = async (): Promise<DeterminerExercise |
     try {
         const prompt = `Generate a short English paragraph (about 50-70 words) on a simple topic like daily routines, hobbies, or work. Identify ALL determiners in the paragraph. Determiners include articles (a, an, the), demonstratives (this, that, these, those), possessives (my, your, his, her, its, our, their), quantifiers (some, any, many, few, several, all), and numbers (one, two). Return a JSON object with two keys: "paragraph" containing the text, and "determiners" containing an array of all the identified determiner words in lowercase.`;
         
-        const response = await ai.models.generateContent({
+        const response = await queryGemini({
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -363,7 +363,7 @@ export const evaluateTranslation = async (originalSentence: string, userTranslat
             Return the evaluation in JSON format according to the schema.
         `;
         
-        const response = await ai.models.generateContent({
+        const response = await queryGemini({
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -402,7 +402,7 @@ export const generateSentenceForTranslation = async (vocabList?: VocabItem[]): P
             Provide only the sentence itself, without any quotation marks or introductory phrases.
         `;
 
-        const response = await ai.models.generateContent({
+        const response = await queryGemini({
             model: "gemini-2.5-flash",
             contents: prompt,
         });
@@ -428,7 +428,7 @@ export const getWordDefinition = async (word: string, contextSentence: string = 
             Provide only the definition as a single string, without any introductory phrases like "The definition is:".
         `;
 
-        const response = await ai.models.generateContent({
+        const response = await queryGemini({
             model: "gemini-2.5-flash",
             contents: prompt,
         });
@@ -504,7 +504,7 @@ Use the Task Score from Step 1 and the detailed rubric below to estimate an over
 Your final output must be a JSON object adhering to the provided schema. Do not add any extra text or explanations outside the JSON structure.
 `;
 
-        const response = await ai.models.generateContent({
+        const response = await queryGemini({
             model: "gemini-2.5-flash",
             contents: {
                 parts: [
@@ -544,7 +544,7 @@ export const generateSpeakingPart1Text = async (): Promise<string | null> => {
             Provide only the text itself, without any introductory phrases, titles, or quotation marks.
         `;
 
-        const response = await ai.models.generateContent({
+        const response = await queryGemini({
             model: "gemini-2.5-flash",
             contents: prompt,
         });
@@ -665,7 +665,7 @@ For each criterion (Grammar, Vocabulary, Cohesion, Delivery), provide constructi
 
 Your final output must be a JSON object adhering to the provided schema. Do not add any extra text or explanations outside the JSON structure.`;
 
-        const response = await ai.models.generateContent({
+        const response = await queryGemini({
             model: "gemini-2.5-flash",
             contents: {
                 parts: [
@@ -718,7 +718,7 @@ export const generateSpeakingPart3Questions = async (): Promise<{ topic: string,
         4. Q7 should be a more open-ended question that requires a more developed 30-second response (e.g., asking for an opinion, advantages/disadvantages, or a preference with reasons).
         5. Return the result in JSON format according to the schema.`;
 
-        const response = await ai.models.generateContent({
+        const response = await queryGemini({
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -971,7 +971,7 @@ Your final output must be a JSON object adhering to the schema.`;
             parts.push({ inlineData: { mimeType: mimeTypes[2], data: audioBase64s[2] } });
         }
 
-        const response = await ai.models.generateContent({
+        const response = await queryGemini({
             model: "gemini-2.5-flash",
             contents: { parts },
             config: {
@@ -1013,7 +1013,7 @@ export const generateSpeakingPart5Scenario = async (): Promise<SpeakingPart5Scen
         3. Assign a name to the caller.
         4. Return the result in JSON format according to the schema.`;
 
-        const response = await ai.models.generateContent({
+        const response = await queryGemini({
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -1267,7 +1267,7 @@ Your final output must be a JSON object with feedback for exactly 5 questions, a
             promptText += `- User Sentence: "${userAnswers[index] || '(No answer)'}"\n\n`;
         });
         
-        const response = await ai.models.generateContent({
+        const response = await queryGemini({
             model: "gemini-2.5-flash",
             contents: promptText,
             config: {
@@ -1319,7 +1319,7 @@ export const generateWritingPart2Tasks = async (): Promise<WritingPart2Task | nu
         3.  The topics should be common business scenarios (e.g., orders, scheduling, complaints, inquiries).
         4.  Return the result as a single JSON object according to the schema.`;
 
-        const response = await ai.models.generateContent({
+        const response = await queryGemini({
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -1413,7 +1413,7 @@ Your final output must be a JSON object adhering to the schema.`;
         promptText += `Original Email Request: "${tasks.question7.requestText}"\n`;
         promptText += `User's Response: "${userAnswers[1] || '(No answer)'}"\n`;
 
-        const response = await ai.models.generateContent({
+        const response = await queryGemini({
             model: "gemini-2.5-flash",
             contents: promptText,
             config: {
@@ -1454,7 +1454,7 @@ export const generateWritingPart3Task = async (): Promise<WritingPart3Task | nul
         3. The prompt should clearly state the requirement to provide reasons and examples.
         4. Return the result in JSON format according to the schema.`;
 
-        const response = await ai.models.generateContent({
+        const response = await queryGemini({
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -1531,7 +1531,7 @@ Your final output must be a JSON object adhering to the schema.`;
         promptText += `Essay Question: "${question}"\n\n`;
         promptText += `User's Essay: "${userAnswer || '(No answer)'}"\n`;
 
-        const response = await ai.models.generateContent({
+        const response = await queryGemini({
             model: "gemini-2.5-flash",
             contents: promptText,
             config: {
