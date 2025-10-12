@@ -25,20 +25,24 @@ import { getRandomVocabularyWords } from './vocabularyLibrary';
 
 // ✅ Gọi Google API qua proxy để tránh lộ key
 export async function queryGemini(prompt: string) {
-  const PROXY_URL = "https://toeic-zone-proxy.onrender.com/api/gemini"; // ⚠️ sửa đúng URL proxy của bạn
+  const response = await fetch("https://toeic-zone-proxy.onrender.com/api/gemini", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ prompt }),
+  });
 
-  try {
-    const response = await fetch(PROXY_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt }),
-    });
+  if (!response.ok) throw new Error("Failed to fetch from proxy");
 
-    if (!response.ok) {
-      const text = await response.text();
-      console.error("❌ Proxy API error:", response.status, text);
-      throw new Error(`Proxy API error: ${response.status}`);
-    }
+  const data = await response.json();
+
+  // ✅ Dòng này là fix lỗi trim:
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No response";
+
+  return text.trim();
+}
+
 
     const data = await response.json();
     console.log("✅ Proxy response:", data);
