@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { TargetIcon } from './icons';
 
 interface PracticeHubProps {
   onNavigateToDictation: () => void;
@@ -32,6 +33,12 @@ const PracticeHub: React.FC<PracticeHubProps> = ({
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-4xl mx-auto text-center mb-12">
+        <div className="relative inline-block mb-6">
+            <TargetIcon className="h-40 w-40 text-slate-200 dark:text-slate-700 animate-pulse" />
+            <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-4xl font-extrabold text-blue-600 dark:text-blue-400 tracking-tight" style={{textShadow: '0 2px 4px rgba(0,0,0,0.1)'}}>990</span>
+            </div>
+        </div>
         <h2 className="text-4xl font-extrabold text-slate-900 dark:text-white sm:text-5xl">TOEIC không khó, học CHẮC bao ĐẬU</h2>
         <p className="mt-4 text-lg text-red-600 font-bold">
           Vì đây là sản phẩm đang phát triển. Nếu có sai sót, xin vui lòng nhắn tin cho thầy Phát qua Facebook cá nhân ở cuối trang.

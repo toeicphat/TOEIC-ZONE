@@ -1,5 +1,6 @@
 
 
+
 import { GoogleGenAI, Type } from "@google/genai";
 import { 
     DictationExercise, 
@@ -19,13 +20,12 @@ import {
     WritingPart3EvaluationResult, 
     DeterminerExercise,
     TranslationEvaluationResult,
-    VocabItem
+    VocabItem,
+    ContextMeaningSentence
 } from '../types';
 import { getRandomVocabularyWords } from './vocabularyLibrary';
 
-const ai = new GoogleGenAI({
-  apiKey: import.meta.env.VITE_GOOGLE_API_KEY
-});
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
 
 // Interface for the structured response from the speaking evaluation AI
 export interface SpeakingEvaluationResult {
@@ -383,6 +383,55 @@ export const generateSentenceForTranslation = async (vocabList?: VocabItem[]): P
     } catch (error) {
         console.error("Error generating sentence for translation:", error);
         throw new Error("Failed to generate sentence from API.");
+    }
+};
+
+const contextSentencesSchema = {
+    type: Type.ARRAY,
+    description: "An array of objects, each containing a word and a sentence that provides context for that word.",
+    items: {
+        type: Type.OBJECT,
+        properties: {
+            word: { type: Type.STRING, description: "The vocabulary word." },
+            sentence: { type: Type.STRING, description: "A sentence where the vocabulary word is used and bolded with markdown (e.g., **word**). The context of the sentence should make the meaning of the word clear." }
+        },
+        required: ['word', 'sentence']
+    }
+};
+
+export const generateContextSentences = async (vocabList: VocabItem[]): Promise<ContextMeaningSentence[] | null> => {
+    try {
+        const words = vocabList.map(v => `"${v.word}" (meaning: ${v.definition})`).join(', ');
+        const prompt = `
+            You are an English teacher creating a vocabulary exercise. For each of the following words, create a clear, context-rich sentence that helps an intermediate English learner guess the meaning of the word.
+            The vocabulary words are: ${words}.
+
+            Instructions:
+            1. For each word, write one unique sentence.
+            2. In each sentence, the vocabulary word MUST be bolded using markdown (e.g., "The phone is **ubiquitous**.").
+            3. The context of the sentence should strongly hint at the word's meaning. For example, for "ubiquitous", a good sentence is "From city streets to remote villages, the **ubiquitous** smartphone can now be seen everywhere."
+            4. Return the result as a JSON array of objects, where each object has a "word" and a "sentence" key, according to the provided schema. Ensure you generate a sentence for every word provided.
+        `;
+
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: contextSentencesSchema,
+            },
+        });
+
+        const jsonStr = response.text.trim();
+        const data = JSON.parse(jsonStr);
+
+        if (Array.isArray(data) && data.length > 0 && data[0].sentence) {
+            return data as ContextMeaningSentence[];
+        }
+        return null;
+    } catch (error) {
+        console.error("Error generating context sentences:", error);
+        throw new Error("Failed to generate context sentences from API.");
     }
 };
 

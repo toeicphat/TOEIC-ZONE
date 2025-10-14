@@ -22,7 +22,7 @@ import WritingPart2Screen from './components/WritingPart2Screen';
 import WritingPart3Screen from './components/WritingPart3Screen';
 import StatsFooter from './components/StatsFooter';
 import LoginScreen from './components/LoginScreen';
-import MyProgressScreen from './components/MyProgressScreen';
+import { MyProgressScreen } from './components/MyProgressScreen';
 import StudentManagementScreen from './components/StudentManagementScreen';
 import TestScreen from './components/TestScreen';
 import ResultsScreen from './components/ResultsScreen';
@@ -499,37 +499,44 @@ const App: React.FC = () => {
     if (!isAuthenticated) {
         return <LoginScreen onLoginSuccess={handleLoginSuccess} users={users} isLoggingIn={isLoggingIn} />;
     }
+    
+    const lightPattern = "data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3e%3cpath d='M30 50c-11 0-20-9-20-20s9-20 20-20 20 9 20 20-9 20-20 20zm0-38c-9.94 0-18 8.06-18 18s8.06 18 18 18 18-8.06 18-18-8.06-18-18-18zm-3-5h6v6h-6z' fill-opacity='.1' fill='%23fb923c'/%3e%3cpath d='M5 10 C 10 0, 20 0, 25 10 L 15 15 Z' fill-opacity='.07' fill='%231f2937'/%3e%3c/svg%3e";
+    const darkPattern = "data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3e%3cpath d='M30 50c-11 0-20-9-20-20s9-20 20-20 20 9 20 20-9 20-20 20zm0-38c-9.94 0-18 8.06-18 18s8.06 18 18 18 18-8.06 18-18-8.06-18-18-18zm-3-5h6v6h-6z' fill-opacity='.1' fill='%23f97316'/%3e%3cpath d='M5 10 C 10 0, 20 0, 25 10 L 15 15 Z' fill-opacity='.08' fill='%23d1d5db'/%3e%3c/svg%3e";
+
 
     return (
-        <div className="bg-slate-50 dark:bg-slate-900 min-h-screen font-sans text-slate-900 dark:text-slate-200">
-            <header className="bg-white dark:bg-slate-800 shadow-md border-b border-slate-200 dark:border-slate-700 sticky top-0 z-40">
-                <nav className="container mx-auto px-4 py-3 flex justify-between items-center">
-                    <div className="flex items-center gap-2 cursor-pointer" onClick={handleGoHome}>
-                        <LogoIcon className="h-8 w-8 text-blue-600" />
-                        <span className="text-xl font-bold text-slate-800 dark:text-slate-100">TOEIC Zone</span>
-                    </div>
-                    <div className="hidden md:flex items-center gap-2">
-                        <NavButton onClick={handleGoHome} isActive={appState === AppState.PracticeHub || appState.startsWith('MINI_TEST')}>Practice Hub</NavButton>
-                        <NavButton onClick={() => setAppState(AppState.MyProgress)} isActive={appState === AppState.MyProgress}>My Progress</NavButton>
-                        {currentUser?.username === 'admin' && (
-                            <NavButton onClick={() => setAppState(AppState.StudentManagement)} isActive={appState === AppState.StudentManagement}>Students</NavButton>
-                        )}
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <span className="hidden sm:inline text-sm font-medium text-slate-600 dark:text-slate-300">Welcome, {currentUser?.username}</span>
-                        <NavButton onClick={() => setAppState(AppState.Settings)} isActive={appState === AppState.Settings}>Settings</NavButton>
-                        <button onClick={handleLogout} className="px-4 py-2 text-sm font-semibold text-red-600 bg-red-100 dark:bg-red-900/50 dark:text-red-300 rounded-lg hover:bg-red-200 dark:hover:bg-red-800/50 transition-colors">
-                            Logout
-                        </button>
-                    </div>
-                </nav>
-            </header>
-    
-            <main className="py-8">
-                {renderContent()}
-            </main>
-            
-            <StatsFooter />
+        <div className="relative min-h-screen font-sans text-slate-900 dark:text-slate-200">
+            <div className={`absolute inset-0 bg-orange-50 dark:bg-gray-950 bg-repeat bg-[length:60px_60px] bg-[url('${lightPattern}')] dark:bg-[url('${darkPattern}')]`}></div>
+            <div className="relative z-10 flex flex-col min-h-screen">
+                <header className="bg-orange-50/80 dark:bg-gray-950/80 backdrop-blur-sm shadow-md border-b border-orange-200 dark:border-gray-800 sticky top-0 z-40">
+                    <nav className="container mx-auto px-4 py-3 flex justify-between items-center">
+                        <div className="flex items-center gap-2 cursor-pointer" onClick={handleGoHome}>
+                            <LogoIcon className="h-8 w-8 text-orange-600" />
+                            <span className="text-xl font-bold text-slate-800 dark:text-slate-100">TOEIC Zone</span>
+                        </div>
+                        <div className="hidden md:flex items-center gap-2">
+                            <NavButton onClick={handleGoHome} isActive={appState === AppState.PracticeHub || appState.startsWith('MINI_TEST')}>Practice Hub</NavButton>
+                            <NavButton onClick={() => setAppState(AppState.MyProgress)} isActive={appState === AppState.MyProgress}>My Progress</NavButton>
+                            {currentUser?.username === 'admin' && (
+                                <NavButton onClick={() => setAppState(AppState.StudentManagement)} isActive={appState === AppState.StudentManagement}>Students</NavButton>
+                            )}
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <span className="hidden sm:inline text-sm font-medium text-slate-600 dark:text-slate-300">Welcome, {currentUser?.username}</span>
+                            <NavButton onClick={() => setAppState(AppState.Settings)} isActive={appState === AppState.Settings}>Settings</NavButton>
+                            <button onClick={handleLogout} className="px-4 py-2 text-sm font-semibold text-red-600 bg-red-100 dark:bg-red-900/50 dark:text-red-300 rounded-lg hover:bg-red-200 dark:hover:bg-red-800/50 transition-colors">
+                                Logout
+                            </button>
+                        </div>
+                    </nav>
+                </header>
+        
+                <main className="py-8 flex-grow">
+                    {renderContent()}
+                </main>
+                
+                <StatsFooter />
+            </div>
         </div>
     );
 };

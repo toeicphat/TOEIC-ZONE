@@ -1,5 +1,6 @@
 
 
+
 export interface User {
     username: string;
     password: string;
@@ -174,6 +175,11 @@ export interface VocabItem {
     word: string;
     definition: string;
     example: string;
+}
+
+export interface ContextMeaningSentence {
+    word: string;
+    sentence: string;
 }
 
 export interface VocabularyTest {

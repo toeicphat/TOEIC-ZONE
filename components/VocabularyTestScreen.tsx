@@ -1,12 +1,15 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { VocabularyTest, VocabItem, User, TranslationEvaluationResult } from '../types';
+
+
+
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { VocabularyTest, VocabItem, User, TranslationEvaluationResult, ContextMeaningSentence } from '../types';
 import { updateWordSrsLevel } from '../services/vocabularyService';
-import { generateSentenceForTranslation, evaluateTranslation } from '../services/geminiService';
+import { generateSentenceForTranslation, evaluateTranslation, generateContextSentences } from '../services/geminiService';
 import { BookOpenIcon, BrainIcon, ShuffleIcon, ArrowLeftIcon, ArrowRightIcon, CheckCircleIcon, XCircleIcon, GridIcon, PuzzleIcon, TypeIcon, LightBulbIcon, HeadphoneIcon, TargetIcon, LinkIcon, FlipIcon, SparklesIcon, LoadingIcon, RefreshIcon, QuestionMarkCircleIcon } from './icons';
 import AudioPlayer from './AudioPlayer';
 import { addTestResult } from '../services/progressService';
 
-type StudyMode = 'flashcards' | 'quiz' | 'matching_game' | 'scrambler' | 'spelling_recall' | 'audio_dictation' | 'definition_match' | 'listening_translation';
+type StudyMode = 'flashcards' | 'listening_words' | 'quiz' | 'matching_game' | 'scrambler' | 'spelling_recall' | 'audio_dictation' | 'definition_match' | 'listening_translation' | 'context_meaning';
 
 interface QuizQuestion {
     questionText: string; // The definition
@@ -37,6 +40,20 @@ interface AudioDictationQuestion {
     meaningRevealed: boolean;
 }
 
+interface ContextQuestion {
+    original: VocabItem;
+    sentence: string;
+    userAnswer: string;
+    isChecked: boolean;
+}
+
+// For Listening Words
+type ListeningWordQuestion = {
+    correctWord: VocabItem;
+    options: VocabItem[];
+    userAnswer: VocabItem | null;
+};
+
 const shuffleArray = <T,>(array: T[]): T[] => {
     return [...array].sort(() => Math.random() - 0.5);
 };
@@ -64,15 +81,68 @@ const HintBox: React.FC<{onClose: () => void}> = ({onClose}) => (
     </div>
 );
 
+const WordCountModal: React.FC<{
+  maxWords: number;
+  onStart: (count: number) => void;
+}> = ({ maxWords, onStart }) => {
+  const [inputValue, setInputValue] = useState('20');
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+  const handleStartClick = () => {
+    let count = parseInt(inputValue, 10);
+    if (isNaN(count) || count <= 0) {
+      count = 20; // Default if invalid
+    }
+    onStart(Math.min(count, maxWords));
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleStartClick();
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-sm">
+      <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-xl w-full max-w-sm text-center">
+        <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">
+          Xin hãy nhập số lượng từ bạn muốn học cho lượt này
+        </h3>
+        <input
+          ref={inputRef}
+          type="number"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onKeyDown={handleKeyDown}
+          className="w-full text-center text-3xl font-bold p-3 border-2 border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
+          placeholder={`Tối đa ${maxWords}`}
+          min="1"
+          max={maxWords}
+        />
+        <button
+          onClick={handleStartClick}
+          className="mt-6 w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          Bắt đầu
+        </button>
+      </div>
+    </div>
+  );
+};
+
 
 const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => void, currentUser: User }> = ({ testData, onBack, currentUser }) => {
+    const [wordCount, setWordCount] = useState<number | null>(null);
+
     const wordsForSession = useMemo(() => {
+        if (!wordCount) return [];
         const words = testData.words;
-        if (words.length > 50) {
-            return shuffleArray(words).slice(0, 50);
-        }
-        return words;
-    }, [testData.words]);
+        return shuffleArray(words).slice(0, wordCount);
+    }, [testData.words, wordCount]);
 
     const [mode, setMode] = useState<StudyMode>('flashcards');
     const [deck, setDeck] = useState<VocabItem[]>(wordsForSession);
@@ -113,6 +183,12 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
     const [currentAudioDictationIndex, setCurrentAudioDictationIndex] = useState(0);
     const [audioDictationScore, setAudioDictationScore] = useState(0);
     const [isAudioDictationSessionFinished, setIsAudioDictationSessionFinished] = useState(false);
+    
+    // State for Listening Words mode
+    const [listeningWordsQuestions, setListeningWordsQuestions] = useState<ListeningWordQuestion[]>([]);
+    const [currentListeningWordIndex, setCurrentListeningWordIndex] = useState(0);
+    const [isListeningWordsSessionFinished, setIsListeningWordsSessionFinished] = useState(false);
+    const [autoAdvance, setAutoAdvance] = useState(false);
 
     // State for Definition Match
     const [fullDMatchDeck, setFullDMatchDeck] = useState<VocabItem[]>([]);
@@ -132,7 +208,17 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
     const [originalSentence, setOriginalSentence] = useState<string>('');
     const [userTranslation, setUserTranslation] = useState<string>('');
     const [ltEvaluation, setLtEvaluation] = useState<TranslationEvaluationResult | null>(null);
-    const [showLtHint, setShowLtHint] = useState(true);
+    const [showHint, setShowHint] = useState(true);
+
+    const [contextQuestions, setContextQuestions] = useState<ContextQuestion[]>([]);
+    const [currentContextIndex, setCurrentContextIndex] = useState(0);
+    const [isContextGenerating, setIsContextGenerating] = useState(false);
+    const [contextError, setContextError] = useState<string | null>(null);
+    const [autoAdvanceContext, setAutoAdvanceContext] = useState(false);
+
+    const handleStartSession = useCallback((count: number) => {
+        setWordCount(count);
+    }, []);
 
     const generateQuizQuestions = useCallback(() => {
         const shuffledWords = shuffleArray(wordsForSession);
@@ -156,6 +242,28 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
         setScore(0);
         setIsQuizSessionFinished(false);
     }, [generateQuizQuestions]);
+    
+    const generateListeningWordsQuestions = useCallback(() => {
+        const shuffledWords = shuffleArray(wordsForSession);
+        const questions = shuffledWords.map((correctItem: VocabItem) => {
+            const distractors = shuffleArray(wordsForSession.filter((w: VocabItem) => w.word !== correctItem.word)).slice(0, 8);
+            const options = shuffleArray([correctItem, ...distractors]);
+            return {
+                correctWord: correctItem,
+                // FIX: Removed redundant ternary as `options` will always have at least one item. This fixes a type inference issue.
+                options: options,
+                userAnswer: null,
+            };
+        });
+        setListeningWordsQuestions(questions);
+    }, [wordsForSession]);
+
+    const startListeningWordsSession = useCallback(() => {
+        generateListeningWordsQuestions();
+        setCurrentListeningWordIndex(0);
+        setIsListeningWordsSessionFinished(false);
+    }, [generateListeningWordsQuestions]);
+
 
     const setupMatchingTurn = useCallback((deck: VocabItem[], turn: number) => {
         const startIndex = turn * WORDS_PER_MATCHING_TURN;
@@ -300,7 +408,7 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
         setLtError(null);
         setUserTranslation('');
         setLtEvaluation(null);
-        setShowLtHint(true);
+        setShowHint(true);
         try {
             const sentence = await generateSentenceForTranslation(wordsForSession);
             if (sentence) {
@@ -316,18 +424,50 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
         }
     }, [wordsForSession]);
 
+    const generateContextMeaningExercise = useCallback(async () => {
+        if (wordsForSession.length === 0) return;
+        setIsContextGenerating(true);
+        setContextError(null);
+        setContextQuestions([]);
+        try {
+            const sentences = await generateContextSentences(wordsForSession);
+            if (sentences && sentences.length > 0) {
+                const questions: ContextQuestion[] = wordsForSession.map(wordItem => {
+                    const foundSentence = sentences.find(s => s.word.toLowerCase() === wordItem.word.toLowerCase());
+                    return {
+                        original: wordItem,
+                        sentence: foundSentence ? foundSentence.sentence : `Could not generate a sentence for **${wordItem.word}**.`,
+                        userAnswer: '',
+                        isChecked: false
+                    };
+                });
+                setContextQuestions(shuffleArray(questions));
+                setCurrentContextIndex(0);
+            } else {
+                throw new Error("AI did not return valid sentences.");
+            }
+        } catch (err) {
+            console.error(err);
+            setContextError("An error occurred while generating the AI exercise. Please try again.");
+        } finally {
+            setIsContextGenerating(false);
+        }
+    }, [wordsForSession]);
+
     useEffect(() => {
         setDeck(wordsForSession);
         setCurrentCardIndex(0);
         setIsFlipped(false);
         if (mode === 'quiz') startQuizSession();
+        if (mode === 'listening_words') startListeningWordsSession();
         if (mode === 'matching_game') startMatchingGame();
         if (mode === 'scrambler') startScramblerGame();
         if (mode === 'spelling_recall') startSpellingGame();
         if (mode === 'audio_dictation') startAudioDictationGame();
         if (mode === 'definition_match') startDMatchGame();
         if (mode === 'listening_translation') generateNewLtExercise();
-    }, [mode, wordsForSession, startQuizSession, startMatchingGame, startScramblerGame, startSpellingGame, startAudioDictationGame, startDMatchGame, generateNewLtExercise]);
+        if (mode === 'context_meaning') generateContextMeaningExercise();
+    }, [mode, wordsForSession, startQuizSession, startListeningWordsSession, startMatchingGame, startScramblerGame, startSpellingGame, startAudioDictationGame, startDMatchGame, generateNewLtExercise, generateContextMeaningExercise]);
     
     useEffect(() => {
         if (isQuizSessionFinished && currentUser && quizQuestions.length > 0) {
@@ -556,6 +696,42 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
             return newQuestions;
         })
     };
+    
+    // Listening Words handlers
+    const handleNextListeningWord = useCallback(() => {
+        if (currentListeningWordIndex < listeningWordsQuestions.length - 1) {
+            setCurrentListeningWordIndex(prev => prev + 1);
+        } else {
+            setIsListeningWordsSessionFinished(true);
+        }
+    }, [currentListeningWordIndex, listeningWordsQuestions.length]);
+
+    const handleListeningWordSelect = useCallback((selectedOption: VocabItem) => {
+        const currentQuestionIndex = currentListeningWordIndex;
+        const question = listeningWordsQuestions[currentQuestionIndex];
+        if (question.userAnswer) return; // Already answered
+
+        const updatedQuestions = [...listeningWordsQuestions];
+        updatedQuestions[currentQuestionIndex] = {
+            ...question,
+            userAnswer: selectedOption,
+        };
+        setListeningWordsQuestions(updatedQuestions);
+
+        const isCorrect = selectedOption.word === question.correctWord.word;
+        if (isCorrect && autoAdvance) {
+            setTimeout(() => {
+                handleNextListeningWord();
+            }, 1500); // 1.5 second delay
+        }
+    }, [currentListeningWordIndex, listeningWordsQuestions, autoAdvance, handleNextListeningWord]);
+
+    const handlePrevListeningWord = () => {
+        if (currentListeningWordIndex > 0) {
+            setCurrentListeningWordIndex(prev => prev - 1);
+        }
+    };
+
 
     // Definition Match handlers
     const handleDMatchWordSelect = (wordItem: DMatchItemType) => {
@@ -602,29 +778,64 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
              setLtState('answering');
         }
     };
+
+    const handleContextInputChange = (value: string) => {
+        const newQuestions = [...contextQuestions];
+        newQuestions[currentContextIndex].userAnswer = value;
+        setContextQuestions(newQuestions);
+    };
+
+    const handleCheckContextAnswer = () => {
+        const newQuestions = [...contextQuestions];
+        newQuestions[currentContextIndex].isChecked = true;
+        setContextQuestions(newQuestions);
+
+        if (autoAdvanceContext && currentContextIndex < contextQuestions.length - 1) {
+            setTimeout(() => {
+                setCurrentContextIndex(prev => prev + 1);
+            }, 2500);
+        }
+    };
+
+    const handleNextContext = () => {
+        if (currentContextIndex < contextQuestions.length - 1) {
+            setCurrentContextIndex(prev => prev + 1);
+        }
+    };
+    
+    const handlePrevContext = () => {
+        if (currentContextIndex > 0) {
+            setCurrentContextIndex(prev => prev - 1);
+        }
+    };
     
     
     // RENDER FUNCTIONS FOR EACH MODE
     
     const renderFlashcards = () => {
         const currentCard = deck[currentCardIndex];
+        if (!currentCard) {
+            return (
+                <div className="text-center p-8 bg-white dark:bg-slate-800 rounded-xl shadow-lg">
+                    <p className="text-slate-600 dark:text-slate-400">No words selected for this session. Please go back and choose a different set or number of words.</p>
+                </div>
+            );
+        }
         return (
             <div>
-                <div className="relative mb-6">
-                    <div 
-                        className={`w-full h-80 flex flex-col items-center justify-center p-8 bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 transition-transform duration-500 cursor-pointer [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}
-                        onClick={() => setIsFlipped(!isFlipped)}
-                    >
-                        {/* Front */}
-                        <div className="absolute w-full h-full flex flex-col items-center justify-center p-8 [backface-visibility:hidden]">
-                            <span className="text-sm text-slate-500 dark:text-slate-400">Word</span>
-                            <h3 className="text-5xl font-bold text-slate-800 dark:text-slate-100 tracking-tight text-center">{currentCard.word}</h3>
-                        </div>
-                        {/* Back */}
-                        <div className="absolute w-full h-full flex flex-col items-center justify-center p-8 [transform:rotateY(180deg)] [backface-visibility:hidden]">
-                             <span className="text-sm text-slate-500 dark:text-slate-400">Definition</span>
-                            <p className="text-xl text-slate-700 dark:text-slate-200 text-center">{currentCard.definition}</p>
-                        </div>
+                <div 
+                    className={`w-full h-80 flex flex-col items-center justify-center p-8 bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 transition-transform duration-500 cursor-pointer [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}
+                    onClick={() => setIsFlipped(!isFlipped)}
+                >
+                    {/* Front */}
+                    <div className="absolute w-full h-full flex flex-col items-center justify-center p-8 [backface-visibility:hidden]">
+                        <span className="text-sm text-slate-500 dark:text-slate-400">Word</span>
+                        <h3 className="text-5xl font-bold text-slate-800 dark:text-slate-100 tracking-tight text-center">{currentCard.word}</h3>
+                    </div>
+                    {/* Back */}
+                    <div className="absolute w-full h-full flex flex-col items-center justify-center p-8 [transform:rotateY(180deg)] [backface-visibility:hidden]">
+                         <span className="text-sm text-slate-500 dark:text-slate-400">Definition</span>
+                        <p className="text-xl text-slate-700 dark:text-slate-200 text-center">{currentCard.definition}</p>
                     </div>
                 </div>
                 
@@ -642,6 +853,88 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
                         <ShuffleIcon className="h-5 w-5"/> Shuffle
                      </button>
                  </div>
+            </div>
+        );
+    };
+    
+    const renderListeningWords = () => {
+        if (isListeningWordsSessionFinished) {
+            return (
+                <div className="text-center bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg">
+                    <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Practice Complete!</h3>
+                    <p className="text-lg text-slate-600 dark:text-slate-400 mt-2">You have completed all the words.</p>
+                    <button onClick={startListeningWordsSession} className="mt-8 px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">
+                        Practice Again
+                    </button>
+                </div>
+            );
+        }
+
+        const currentQuestion = listeningWordsQuestions[currentListeningWordIndex];
+        if (!currentQuestion) {
+            return (
+                <div className="text-center p-8">
+                    <LoadingIcon className="h-8 w-8 animate-spin text-blue-500 mx-auto" />
+                    <p className="mt-4 text-slate-600">Loading questions...</p>
+                </div>
+            );
+        }
+
+        const { correctWord, options, userAnswer } = currentQuestion;
+        const isAnswered = userAnswer !== null;
+
+        return (
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg">
+                <div className="mb-6">
+                    <AudioPlayer audioScript={correctWord.word} />
+                </div>
+
+                <div className="grid grid-cols-3 gap-3">
+                    {options.map((option, index) => {
+                        const isSelected = isAnswered && userAnswer?.word === option.word;
+                        const isCorrectOption = option.word === correctWord.word;
+
+                        let cardClass = "h-28 flex flex-col items-center justify-center p-3 text-center rounded-lg border-2 font-semibold transition-all duration-300 text-sm ";
+
+                        if (isAnswered) {
+                            if (isCorrectOption) {
+                                cardClass += "bg-green-100 dark:bg-green-900/50 border-green-500 text-green-800 dark:text-green-300 scale-105 shadow-lg";
+                            } else if (isSelected) {
+                                cardClass += "bg-red-100 dark:bg-red-900/50 border-red-500 text-red-800 dark:text-red-300 transform motion-safe:-translate-x-1";
+                            } else {
+                                cardClass += "bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 opacity-50 cursor-default";
+                            }
+                        } else {
+                            cardClass += "bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-slate-50 dark:hover:bg-slate-600/50 cursor-pointer";
+                        }
+
+                        return (
+                            <button key={`${option.word}-${index}`} onClick={() => handleListeningWordSelect(option)} className={cardClass} disabled={isAnswered}>
+                                <span className="text-base">{option.word}</span>
+                                <span className="text-xs text-slate-500 dark:text-slate-400 mt-1">({option.definition})</span>
+                            </button>
+                        );
+                    })}
+                </div>
+
+                <div className="flex justify-between items-center mt-6 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-inner">
+                    <button onClick={handlePrevListeningWord} disabled={currentListeningWordIndex === 0} className="px-4 py-2 bg-slate-200 dark:bg-slate-700 rounded-md font-semibold text-slate-700 dark:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-300 dark:hover:bg-slate-600">
+                        ⟨ Câu trước
+                    </button>
+                    
+                    <label className="flex items-center cursor-pointer">
+                        <div className="relative">
+                            <input type="checkbox" className="sr-only" checked={autoAdvance} onChange={() => setAutoAdvance(!autoAdvance)} />
+                            <div className={`block w-12 h-6 rounded-full transition-colors ${autoAdvance ? 'bg-blue-500' : 'bg-slate-300 dark:bg-slate-600'}`}></div>
+                            <div className={`dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform ${autoAdvance ? 'transform translate-x-6' : ''}`}></div>
+                        </div>
+                        <span className="ml-3 text-slate-700 dark:text-slate-300 font-medium">Tự động chuyển câu</span>
+                    </label>
+
+                    <button onClick={handleNextListeningWord} disabled={currentListeningWordIndex >= listeningWordsQuestions.length - 1} className="px-4 py-2 bg-blue-600 text-white rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700">
+                        Câu sau ⟩
+                    </button>
+                </div>
             </div>
         );
     };
@@ -1023,7 +1316,7 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
                     <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
                         <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 text-center mb-2">Listen and Translate</h3>
                         <p className="text-slate-600 dark:text-slate-400 text-center mb-6">Listen to the English sentence, then type your Vietnamese translation below.</p>
-                        {showLtHint && <HintBox onClose={() => setShowLtHint(false)} />}
+                        {showHint && <HintBox onClose={() => setShowHint(false)} />}
                         <div className="mb-6">
                             <AudioPlayer audioScript={originalSentence} />
                         </div>
@@ -1105,17 +1398,112 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
         }
     };
 
+    const renderContextMeaning = () => {
+        if (isContextGenerating) {
+            return (
+                <div className="flex flex-col items-center justify-center p-12 bg-white dark:bg-slate-800 rounded-xl shadow-lg">
+                    <LoadingIcon className="h-12 w-12 text-blue-600 animate-spin" />
+                    <h3 className="mt-6 text-xl font-semibold text-slate-700 dark:text-slate-200">Generating AI Context Exercise...</h3>
+                </div>
+            );
+        }
+
+        if (contextError) {
+             return (
+                <div className="text-center bg-red-100 dark:bg-red-900/50 p-8 rounded-xl shadow-lg">
+                    <h3 className="text-xl font-bold text-red-700 dark:text-red-300">Error</h3>
+                    <p className="text-slate-600 dark:text-slate-400 mt-2">{contextError}</p>
+                    <button onClick={generateContextMeaningExercise} className="mt-6 px-6 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700">
+                        Try Again
+                    </button>
+                </div>
+            );
+        }
+
+        if (contextQuestions.length === 0) {
+            return <div className="text-center p-8 text-slate-500 dark:text-slate-400">Select this mode to generate an exercise.</div>;
+        }
+
+        const currentQuestion = contextQuestions[currentContextIndex];
+        const isFinished = currentContextIndex >= contextQuestions.length - 1 && currentQuestion.isChecked;
+
+        return (
+            <div className="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-xl shadow-lg">
+                <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">Context Meaning (AI)</h3>
+                    <span className="font-semibold text-slate-500 dark:text-slate-400">{currentContextIndex + 1} / {contextQuestions.length}</span>
+                </div>
+
+                <div className="p-6 bg-slate-50 dark:bg-slate-700/50 rounded-lg min-h-[100px] flex items-center justify-center mb-6">
+                     <p 
+                        className="text-xl text-center text-slate-800 dark:text-slate-200 leading-relaxed" 
+                        dangerouslySetInnerHTML={{ __html: currentQuestion.sentence.replace(/\*\*(.*?)\*\*/g, '<strong class="text-blue-600 dark:text-blue-400">$1</strong>') }}
+                     />
+                </div>
+
+                <div className="space-y-4">
+                    <input
+                        type="text"
+                        value={currentQuestion.userAnswer}
+                        onChange={(e) => handleContextInputChange(e.target.value)}
+                        disabled={currentQuestion.isChecked}
+                        placeholder="Type your guess for the meaning in Vietnamese..."
+                        className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-900 dark:text-white disabled:bg-slate-100 dark:disabled:bg-slate-700"
+                    />
+
+                    {currentQuestion.isChecked && (
+                        <div className="p-4 bg-green-50 dark:bg-green-900/50 border-l-4 border-green-500 rounded-r-lg">
+                            <p className="font-semibold text-slate-700 dark:text-slate-200">Correct Meaning:</p>
+                            <p className="text-green-800 dark:text-green-300 font-bold">{currentQuestion.original.definition}</p>
+                        </div>
+                    )}
+                </div>
+
+                 <div className="mt-6 flex flex-col items-center space-y-4">
+                    {!currentQuestion.isChecked ? (
+                        <button onClick={handleCheckContextAnswer} className="w-full sm:w-1/2 px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700">
+                            Check Answer
+                        </button>
+                    ) : isFinished ? (
+                        <button onClick={generateContextMeaningExercise} className="w-full sm:w-1/2 px-6 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700">
+                            Practice Again
+                        </button>
+                    ) : null }
+
+                    <div className="w-full flex justify-between items-center">
+                        <button onClick={handlePrevContext} disabled={currentContextIndex === 0} className="px-5 py-2 bg-slate-200 dark:bg-slate-700 rounded-md font-semibold text-slate-700 dark:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-300 dark:hover:bg-slate-600">
+                            ⟨ Move Backward
+                        </button>
+                        <label className="flex items-center cursor-pointer">
+                            <div className="relative">
+                                <input type="checkbox" className="sr-only" checked={autoAdvanceContext} onChange={() => setAutoAdvanceContext(!autoAdvanceContext)} />
+                                <div className={`block w-12 h-6 rounded-full transition-colors ${autoAdvanceContext ? 'bg-blue-500' : 'bg-slate-300 dark:bg-slate-600'}`}></div>
+                                <div className={`dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform ${autoAdvanceContext ? 'transform translate-x-6' : ''}`}></div>
+                            </div>
+                            <span className="ml-3 text-sm text-slate-700 dark:text-slate-300 font-medium">Auto-Advance</span>
+                        </label>
+                        <button onClick={handleNextContext} disabled={currentContextIndex >= contextQuestions.length - 1} className="px-5 py-2 bg-slate-200 dark:bg-slate-700 rounded-md font-semibold text-slate-700 dark:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-300 dark:hover:bg-slate-600">
+                            Move On ⟩
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
 
     const renderContent = () => {
         switch (mode) {
             case 'flashcards': return renderFlashcards();
+            case 'listening_words': return renderListeningWords();
             case 'quiz': return renderQuiz();
             case 'matching_game': return renderMatchingGame();
+            case 'definition_match': return renderDefinitionMatch();
             case 'scrambler': return renderScrambler();
             case 'spelling_recall': return renderSpellingRecall();
             case 'audio_dictation': return renderAudioDictation();
-            case 'definition_match': return renderDefinitionMatch();
             case 'listening_translation': return renderListeningTranslation();
+            case 'context_meaning': return renderContextMeaning();
             default:
                 return renderFlashcards();
         }
@@ -1123,6 +1511,7 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
     
      const studyModes: { id: StudyMode; name: string; icon: React.FC<any> }[] = [
         { id: 'flashcards', name: 'Flashcards', icon: BookOpenIcon },
+        { id: 'listening_words', name: 'Listening Words', icon: HeadphoneIcon },
         { id: 'quiz', name: 'Quiz', icon: BrainIcon },
         { id: 'matching_game', name: 'Matching Game', icon: GridIcon },
         { id: 'definition_match', name: 'Definition Match', icon: LinkIcon },
@@ -1130,7 +1519,12 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
         { id: 'spelling_recall', name: 'Spelling Recall', icon: TypeIcon },
         { id: 'audio_dictation', name: 'Audio Dictation', icon: HeadphoneIcon },
         { id: 'listening_translation', name: 'Listen & Translate (AI)', icon: SparklesIcon },
+        { id: 'context_meaning', name: 'Context Meaning (AI)', icon: SparklesIcon },
     ];
+
+    if (!wordCount) {
+        return <WordCountModal maxWords={testData.words.length} onStart={handleStartSession} />;
+    }
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -1139,8 +1533,8 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
                     {toastMessage}
                 </div>
             )}
-             {!showLtHint && mode === 'listening_translation' && (ltState === 'answering' || ltState === 'evaluating') && (
-                <button onClick={() => setShowLtHint(true)} className="fixed top-24 right-4 z-50 p-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700" aria-label="Show hint">
+             {!showHint && mode === 'listening_translation' && (ltState === 'answering' || ltState === 'evaluating') && (
+                <button onClick={() => setShowHint(true)} className="fixed top-24 right-4 z-50 p-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700" aria-label="Show hint">
                     <QuestionMarkCircleIcon className="h-6 w-6" />
                 </button>
             )}
@@ -1156,15 +1550,15 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
                 </div>
                 
                 <div className="mb-8">
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
                          {studyModes.map(m => (
                             <button 
                                 key={m.id}
                                 onClick={() => setMode(m.id)}
-                                className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold transition-colors text-sm ${mode === m.id ? 'bg-blue-600 text-white' : 'bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'}`}
+                                className={`flex flex-col sm:flex-row items-center justify-center gap-2 px-3 py-2 rounded-lg font-semibold transition-colors text-xs sm:text-sm ${mode === m.id ? 'bg-blue-600 text-white' : 'bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'}`}
                             >
                                 <m.icon className="h-5 w-5"/>
-                                <span>{m.name}</span>
+                                <span className="mt-1 sm:mt-0">{m.name}</span>
                             </button>
                          ))}
                     </div>
