@@ -7,9 +7,10 @@ interface QuestionPaletteProps {
   currentQuestionIndex: number;
   onQuestionSelect: (index: number) => void;
   markedForReview?: Set<string>;
+  columns?: number;
 }
 
-const QuestionPalette: React.FC<QuestionPaletteProps> = ({ questions, answers, currentQuestionIndex, onQuestionSelect, markedForReview }) => {
+const QuestionPalette: React.FC<QuestionPaletteProps> = ({ questions, answers, currentQuestionIndex, onQuestionSelect, markedForReview, columns = 6 }) => {
   const useIdAsLabel = useMemo(() => {
     if (!questions || questions.length === 0) return false;
     const firstId = questions[0].id;
@@ -25,8 +26,10 @@ const QuestionPalette: React.FC<QuestionPaletteProps> = ({ questions, answers, c
     return true; 
   }, [questions]);
 
+  const gridClass = columns === 8 ? "grid grid-cols-8 gap-1.5" : "grid grid-cols-6 gap-1.5";
+
   return (
-    <div className="grid grid-cols-6 gap-1.5">
+    <div className={gridClass}>
       {questions.map((q, i) => {
         const questionId = q.id;
         const isAnswered = answers[questionId] != null;

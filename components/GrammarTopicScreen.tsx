@@ -5,7 +5,7 @@ import { generateDeterminerExercise } from '../services/geminiService';
 import { GrammarTopicContent, GrammarQuestion, QuestionOption, DeterminerExercise, User } from '../types';
 import SelectionCard from './SelectionCard';
 import QuestionPalette from './QuestionPalette';
-import { CheckCircleIcon, XCircleIcon, ArrowLeftIcon, SparklesIcon, LoadingIcon } from './icons';
+import { CheckCircleIcon, XCircleIcon, ArrowLeftIcon, SparklesIcon, LoadingIcon, RefreshIcon } from './icons';
 import { addTestResult } from '../services/progressService';
 
 interface UserAnswers {
@@ -16,9 +16,253 @@ interface GrammarTopicScreenProps {
   topic: string;
   onBack: () => void;
   currentUser: User;
+  onSelectTopic: (topic: string) => void;
 }
 
-const GrammarTopicScreen: React.FC<GrammarTopicScreenProps> = ({ topic, onBack, currentUser }) => {
+// --- START: Drag-and-Drop Classification Quiz Component ---
+
+const shuffleArray = <T,>(array: T[]): T[] => {
+    return [...array].sort(() => Math.random() - 0.5);
+};
+
+const allWordData = [
+  // Giới từ
+  { word: 'despite', type: 'Giới từ' },
+  { word: 'during', type: 'Giới từ' },
+  { word: 'regarding', type: 'Giới từ' },
+  { word: 'in spite of', type: 'Giới từ' },
+  { word: 'because of', type: 'Giới từ' },
+  { word: 'according to', type: 'Giới từ' },
+  { word: 'within', type: 'Giới từ' },
+  { word: 'following', type: 'Giới từ' },
+  { word: 'aboard', type: 'Giới từ' },
+  { word: 'across', type: 'Giới từ' },
+  { word: 'above', type: 'Giới từ' },
+  { word: 'beneath', type: 'Giới từ' },
+  { word: 'due to', type: 'Giới từ' },
+  { word: 'owing to', type: 'Giới từ' },
+  { word: 'prior to', type: 'Giới từ' },
+  { word: 'without', type: 'Giới từ' },
+  { word: 'in case of', type: 'Giới từ' },
+
+  // Liên từ
+  { word: 'because', type: 'Liên từ' },
+  { word: 'although', type: 'Liên từ' },
+  { word: 'unless', type: 'Liên từ' },
+  { word: 'so that', type: 'Liên từ' },
+  { word: 'whereas', type: 'Liên từ' },
+  { word: 'if', type: 'Liên từ' },
+  { word: 'while', type: 'Liên từ' },
+  { word: 'as soon as', type: 'Liên từ' },
+  { word: 'since', type: 'Liên từ' },
+  { word: 'even though', type: 'Liên từ' },
+  { word: 'provided that', type: 'Liên từ' },
+  { word: 'in order that', type: 'Liên từ' },
+  { word: 'as if', type: 'Liên từ' },
+  { word: 'whether', type: 'Liên từ' },
+  { word: 'now that', type: 'Liên từ' },
+  { word: 'until', type: 'Liên từ' },
+  { word: 'after', type: 'Liên từ' },
+];
+
+const getWordType = (word: string) => {
+    return allWordData.find(item => item.word === word)?.type || '';
+};
+
+const generateNewTurn = () => {
+    const randomWordsData = shuffleArray(allWordData).slice(0, 15);
+    const words = randomWordsData.map(w => w.word);
+    return {
+        wordDataForTurn: randomWordsData,
+        columns: {
+            source: shuffleArray(words),
+            'Giới từ': [],
+            'Liên từ': [],
+        }
+    };
+};
+
+const ClassificationQuizScreen: React.FC<{onBack: () => void; currentUser: User;}> = ({ onBack, currentUser }) => {
+    const [quizTurn, setQuizTurn] = useState(generateNewTurn);
+    const [draggedWord, setDraggedWord] = useState<string | null>(null);
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [score, setScore] = useState(0);
+    
+    const { columns, wordDataForTurn } = quizTurn;
+
+    const handleDragStart = (e: React.DragEvent<HTMLDivElement>, word: string) => {
+        setDraggedWord(word);
+        e.dataTransfer.setData("text/plain", word);
+        e.currentTarget.classList.add('opacity-50');
+    };
+    
+    const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
+        e.currentTarget.classList.remove('opacity-50');
+        setDraggedWord(null);
+    };
+
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        if (e.currentTarget.dataset.droptarget) {
+            e.currentTarget.classList.add('bg-blue-100');
+        }
+    };
+
+    const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+        if (e.currentTarget.dataset.droptarget) {
+            e.currentTarget.classList.remove('bg-blue-100');
+        }
+    };
+
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>, targetColumn: string) => {
+        e.preventDefault();
+        e.currentTarget.classList.remove('bg-blue-100');
+        const word = e.dataTransfer.getData("text/plain");
+        if (!word || columns[targetColumn].includes(word)) return;
+
+        setQuizTurn(prev => {
+            const newColumns = {...prev.columns};
+            // Remove from all columns first
+            for (const key in newColumns) {
+                newColumns[key] = newColumns[key].filter(w => w !== word);
+            }
+            // Add to the target column
+            newColumns[targetColumn] = [...newColumns[targetColumn], word].sort();
+            return { ...prev, columns: newColumns };
+        });
+    };
+
+    const handleCheckAnswers = () => {
+        let correctCount = 0;
+        const totalWords = wordDataForTurn.length;
+
+        for (const word of columns['Giới từ']) {
+            if (getWordType(word) === 'Giới từ') {
+                correctCount++;
+            }
+        }
+        for (const word of columns['Liên từ']) {
+            if (getWordType(word) === 'Liên từ') {
+                correctCount++;
+            }
+        }
+        setScore(correctCount);
+        setIsSubmitted(true);
+        addTestResult(currentUser.username, 'grammar', {
+            id: `grammar-classification-${Date.now()}`,
+            title: `Phân loại Giới từ & Liên từ`,
+            score: correctCount,
+            total: totalWords,
+            date: Date.now()
+        });
+    };
+
+    const handleTryAgain = () => {
+        setQuizTurn(generateNewTurn());
+        setIsSubmitted(false);
+        setScore(0);
+    };
+
+    const getWordStyle = (word: string, columnType: 'Giới từ' | 'Liên từ') => {
+        if (!isSubmitted) return 'bg-white hover:bg-slate-100 cursor-grab';
+        
+        const correctType = getWordType(word);
+        if (correctType === columnType) {
+            return 'bg-green-100 border-green-500 text-green-800';
+        } else {
+            return 'bg-red-100 border-red-500 text-red-800';
+        }
+    };
+
+    const dropZoneBaseClass = "p-4 rounded-lg min-h-[300px] transition-colors border-2 border-dashed";
+    
+    return (
+        <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg border border-slate-200">
+            <h2 className="text-2xl font-bold text-center mb-4">Phân loại Giới từ & Liên từ</h2>
+            <p className="text-center text-slate-600 mb-6">Drag each word into the correct category below.</p>
+            
+            <div 
+                className={`${dropZoneBaseClass} bg-slate-100 mb-6 border-slate-300`}
+                data-droptarget="true"
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={(e) => handleDrop(e, 'source')}
+            >
+                <h3 className="font-bold text-lg mb-4 text-center">Words to Classify</h3>
+                <div className="flex flex-wrap gap-2 justify-center">
+                    {columns.source.map(word => (
+                        <div key={word} draggable={!isSubmitted} onDragStart={(e) => handleDragStart(e, word)} onDragEnd={handleDragEnd} className="px-3 py-1.5 border rounded-md shadow-sm bg-white hover:bg-slate-100 cursor-grab">
+                            {word}
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Giới từ Column */}
+                <div 
+                    className={`${dropZoneBaseClass} bg-blue-50 border-blue-200`}
+                    data-droptarget="true"
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={(e) => handleDrop(e, 'Giới từ')}
+                >
+                    <h3 className="font-bold text-lg mb-4 text-center text-blue-800">Giới từ (Prepositions)</h3>
+                    <div className="space-y-2">
+                        {columns['Giới từ'].map(word => (
+                            <div key={word} draggable={!isSubmitted} onDragStart={(e) => handleDragStart(e, word)} onDragEnd={handleDragEnd} className={`px-3 py-1.5 border rounded-md shadow-sm ${getWordStyle(word, 'Giới từ')}`}>
+                                {word}
+                                {isSubmitted && getWordType(word) !== 'Giới từ' && <span className="text-red-600 text-xs ml-2 font-semibold">(Liên từ)</span>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                
+                {/* Liên từ Column */}
+                <div 
+                    className={`${dropZoneBaseClass} bg-green-50 border-green-200`}
+                    data-droptarget="true"
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={(e) => handleDrop(e, 'Liên từ')}
+                >
+                     <h3 className="font-bold text-lg mb-4 text-center text-green-800">Liên từ (Conjunctions)</h3>
+                    <div className="space-y-2">
+                        {columns['Liên từ'].map(word => (
+                            <div key={word} draggable={!isSubmitted} onDragStart={(e) => handleDragStart(e, word)} onDragEnd={handleDragEnd} className={`px-3 py-1.5 border rounded-md shadow-sm ${getWordStyle(word, 'Liên từ')}`}>
+                                {word}
+                                {isSubmitted && getWordType(word) !== 'Liên từ' && <span className="text-red-600 text-xs ml-2 font-semibold">(Giới từ)</span>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            {isSubmitted && (
+                 <div className="text-center bg-slate-100 p-4 rounded-lg mt-8">
+                    <h3 className="text-xl font-semibold text-slate-800">Your Score</h3>
+                    <p className="text-4xl font-bold text-blue-600 my-1">{score} / {wordDataForTurn.length}</p>
+                 </div>
+            )}
+            
+            <div className="flex justify-center items-center gap-4 mt-8">
+                <button onClick={onBack} className="px-6 py-2 bg-slate-200 text-slate-800 font-semibold rounded-lg hover:bg-slate-300">Back</button>
+                {!isSubmitted ? (
+                    <button onClick={handleCheckAnswers} className="px-8 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700">Check Answers</button>
+                ) : (
+                    <button onClick={handleTryAgain} className="px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 flex items-center gap-2">
+                        <RefreshIcon className="h-5 w-5" />
+                        Try Again
+                    </button>
+                )}
+            </div>
+        </div>
+    );
+};
+// --- END: Drag-and-Drop Classification Quiz Component ---
+
+
+const GrammarTopicScreen: React.FC<GrammarTopicScreenProps> = ({ topic, onBack, currentUser, onSelectTopic }) => {
     const [content, setContent] = useState<GrammarTopicContent | null>(null);
     const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
     const [questions, setQuestions] = useState<GrammarQuestion[]>([]);
@@ -57,6 +301,7 @@ const GrammarTopicScreen: React.FC<GrammarTopicScreenProps> = ({ topic, onBack, 
         setIsSubmitted(false);
         setUserAnswers({});
         questionRefs.current = {};
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const handleSubmit = () => {
@@ -98,10 +343,10 @@ const GrammarTopicScreen: React.FC<GrammarTopicScreenProps> = ({ topic, onBack, 
         }
     };
     
-    const handleBackToLevelSelect = () => {
+    const handleBackToLevelSelect = useCallback(() => {
         setSelectedLevel(null);
         setQuestions([]);
-    };
+    }, []);
     
     // Handlers for new interactive exercise
     const handleStartDeterminerExercise = useCallback(async () => {
@@ -319,15 +564,11 @@ const GrammarTopicScreen: React.FC<GrammarTopicScreenProps> = ({ topic, onBack, 
 
     const renderLevelSelection = () => (
         <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold text-slate-900">{topic} Quizzes</h2>
-                <p className="mt-2 text-lg text-slate-600">Select a level to begin your practice.</p>
-            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {quizLevels.map(level => {
-                    const isExercise = level.startsWith('Bài tập') || level.startsWith('Exercise');
+                    const isExercise = level.startsWith('Bài tập') || level.startsWith('Exercise') || level === 'Phân loại GIới từ & Liên từ';
                     const title = isExercise ? level : `Level ${level}`;
-                    const description = isExercise ? `Multiple-choice questions for ${topic}` : `Multiple-choice questions for the ${level} target score.`;
+                    const description = isExercise ? `Practice questions for ${topic}` : `Multiple-choice questions for the ${level} target score.`;
     
                     return (
                         <SelectionCard 
@@ -342,6 +583,23 @@ const GrammarTopicScreen: React.FC<GrammarTopicScreenProps> = ({ topic, onBack, 
         </div>
     );
     
+    const renderSubTopics = () => (
+        <div className="max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {content?.subTopics?.map(subTopicTitle => {
+                    return (
+                        <SelectionCard 
+                            key={subTopicTitle}
+                            title={subTopicTitle}
+                            description={`Click to learn more about ${subTopicTitle}.`}
+                            onClick={() => onSelectTopic(subTopicTitle)}
+                        />
+                    );
+                })}
+            </div>
+        </div>
+    );
+
     const renderOriginalContent = () => {
          if (!content) {
             return (
@@ -406,18 +664,45 @@ const GrammarTopicScreen: React.FC<GrammarTopicScreenProps> = ({ topic, onBack, 
     }, [questions]);
     
     const hasQuizzes = quizLevels.length > 0;
+    const hasSubTopics = content?.subTopics && content.subTopics.length > 0;
+    const isClassificationQuiz = topic === 'Giới từ & Liên từ' && selectedLevel === 'Phân loại GIới từ & Liên từ';
 
     return (
         <div className="container mx-auto px-4 py-12">
             <div className="max-w-6xl mx-auto">
-                <button onClick={selectedLevel ? handleBackToLevelSelect : onBack} className="mb-8 inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold transition-colors">
+                <button onClick={selectedLevel ? handleBackToLevelSelect : onBack} className="mb-8 inline-flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-semibold transition-colors">
                     <ArrowLeftIcon className="h-5 w-5 mr-2" />
-                    {selectedLevel ? `Back to ${topic} Quizzes` : 'Back to All Topics'}
+                    {selectedLevel ? `Back to ${topic}` : 'Back to All Topics'}
                 </button>
-                {hasQuizzes ? (
-                    selectedLevel ? renderQuizView() : renderLevelSelection()
+                
+                {selectedLevel ? (
+                    isClassificationQuiz ? (
+                        <ClassificationQuizScreen onBack={handleBackToLevelSelect} currentUser={currentUser} />
+                    ) : (
+                       questions.length > 0 ? renderQuizView() : <p className="text-center text-slate-500">Loading quiz...</p>
+                    )
                 ) : (
-                    renderOriginalContent()
+                    <>
+                        {renderOriginalContent()}
+                        
+                        {hasSubTopics && (
+                            <div className="mt-12">
+                                <h2 className="text-3xl font-extrabold text-slate-900 dark:text-slate-100 mb-8 border-t dark:border-slate-700 pt-8 text-center">
+                                    Related Topics
+                                </h2>
+                                {renderSubTopics()}
+                            </div>
+                        )}
+
+                        {hasQuizzes && (
+                            <div className="mt-12">
+                                <h2 className="text-3xl font-extrabold text-slate-900 dark:text-slate-100 mb-8 border-t dark:border-slate-700 pt-8 text-center">
+                                    Practice Quizzes
+                                </h2>
+                                {renderLevelSelection()}
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
         </div>

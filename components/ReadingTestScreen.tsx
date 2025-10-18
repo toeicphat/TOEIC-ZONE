@@ -148,7 +148,7 @@ const ReadingTestScreen: React.FC<ReadingTestScreenProps> = ({ testData, onBack,
     const isPart7 = testData.part === 7 || (testData.part === 0 && testData.passages.some(p => p.questions.some(q => parseInt(q.id, 10) >= 147)));
 
     const renderSidebar = () => (
-        <div className="w-full lg:w-[280px] flex-shrink-0">
+        <div className="w-full lg:w-[320px] flex-shrink-0">
             <div className="lg:sticky top-24 self-start space-y-8">
                 <div className="bg-white p-6 rounded-lg shadow-lg">
                     <button onClick={onBack} className="mb-4 w-full text-left inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold transition-colors">
@@ -182,6 +182,7 @@ const ReadingTestScreen: React.FC<ReadingTestScreenProps> = ({ testData, onBack,
                         currentQuestionIndex={currentQuestionIndex > -1 ? currentQuestionIndex : 0}
                         onQuestionSelect={handleQuestionSelect}
                         markedForReview={markedForReview}
+                        columns={8}
                     />
                 </div>
             </div>

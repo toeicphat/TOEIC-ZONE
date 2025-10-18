@@ -22,7 +22,7 @@ const VocabularyScreen: React.FC<VocabularyScreenProps> = ({ onSelectPart }) => 
         <div className="container mx-auto px-4 py-12">
             <div className="max-w-6xl mx-auto">
                 <div className="text-center mb-12">
-                    <h2 className="text-4xl font-extrabold text-slate-900 sm:text-5xl">Vocabulary</h2>
+                    <h2 className="text-4xl font-extrabold text-slate-900 sm:text-5xl">Từ vựng</h2>
                     <p className="mt-4 text-lg text-slate-600">
                         Choose a pre-defined list to begin your vocabulary practice.
                     </p>

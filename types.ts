@@ -1,6 +1,8 @@
 
 
 
+
+
 export interface User {
     username: string;
     password: string;
@@ -144,6 +146,7 @@ export interface GrammarTopicContent {
         translation: string;
     }[];
     interactiveExercise?: 'determiner_clicker';
+    subTopics?: string[];
 }
 
 export interface GrammarQuestion {

@@ -1,6 +1,4 @@
 
-
-
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { VocabularyTest, VocabItem, User, TranslationEvaluationResult, ContextMeaningSentence } from '../types';
 import { updateWordSrsLevel } from '../services/vocabularyService';
@@ -136,7 +134,7 @@ const WordCountModal: React.FC<{
 
 
 const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => void, currentUser: User }> = ({ testData, onBack, currentUser }) => {
-    const [wordCount, setWordCount] = useState<number | null>(null);
+    const [wordCount, setWordCount] = useState<number | null>(() => testData.words.length <= 30 ? testData.words.length : null);
 
     const wordsForSession = useMemo(() => {
         if (!wordCount) return [];
@@ -805,7 +803,7 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
     
     const handlePrevContext = () => {
         if (currentContextIndex > 0) {
-            setCurrentContextIndex(prev => prev - 1);
+            setCurrentContextIndex(prev => prev + 1);
         }
     };
     
@@ -859,11 +857,34 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
     
     const renderListeningWords = () => {
         if (isListeningWordsSessionFinished) {
+            const correctCount = listeningWordsQuestions.filter(q => q.userAnswer?.word === q.correctWord.word).length;
             return (
-                <div className="text-center bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg">
-                    <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Practice Complete!</h3>
-                    <p className="text-lg text-slate-600 dark:text-slate-400 mt-2">You have completed all the words.</p>
-                    <button onClick={startListeningWordsSession} className="mt-8 px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">
+                <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg">
+                    <div className="text-center border-b dark:border-slate-700 pb-4 mb-6">
+                        <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Practice Complete!</h3>
+                        <p className="text-6xl font-bold text-blue-600 dark:text-blue-400 my-4">{Math.round((correctCount / listeningWordsQuestions.length) * 100)}%</p>
+                        <p className="text-lg text-slate-600 dark:text-slate-400">You got {correctCount} out of {listeningWordsQuestions.length} correct.</p>
+                    </div>
+                    <h4 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-4">Review</h4>
+                    <div className="space-y-3 max-h-[60vh] overflow-y-auto p-1">
+                        {listeningWordsQuestions.map((q, index) => {
+                            const isCorrect = q.userAnswer?.word === q.correctWord.word;
+                            return (
+                                <div key={index} className="flex items-start p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+                                    {isCorrect ? (
+                                        <CheckCircleIcon className="h-5 w-5 text-green-500 flex-shrink-0 mt-1" />
+                                    ) : (
+                                        <XCircleIcon className="h-5 w-5 text-red-500 flex-shrink-0 mt-1" />
+                                    )}
+                                    <div className="ml-3">
+                                        <p className="font-bold text-slate-800 dark:text-slate-100">{q.correctWord.word}</p>
+                                        <p className="text-sm text-slate-600 dark:text-slate-400">{q.correctWord.definition}</p>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <button onClick={startListeningWordsSession} className="mt-8 w-full px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">
                         Practice Again
                     </button>
                 </div>
@@ -942,11 +963,29 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
     const renderQuiz = () => {
         if (isQuizSessionFinished) {
             return (
-                <div className="text-center bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg">
-                    <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Quiz Complete!</h3>
-                    <p className="text-6xl font-bold text-blue-600 dark:text-blue-400 my-4">{Math.round((score / quizQuestions.length) * 100)}%</p>
-                    <p className="text-lg text-slate-600 dark:text-slate-400">You got {score} out of {quizQuestions.length} correct.</p>
-                    <button onClick={startQuizSession} className="mt-8 px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">
+                <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg">
+                    <div className="text-center border-b dark:border-slate-700 pb-4 mb-6">
+                        <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Quiz Complete!</h3>
+                        <p className="text-6xl font-bold text-blue-600 dark:text-blue-400 my-4">{Math.round((score / quizQuestions.length) * 100)}%</p>
+                        <p className="text-lg text-slate-600 dark:text-slate-400">You got {score} out of {quizQuestions.length} correct.</p>
+                    </div>
+                    <h4 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-4">Review</h4>
+                    <div className="space-y-3 max-h-[60vh] overflow-y-auto p-1">
+                        {quizQuestions.map((q, index) => (
+                            <div key={index} className="flex items-start p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+                                {q.isCorrect ? (
+                                    <CheckCircleIcon className="h-5 w-5 text-green-500 flex-shrink-0 mt-1" />
+                                ) : (
+                                    <XCircleIcon className="h-5 w-5 text-red-500 flex-shrink-0 mt-1" />
+                                )}
+                                <div className="ml-3">
+                                    <p className="font-bold text-slate-800 dark:text-slate-100">{q.correctAnswer}</p>
+                                    <p className="text-sm text-slate-600 dark:text-slate-400">{q.questionText}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <button onClick={startQuizSession} className="mt-8 w-full px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">
                         Try Again
                     </button>
                 </div>
@@ -997,6 +1036,17 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
                 <div className="text-center bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg">
                     <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Matching Game Complete!</h3>
                     <p className="text-lg text-slate-600 dark:text-slate-400 mt-2">You matched all {fullMatchingDeck.length} pairs in {totalTurns} turn{totalTurns > 1 ? 's' : ''}.</p>
+                    <div className="mt-6 text-left max-h-[50vh] overflow-y-auto p-4 border rounded-lg bg-slate-50 dark:bg-slate-700">
+                        <h4 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-2">Review Words</h4>
+                        <ul className="space-y-2">
+                            {fullMatchingDeck.map(item => (
+                                <li key={item.word} className="p-2 border-b dark:border-slate-600">
+                                    <span className="font-bold text-blue-600 dark:text-blue-400">{item.word}:</span>
+                                    <span className="ml-2 text-slate-600 dark:text-slate-300">{item.definition}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                     <button onClick={startMatchingGame} className="mt-8 px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">
                         Play Again
                     </button>
@@ -1048,11 +1098,29 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
     const renderScrambler = () => {
         if (isScramblerSessionFinished) {
             return (
-                <div className="text-center bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg">
-                    <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Game Over!</h3>
-                    <p className="text-6xl font-bold text-blue-600 dark:text-blue-400 my-4">{scramblerScore}</p>
-                    <p className="text-lg text-slate-600 dark:text-slate-400">You unscrambled {scramblerScore} out of {scramblerQuestions.length} words correctly.</p>
-                    <button onClick={startScramblerGame} className="mt-8 px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">
+                <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg">
+                    <div className="text-center border-b dark:border-slate-700 pb-4 mb-6">
+                        <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Game Over!</h3>
+                        <p className="text-6xl font-bold text-blue-600 dark:text-blue-400 my-4">{Math.round((scramblerScore / scramblerQuestions.length) * 100)}%</p>
+                        <p className="text-lg text-slate-600 dark:text-slate-400">You unscrambled {scramblerScore} out of {scramblerQuestions.length} words correctly.</p>
+                    </div>
+                    <h4 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-4">Review</h4>
+                    <div className="space-y-3 max-h-[60vh] overflow-y-auto p-1">
+                        {scramblerQuestions.map((q, index) => (
+                            <div key={index} className="flex items-start p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+                                {q.isCorrect ? (
+                                    <CheckCircleIcon className="h-5 w-5 text-green-500 flex-shrink-0 mt-1" />
+                                ) : (
+                                    <XCircleIcon className="h-5 w-5 text-red-500 flex-shrink-0 mt-1" />
+                                )}
+                                <div className="ml-3">
+                                    <p className="font-bold text-slate-800 dark:text-slate-100">{q.original.word}</p>
+                                    <p className="text-sm text-slate-600 dark:text-slate-400">{q.original.definition}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <button onClick={startScramblerGame} className="mt-8 w-full px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">
                         Play Again
                     </button>
                 </div>
@@ -1110,13 +1178,31 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
     
     const renderSpellingRecall = () => {
         if (isSpellingSessionFinished) {
-            const totalPossibleScore = spellingQuestions.reduce((sum, q) => sum + q.original.word.length, 0);
+            const correctCount = spellingQuestions.filter(q => q.isCorrect).length;
             return (
-                <div className="text-center bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg">
-                    <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Spelling Practice Complete!</h3>
-                    <p className="text-6xl font-bold text-blue-600 dark:text-blue-400 my-4">{spellingScore}</p>
-                    <p className="text-lg text-slate-600 dark:text-slate-400">You scored {spellingScore} out of a possible {totalPossibleScore} points.</p>
-                    <button onClick={startSpellingGame} className="mt-8 px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">
+                <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg">
+                    <div className="text-center border-b dark:border-slate-700 pb-4 mb-6">
+                        <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Spelling Practice Complete!</h3>
+                        <p className="text-6xl font-bold text-blue-600 dark:text-blue-400 my-4">{Math.round((correctCount / spellingQuestions.length) * 100)}%</p>
+                        <p className="text-lg text-slate-600 dark:text-slate-400">You got {correctCount} out of {spellingQuestions.length} correct.</p>
+                    </div>
+                    <h4 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-4">Review</h4>
+                    <div className="space-y-3 max-h-[60vh] overflow-y-auto p-1">
+                        {spellingQuestions.map((q, index) => (
+                            <div key={index} className="flex items-start p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+                                {q.isCorrect ? (
+                                    <CheckCircleIcon className="h-5 w-5 text-green-500 flex-shrink-0 mt-1" />
+                                ) : (
+                                    <XCircleIcon className="h-5 w-5 text-red-500 flex-shrink-0 mt-1" />
+                                )}
+                                <div className="ml-3">
+                                    <p className="font-bold text-slate-800 dark:text-slate-100">{q.original.word}</p>
+                                    <p className="text-sm text-slate-600 dark:text-slate-400">{q.original.definition}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <button onClick={startSpellingGame} className="mt-8 w-full px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">
                         Play Again
                     </button>
                 </div>
@@ -1173,11 +1259,31 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
     
     const renderAudioDictation = () => {
         if (isAudioDictationSessionFinished) {
+            const correctCount = audioDictationQuestions.filter(q => q.isCorrect).length;
             return (
-                <div className="text-center bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg">
-                    <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Audio Dictation Complete!</h3>
-                    <p className="text-lg text-slate-600 dark:text-slate-400 mt-2">You scored {audioDictationScore} out of a possible {audioDictationQuestions.length * 2} points.</p>
-                    <button onClick={startAudioDictationGame} className="mt-8 px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">
+                <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg">
+                    <div className="text-center border-b dark:border-slate-700 pb-4 mb-6">
+                        <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Audio Dictation Complete!</h3>
+                        <p className="text-6xl font-bold text-blue-600 dark:text-blue-400 my-4">{Math.round((correctCount / audioDictationQuestions.length) * 100)}%</p>
+                        <p className="text-lg text-slate-600 dark:text-slate-400">You got {correctCount} out of {audioDictationQuestions.length} correct.</p>
+                    </div>
+                    <h4 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-4">Review</h4>
+                    <div className="space-y-3 max-h-[60vh] overflow-y-auto p-1">
+                        {audioDictationQuestions.map((q, index) => (
+                            <div key={index} className="flex items-start p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+                                {q.isCorrect ? (
+                                    <CheckCircleIcon className="h-5 w-5 text-green-500 flex-shrink-0 mt-1" />
+                                ) : (
+                                    <XCircleIcon className="h-5 w-5 text-red-500 flex-shrink-0 mt-1" />
+                                )}
+                                <div className="ml-3">
+                                    <p className="font-bold text-slate-800 dark:text-slate-100">{q.original.word}</p>
+                                    <p className="text-sm text-slate-600 dark:text-slate-400">{q.original.definition}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <button onClick={startAudioDictationGame} className="mt-8 w-full px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">
                         Play Again
                     </button>
                 </div>
@@ -1243,6 +1349,17 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
                 <div className="text-center bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg">
                     <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Well Done!</h3>
                     <p className="text-lg text-slate-600 dark:text-slate-400 mt-2">You've matched all the words and definitions.</p>
+                     <div className="mt-6 text-left max-h-[50vh] overflow-y-auto p-4 border rounded-lg bg-slate-50 dark:bg-slate-700">
+                        <h4 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-2">Review Words</h4>
+                        <ul className="space-y-2">
+                            {fullDMatchDeck.map(item => (
+                                <li key={item.word} className="p-2 border-b dark:border-slate-600">
+                                    <span className="font-bold text-blue-600 dark:text-blue-400">{item.word}:</span>
+                                    <span className="ml-2 text-slate-600 dark:text-slate-300">{item.definition}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                     <button onClick={startDMatchGame} className="mt-8 px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">
                         Play Again
                     </button>
@@ -1426,6 +1543,34 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
 
         const currentQuestion = contextQuestions[currentContextIndex];
         const isFinished = currentContextIndex >= contextQuestions.length - 1 && currentQuestion.isChecked;
+        
+        if (isFinished) {
+            return (
+                <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg">
+                    <div className="text-center border-b dark:border-slate-700 pb-4 mb-6">
+                        <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Context Practice Complete!</h3>
+                        <p className="text-lg text-slate-600 dark:text-slate-400 mt-2">Review the words and meanings below.</p>
+                    </div>
+                    <h4 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-4">Review</h4>
+                    <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-4">
+                        {contextQuestions.map((q, index) => (
+                            <div key={index} className="p-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+                                <p 
+                                    className="text-lg text-slate-800 dark:text-slate-200 leading-relaxed mb-2" 
+                                    dangerouslySetInnerHTML={{ __html: q.sentence.replace(/\*\*(.*?)\*\*/g, '<strong class="text-blue-600 dark:text-blue-400">$1</strong>') }}
+                                />
+                                <p className="text-slate-700 dark:text-slate-300"><span className="font-semibold">Your guess:</span> {q.userAnswer || <span className="italic text-slate-500">No answer</span>}</p>
+                                <p className="text-slate-700 dark:text-slate-300"><span className="font-semibold text-green-700 dark:text-green-400">Correct meaning:</span> {q.original.definition}</p>
+                            </div>
+                        ))}
+                    </div>
+                    <button onClick={generateContextMeaningExercise} className="mt-8 w-full px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">
+                        Practice Again
+                    </button>
+                </div>
+            );
+        }
+
 
         return (
             <div className="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-xl shadow-lg">
@@ -1463,10 +1608,6 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
                     {!currentQuestion.isChecked ? (
                         <button onClick={handleCheckContextAnswer} className="w-full sm:w-1/2 px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700">
                             Check Answer
-                        </button>
-                    ) : isFinished ? (
-                        <button onClick={generateContextMeaningExercise} className="w-full sm:w-1/2 px-6 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700">
-                            Practice Again
                         </button>
                     ) : null }
 

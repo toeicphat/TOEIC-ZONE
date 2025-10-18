@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useEffect } from 'react';
 import PracticeHub from './components/PracticeHub';
 import DictationScreen from './components/DictationScreen';
@@ -28,7 +27,7 @@ import TestScreen from './components/TestScreen';
 import ResultsScreen from './components/ResultsScreen';
 import SettingsScreen from './components/SettingsScreen';
 import { AppState, ReadingTestData, VocabularyTest, VocabularyPart, User, TestData, UserAnswers, LibraryDictationExercise, UserSettings } from './types';
-import { getReadingTest, allReadingTests } from './services/readingLibrary';
+import { getReadingTest, allReadingTests, allReading700Tests } from './services/readingLibrary';
 import { getVocabularyPart, getVocabularyTest } from './services/vocabularyLibrary';
 import { addTestResult } from './services/progressService';
 import { getSettings, saveSettings } from './services/settingsService';
@@ -76,6 +75,8 @@ const App: React.FC = () => {
     { username: 'cnk0710.cv@gmail.com', password: 'thidautoeic' },
     { username: 'hoa842006@gmail.com', password: 'thidautoeic' },
     { username: 'nttuephuong.2211@gmail.com', password: 'thidautoeic' },
+    { username: 'tranquochai17753@gmail.com', password: 'thidautoeic' },
+    { username: 'vothuyphuonguyen01@gmail.com', password: 'thidautoeic' },
   ]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [appState, setAppState] = useState<AppState>(AppState.PracticeHub);
@@ -272,7 +273,8 @@ const App: React.FC = () => {
           return;
       }
   
-      const testSet = allReadingTests.find(t => t.id === selectedReadingTestId);
+      const allTests = [...allReadingTests, ...allReading700Tests];
+      const testSet = allTests.find(t => t.id === selectedReadingTestId);
       if (!testSet) {
           handleGoHome();
           return;
@@ -417,7 +419,12 @@ const App: React.FC = () => {
                 return <GrammarScreen onSelectTopic={handleNavigateToGrammarTopic} onStartRandomTest={handleStartRandomGrammarTest} />;
             case AppState.GrammarTopic:
                 if (!selectedGrammarTopic) return null;
-                return <GrammarTopicScreen topic={selectedGrammarTopic} onBack={handleBackToGrammarHome} currentUser={currentUser} />;
+                return <GrammarTopicScreen 
+                    topic={selectedGrammarTopic} 
+                    onBack={handleBackToGrammarHome} 
+                    currentUser={currentUser}
+                    onSelectTopic={handleNavigateToGrammarTopic}
+                />;
             case AppState.VocabularyHome:
                 return <VocabularyScreen onSelectPart={handleSelectVocabularyPart} />;
             case AppState.VocabularyPartHome:
