@@ -520,12 +520,16 @@ const App: React.FC = () => {
                         <div className="flex items-center gap-2 cursor-pointer" onClick={handleGoHome}>
                             <LogoIcon className="h-8 w-8 text-orange-600" />
                             <span className="text-xl font-bold text-slate-800 dark:text-slate-100">TOEIC Zone</span>
+                            <span className="hidden lg:inline-block align-middle ml-2" aria-hidden="true">🎃 🎃 🎃 🎃 🎃 🎃 🎃 🎃 🎃 🎃 🎃</span>
                         </div>
                         <div className="hidden md:flex items-center gap-2">
                             <NavButton onClick={handleGoHome} isActive={appState === AppState.PracticeHub || appState.startsWith('MINI_TEST')}>Practice Hub</NavButton>
                             <NavButton onClick={() => setAppState(AppState.MyProgress)} isActive={appState === AppState.MyProgress}>My Progress</NavButton>
                             {currentUser?.username === 'admin' && (
-                                <NavButton onClick={() => setAppState(AppState.StudentManagement)} isActive={appState === AppState.StudentManagement}>Students</NavButton>
+                                <>
+                                    <NavButton onClick={() => setAppState(AppState.StudentManagement)} isActive={appState === AppState.StudentManagement}>Students</NavButton>
+                                    <span className="hidden lg:inline-block align-middle ml-1" aria-hidden="true">🎃 🎃 🎃 🎃 🎃 🎃 🎃 🎃 🎃 🎃 🎃</span>
+                                </>
                             )}
                         </div>
                         <div className="flex items-center gap-4">

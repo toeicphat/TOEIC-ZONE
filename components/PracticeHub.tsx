@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
     TargetIcon, 
@@ -12,7 +11,6 @@ import {
     TypeIcon,
     PlayIcon
 } from './icons';
-import AudioPlayer from './AudioPlayer';
 
 
 interface PracticeHubProps {
@@ -113,21 +111,6 @@ const PracticeHub: React.FC<PracticeHubProps> = ({
                   colorClass="text-indigo-500 dark:text-indigo-400"
               />
           </div>
-      </div>
-      
-      <div className="mt-12">
-        <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
-            <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-4 text-center flex items-center justify-center gap-3">
-                <HeadphoneIcon className="h-8 w-8 text-cyan-500" />
-                Luyện tập Listening
-            </h3>
-            <p className="text-center text-slate-600 dark:text-slate-400 mb-6">
-                Practice your listening skills with the integrated audio player below.
-            </p>
-            <div className="max-w-xl mx-auto">
-                <AudioPlayer audioSrc="1hMm7Kjy2_lfV-lKo7tP5MkLcEUew3DRE" />
-            </div>
-        </div>
       </div>
       
       {/* Reward Info moved to bottom */}
