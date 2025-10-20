@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { PlayIcon, PauseIcon } from './icons';
 
@@ -6,12 +7,47 @@ interface AudioPlayerProps {
     audioSrc?: string;
 }
 
-const isGoogleDriveId = (id: string | undefined): id is string => {
-    // A simple check: Google Drive IDs are typically long, without slashes, and don't start with http or /.
-    return !!id && !id.includes('/') && !id.startsWith('http') && id.length > 20;
-};
-
 const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioScript, audioSrc }) => {
+    // Check if it's a Google Drive link first.
+    const googleDriveInfo = useMemo(() => {
+        if (!audioSrc) return null;
+        const driveUrlRegex = /(?:drive\.google\.com\/(?:file\/d\/|uc\?id=))([\w-]+)/;
+        const match = audioSrc.match(driveUrlRegex);
+        let fileId = '';
+
+        if (match && match[1]) {
+            fileId = match[1];
+        } else if (!audioSrc.includes('/') && !audioSrc.startsWith('http') && audioSrc.length > 20) {
+            // Heuristic for a raw Google Drive ID
+            fileId = audioSrc;
+        }
+
+        if (fileId) {
+            return {
+                isGoogleDrive: true,
+                embedUrl: `https://drive.google.com/file/d/${fileId}/preview`
+            };
+        }
+        return { isGoogleDrive: false, embedUrl: null };
+    }, [audioSrc]);
+
+    // If it's a Google Drive link, render an iframe and stop.
+    if (googleDriveInfo?.isGoogleDrive) {
+        return (
+            <div className="w-full bg-slate-100 dark:bg-slate-900 rounded-lg p-4 shadow-inner">
+                <iframe
+                    src={googleDriveInfo.embedUrl}
+                    width="100%"
+                    height="120"
+                    allow="autoplay"
+                    className="border-0 rounded-md bg-white dark:bg-slate-800"
+                    title="Google Drive Audio Player"
+                ></iframe>
+            </div>
+        );
+    }
+    
+    // --- The rest of the component logic is for native audio and TTS ---
     const [isPlaying, setIsPlaying] = useState(false);
     const [hasError, setHasError] = useState(false);
     const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
@@ -24,14 +60,8 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioScript, audioSrc }) => {
     const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
     const isPlayingRef = useRef(isPlaying);
     isPlayingRef.current = isPlaying;
-
-    const finalAudioSrc = useMemo(() => {
-        if (!audioSrc) return undefined;
-        if (isGoogleDriveId(audioSrc)) {
-            return `https://drive.google.com/uc?export=download&id=${audioSrc}`;
-        }
-        return audioSrc;
-    }, [audioSrc]);
+    
+    const finalAudioSrc = audioSrc; // Use audioSrc directly now
 
     // Effect for loading system voices and settings for TTS
     useEffect(() => {
@@ -239,7 +269,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioScript, audioSrc }) => {
 
     return (
         <div 
-            className="w-full bg-slate-100 rounded-lg p-4 shadow-inner focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="w-full bg-slate-100 dark:bg-slate-800 rounded-lg p-4 shadow-inner focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             tabIndex={0}
             onKeyDown={handleKeyDown}
             aria-label="Audio Player. Focus to use keyboard shortcuts (Space bar for play/pause, Left/Right Arrows to seek)."
@@ -256,20 +286,20 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioScript, audioSrc }) => {
                 <div className="ml-4 flex-grow">
                     {canUseAudioFile ? (
                         <div className="flex items-center space-x-3 w-full">
-                            <span className="text-sm font-mono text-slate-600 w-12 text-center" aria-hidden="true">{formatTime(currentTime)}</span>
+                            <span className="text-sm font-mono text-slate-600 dark:text-slate-400 w-12 text-center" aria-hidden="true">{formatTime(currentTime)}</span>
                             <input
                                 type="range"
                                 min="0"
                                 max={duration || 0}
                                 value={currentTime}
                                 onChange={handleSeek}
-                                className="w-full h-2 bg-slate-300 rounded-lg appearance-none cursor-pointer accent-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                className="w-full h-2 bg-slate-300 dark:bg-slate-300 rounded-lg appearance-none cursor-pointer accent-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                                 aria-label="Audio progress bar"
                             />
-                            <span className="text-sm font-mono text-slate-600 w-12 text-center" aria-hidden="true">{formatTime(duration)}</span>
+                            <span className="text-sm font-mono text-slate-600 dark:text-slate-400 w-12 text-center" aria-hidden="true">{formatTime(duration)}</span>
                         </div>
                     ) : (
-                        <div className="text-slate-700">
+                        <div className="text-slate-700 dark:text-slate-300">
                             <p className="font-semibold">Listen to the dictation</p>
                             <p className={`text-sm ${hasError ? 'text-orange-600 font-semibold' : 'text-slate-500'}`}>{getHelperText()}</p>
                         </div>
@@ -277,16 +307,16 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioScript, audioSrc }) => {
                 </div>
             </div>
             {voices.length > 0 && (!finalAudioSrc || hasError) && (
-                <div className="mt-4 pt-4 border-t border-slate-200 space-y-3">
+                <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 space-y-3">
                     <div>
-                        <label htmlFor="voice-select" className="block text-sm font-medium text-slate-600 mb-1">
+                        <label htmlFor="voice-select" className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-1">
                             Speech Voice
                         </label>
                         <select
                             id="voice-select"
                             value={selectedVoiceURI || ''}
                             onChange={handleVoiceChange}
-                            className="w-full p-2 border border-slate-300 rounded-md bg-white text-sm focus:ring-blue-500 focus:border-blue-500"
+                            className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-sm focus:ring-blue-500 focus:border-blue-500"
                         >
                             {voices.map((voice) => (
                                 <option key={voice.voiceURI} value={voice.voiceURI}>
@@ -296,7 +326,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioScript, audioSrc }) => {
                         </select>
                     </div>
                     <div>
-                         <label htmlFor="rate-select" className="block text-sm font-medium text-slate-600 mb-1">
+                         <label htmlFor="rate-select" className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-1">
                             Speech Speed ({speechRate.toFixed(2)}x)
                         </label>
                         <input
@@ -307,7 +337,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioScript, audioSrc }) => {
                             step="0.1"
                             value={speechRate}
                             onChange={handleRateChange}
-                            className="w-full h-2 bg-slate-300 rounded-lg appearance-none cursor-pointer accent-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            className="w-full h-2 bg-slate-300 dark:bg-slate-600 rounded-lg appearance-none cursor-pointer accent-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                             aria-label="Speech speed"
                         />
                     </div>
