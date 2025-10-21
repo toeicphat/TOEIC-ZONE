@@ -1,7 +1,6 @@
 
 
 
-
 import { GoogleGenAI, Type } from "@google/genai";
 import { 
     DictationExercise, 
@@ -26,9 +25,7 @@ import {
 } from '../types';
 import { getRandomVocabularyWords } from './vocabularyLibrary';
 
-const ai = new GoogleGenAI({
-  apiKey: import.meta.env.VITE_GOOGLE_API_KEY
-});
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
 
 // Interface for the structured response from the speaking evaluation AI
 export interface SpeakingEvaluationResult {
@@ -1281,7 +1278,7 @@ Your evaluation for each sentence must be based on:
 
 Your final output must be a JSON object with feedback for exactly 5 questions, adhering to the provided schema.`;
 
-// FIX: Changed promptText from const to let to allow modification.
+        // FIX: Changed promptText from const to let to allow modification.
         let promptText = "Please evaluate these 5 sentences for the TOEIC Writing Part 1 task.\n\n";
         tasks.forEach((task, index) => {
             promptText += `Question ${index + 1}:\n`;
@@ -1426,7 +1423,7 @@ export const evaluateWritingPart2 = async (
 
 Your final output must be a JSON object adhering to the schema.`;
         
-// FIX: Changed promptText from const to let to allow modification.
+        // FIX: Changed promptText from const to let to allow modification.
         let promptText = `Please evaluate these 2 email responses for the TOEIC Writing Part 2 task.\n\n`;
         promptText += `--- QUESTION 6 ---\n`;
         promptText += `Original Email Request: "${tasks.question6.requestText}"\n`;
@@ -1548,7 +1545,7 @@ export const evaluateWritingPart3 = async (
 
 Your final output must be a JSON object adhering to the schema.`;
         
-// FIX: Changed promptText from const to let to allow modification.
+        // FIX: Changed promptText from const to let to allow modification.
         let promptText = `Please evaluate this opinion essay for the TOEIC Writing Part 3 task.\n\n`;
         promptText += `Essay Question: "${question}"\n\n`;
         promptText += `User's Essay: "${userAnswer || '(No answer)'}"\n`;

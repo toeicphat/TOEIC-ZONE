@@ -1,6 +1,7 @@
+
 import React from 'react';
 import SelectionCard from './SelectionCard';
-import { allReadingTests, allReading700Tests } from '../services/readingLibrary';
+import { allReadingTests, allReading700Tests, allReading2023Tests } from '../services/readingLibrary';
 
 interface ReadingPracticeScreenProps {
     onSelectTestSet: (testId: number) => void;
@@ -39,6 +40,22 @@ const ReadingPracticeScreen: React.FC<ReadingPracticeScreenProps> = ({ onSelectT
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
                         {allReading700Tests.map(test => (
+                             <SelectionCard 
+                                key={test.id}
+                                title={test.title}
+                                description={test.description}
+                                onClick={() => onSelectTestSet(test.id)}
+                            />
+                        ))}
+                    </div>
+                </div>
+
+                <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg border border-slate-200 mt-12">
+                    <h3 className="text-2xl font-bold text-slate-800 mb-6 text-center border-b pb-4">
+                        TEST 2023
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                        {allReading2023Tests.map(test => (
                              <SelectionCard 
                                 key={test.id}
                                 title={test.title}

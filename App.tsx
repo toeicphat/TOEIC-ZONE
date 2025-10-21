@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useEffect } from 'react';
 import PracticeHub from './components/PracticeHub';
 import DictationScreen from './components/DictationScreen';
@@ -27,8 +28,9 @@ import TestScreen from './components/TestScreen';
 import ResultsScreen from './components/ResultsScreen';
 import SettingsScreen from './components/SettingsScreen';
 import { AppState, ReadingTestData, VocabularyTest, VocabularyPart, User, TestData, UserAnswers, LibraryDictationExercise, UserSettings } from './types';
-import { getReadingTest, allReadingTests, allReading700Tests } from './services/readingLibrary';
+import { getReadingTest, allReadingTests, allReading700Tests, allReading2023Tests } from './services/readingLibrary';
 import { getVocabularyPart, getVocabularyTest } from './services/vocabularyLibrary';
+import { getGrammarQuizQuestions } from './services/grammarLibrary';
 import { addTestResult } from './services/progressService';
 import { getSettings, saveSettings } from './services/settingsService';
 import { LogoIcon, LoadingIcon } from './components/icons';
@@ -105,9 +107,9 @@ const App: React.FC = () => {
   // Writing State
   const [selectedWritingPart, setSelectedWritingPart] = useState<number | null>(null);
 
-  // Mini-Test State (used by Grammar)
-  const [miniTestData, setMiniTestData] = useState<TestData | null>(null);
-  const [miniTestUserAnswers, setMiniTestUserAnswers] = useState<UserAnswers>({});
+  // Unified Test State
+  const [currentTest, setCurrentTest] = useState<TestData | null>(null);
+  const [currentUserAnswers, setCurrentUserAnswers] = useState<UserAnswers>({});
   
   // Admin State
   const [selectedStudent, setSelectedStudent] = useState<User | null>(null);
@@ -179,8 +181,8 @@ const App: React.FC = () => {
     setSelectedVocabularyTest(null);
     setSelectedSpeakingPart(null);
     setSelectedWritingPart(null);
-    setMiniTestData(null);
-    setMiniTestUserAnswers({});
+    setCurrentTest(null);
+    setCurrentUserAnswers({});
     setSelectedStudent(null);
     setSelectedDictationTestId(null);
     setSelectedDictationTestData(null);
@@ -188,27 +190,40 @@ const App: React.FC = () => {
   }, []);
   
   const handleStartRandomGrammarTest = useCallback((testData: TestData) => {
-    setMiniTestData(testData);
-    setMiniTestUserAnswers({});
+    setCurrentTest(testData);
+    setCurrentUserAnswers({});
+    setAppState(AppState.MiniTest);
+  }, []);
+  
+  const handleStartGrammarQuiz = useCallback((topic: string, level: string) => {
+    const quizQuestions = getGrammarQuizQuestions(topic, level);
+    const testData: TestData = {
+        testTitle: `${topic} - ${level}`,
+        duration: 0, // 0 for untimed
+        questions: quizQuestions.map(q => ({...q, part: 5})),
+        category: 'grammar'
+    };
+    setCurrentTest(testData);
+    setCurrentUserAnswers({});
     setAppState(AppState.MiniTest);
   }, []);
 
-  const handleSubmitMiniTest = useCallback(async (answers: UserAnswers) => {
-      if (miniTestData && currentUser) {
-          const score = miniTestData.questions.reduce((acc, q) => {
+  const handleSubmitTest = useCallback(async (answers: UserAnswers) => {
+      if (currentTest && currentUser) {
+          const score = currentTest.questions.reduce((acc, q) => {
               return answers[q.id] === q.correctAnswer ? acc + 1 : acc;
           }, 0);
-          await addTestResult(currentUser.username, miniTestData.category, {
-              id: `${miniTestData.category}-${Date.now()}`,
-              title: miniTestData.testTitle,
+          await addTestResult(currentUser.username, currentTest.category, {
+              id: `${currentTest.category}-${Date.now()}`,
+              title: currentTest.testTitle,
               score,
-              total: miniTestData.questions.length,
+              total: currentTest.questions.length,
               date: Date.now()
           });
       }
-      setMiniTestUserAnswers(answers);
+      setCurrentUserAnswers(answers);
       setAppState(AppState.MiniTestResults);
-  }, [miniTestData, currentUser]);
+  }, [currentTest, currentUser]);
 
   const handleNavigateToGrammarTopic = useCallback((topic: string) => {
     setSelectedGrammarTopic(topic);
@@ -273,7 +288,7 @@ const App: React.FC = () => {
           return;
       }
   
-      const allTests = [...allReadingTests, ...allReading700Tests];
+      const allTests = [...allReadingTests, ...allReading700Tests, ...allReading2023Tests];
       const testSet = allTests.find(t => t.id === selectedReadingTestId);
       if (!testSet) {
           handleGoHome();
@@ -394,11 +409,11 @@ const App: React.FC = () => {
             case AppState.PracticeHub:
                 return <PracticeHub {...practiceHubProps} />;
             case AppState.MiniTest:
-                if (!miniTestData) return <PracticeHub {...practiceHubProps} />;
-                return <TestScreen testData={miniTestData} userAnswers={miniTestUserAnswers} onSubmit={handleSubmitMiniTest} />;
+                if (!currentTest) return <PracticeHub {...practiceHubProps} />;
+                return <TestScreen testData={currentTest} userAnswers={currentUserAnswers} onSubmit={handleSubmitTest} />;
             case AppState.MiniTestResults:
-                if (!miniTestData) return <PracticeHub {...practiceHubProps} />;
-                return <ResultsScreen testData={miniTestData} userAnswers={miniTestUserAnswers} onGoHome={handleGoHome} />;
+                if (!currentTest) return <PracticeHub {...practiceHubProps} />;
+                return <ResultsScreen testData={currentTest} userAnswers={currentUserAnswers} onGoHome={handleGoHome} />;
             case AppState.DictationPracticeHome:
                 return <DictationScreen currentUser={currentUser} onSelectTestSet={handleSelectDictationTestSet} />;
             case AppState.DictationPracticeSetup:
@@ -424,6 +439,7 @@ const App: React.FC = () => {
                     onBack={handleBackToGrammarHome} 
                     currentUser={currentUser}
                     onSelectTopic={handleNavigateToGrammarTopic}
+                    onStartQuiz={handleStartGrammarQuiz}
                 />;
             case AppState.VocabularyHome:
                 return <VocabularyScreen onSelectPart={handleSelectVocabularyPart} />;

@@ -3,6 +3,8 @@
 
 
 
+
+
 export interface User {
     username: string;
     password: string;
@@ -50,7 +52,7 @@ export type QuestionOption = 'A' | 'B' | 'C' | 'D';
 
 // FIX: Add TestData and Question interfaces for the TOEIC Mini Test feature.
 export interface Question {
-    id: number;
+    id: number | string;
     part: number;
     questionText: string;
     options: {
@@ -122,6 +124,10 @@ export interface ReadingQuestion {
         D: string;
     };
     correctAnswer: QuestionOption;
+    // FIX: Add optional explanation property to support questions that have an explanation.
+    // This resolves type errors in `services/reading/reading2023/test1.ts` where questions
+    // included an `explanation` field not present in this interface.
+    explanation?: string;
 }
 
 export interface ReadingPassage {

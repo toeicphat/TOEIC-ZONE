@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
-import { ReadingTestData, QuestionOption, ReadingQuestion, User } from '../types';
+import { ReadingTestData, QuestionOption, ReadingQuestion, User, ReadingPassage } from '../types';
 import { CheckCircleIcon, XCircleIcon, ArrowLeftIcon } from './icons';
 import Timer from './Timer';
 import QuestionPalette from './QuestionPalette';
@@ -26,22 +26,62 @@ const ReadingTestScreen: React.FC<ReadingTestScreenProps> = ({ testData, onBack,
     const contentRef = useRef<HTMLDivElement>(null);
     const { selectionPopup, toastMessage, handleMouseUp, handleSaveWord } = useWordSelection(contentRef);
     const isSubmittedRef = useRef(false);
-
-    const allQuestions = useMemo(() => testData.passages.flatMap(p => p.questions), [testData.passages]);
     const questionRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-    const handleMarkForReview = (questionId: string) => {
-        if (isSubmitted) return;
-        setMarkedForReview(prev => {
-            const newSet = new Set(prev);
-            if (newSet.has(questionId)) {
-                newSet.delete(questionId);
-            } else {
-                newSet.add(questionId);
+    const { part5Passages, part6Passages, part7Passages } = useMemo(() => {
+        const p5: ReadingPassage[] = [];
+        const p6: ReadingPassage[] = [];
+        const p7: ReadingPassage[] = [];
+        if (!testData?.passages) return { part5Passages: p5, part6Passages: p6, part7Passages: p7 };
+
+        testData.passages.forEach(passage => {
+            if (!passage.questions || passage.questions.length === 0) return;
+            const firstQId = parseInt(passage.questions[0].id, 10);
+            if (firstQId >= 101 && firstQId <= 130) {
+                p5.push(passage);
+            } else if (firstQId >= 131 && firstQId <= 146) {
+                p6.push(passage);
+            } else if (firstQId >= 147 && firstQId <= 200) {
+                p7.push(passage);
             }
-            return newSet;
         });
-    };
+        return { part5Passages: p5, part6Passages: p6, part7Passages: p7 };
+    }, [testData.passages]);
+
+    const availableParts = useMemo(() => {
+        const parts = [];
+        if (part5Passages.length > 0) parts.push(5);
+        if (part6Passages.length > 0) parts.push(6);
+        if (part7Passages.length > 0) parts.push(7);
+        return parts;
+    }, [part5Passages, part6Passages, part7Passages]);
+    
+    const [activePart, setActivePart] = useState<number>(availableParts[0] || 0);
+
+    useEffect(() => {
+        if (availableParts.length > 0 && !availableParts.includes(activePart)) {
+            setActivePart(availableParts[0]);
+        }
+    }, [availableParts, activePart]);
+    
+    useEffect(() => {
+        questionRefs.current = {};
+        setCurrentQuestionIdInView(null);
+    }, [activePart]);
+
+    const activePartPassages = useMemo(() => {
+        switch (activePart) {
+            case 5: return part5Passages;
+            case 6: return part6Passages;
+            case 7: return part7Passages;
+            default: return [];
+        }
+    }, [activePart, part5Passages, part6Passages, part7Passages]);
+    
+    const activePartQuestions = useMemo(() => activePartPassages.flatMap(p => p.questions), [activePartPassages]);
+    
+    const allQuestions = useMemo(() => [...part5Passages, ...part6Passages, ...part7Passages].flatMap(p => p.questions), [part5Passages, part6Passages, part7Passages]);
+
 
     const handleSubmit = useCallback(() => {
         if (isSubmittedRef.current) return;
@@ -54,7 +94,7 @@ const ReadingTestScreen: React.FC<ReadingTestScreenProps> = ({ testData, onBack,
                 return userAnswers[q.id] === q.correctAnswer ? acc + 1 : acc;
             }, 0);
             addTestResult(currentUser.username, 'reading', {
-                id: `reading-p${testData.part}-t${testData.id}-${Date.now()}`,
+                id: `reading-${testData.title.replace(/\s+/g, '-')}-${Date.now()}`,
                 title: testData.title,
                 score,
                 total: allQuestions.length,
@@ -64,8 +104,10 @@ const ReadingTestScreen: React.FC<ReadingTestScreenProps> = ({ testData, onBack,
     }, [allQuestions, userAnswers, currentUser, testData]);
 
     const handleTimeUp = useCallback(() => {
-        alert("Time's up! Your answers will be submitted automatically.");
-        handleSubmit();
+        if (!isSubmittedRef.current) {
+            alert("Time's up! Your answers will be submitted automatically.");
+            handleSubmit();
+        }
     }, [handleSubmit]);
     
     const handleTryAgain = () => {
@@ -79,45 +121,51 @@ const ReadingTestScreen: React.FC<ReadingTestScreenProps> = ({ testData, onBack,
         if (isSubmitted) return;
         setUserAnswers(prev => ({ ...prev, [questionId]: option }));
     };
+    
+     const handleMarkForReview = (questionId: string) => {
+        if (isSubmitted) return;
+        setMarkedForReview(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(questionId)) {
+                newSet.delete(questionId);
+            } else {
+                newSet.add(questionId);
+            }
+            return newSet;
+        });
+    };
 
     const getOptionClasses = (question: ReadingQuestion, option: QuestionOption) => {
-        if (!isSubmitted) return 'bg-white border-slate-300 hover:border-blue-400';
+        if (!isSubmitted) return 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 hover:border-blue-400 dark:hover:border-blue-500';
 
         const isCorrect = option === question.correctAnswer;
         const isSelected = userAnswers[question.id] === option;
 
-        if (isCorrect) return 'bg-green-100 border-green-500';
-        if (isSelected && !isCorrect) return 'bg-red-100 border-red-500';
-        return 'bg-white border-slate-300';
+        if (isCorrect) return 'bg-green-100 dark:bg-green-900/50 border-green-500';
+        if (isSelected && !isCorrect) return 'bg-red-100 dark:bg-red-900/50 border-red-500';
+        return 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600';
     };
     
     const handleQuestionSelect = (index: number) => {
-        const questionId = allQuestions[index]?.id;
+        const questionId = activePartQuestions[index]?.id;
         if (questionId && questionRefs.current[questionId]) {
             questionRefs.current[questionId]?.scrollIntoView({
                 behavior: 'smooth',
-                block: 'center',
+                block: 'start',
             });
         }
     };
-
+    
     useEffect(() => {
-        if (allQuestions.length > 0) {
-            setCurrentQuestionIdInView(allQuestions[0].id);
-        }
-        
         const observer = new IntersectionObserver(
             (entries) => {
-                for (const entry of entries) {
-                    if (entry.isIntersecting) {
-                        setCurrentQuestionIdInView(entry.target.id);
-                        // We only care about the first one that's intersecting from the top.
-                        return;
-                    }
+                const intersectingEntry = entries.find(entry => entry.isIntersecting);
+                if (intersectingEntry) {
+                    setCurrentQuestionIdInView(intersectingEntry.target.id);
                 }
             },
             { 
-                rootMargin: '0px 0px -80% 0px',
+                rootMargin: '-40% 0px -60% 0px',
                 threshold: 0.1
             }
         );
@@ -129,209 +177,210 @@ const ReadingTestScreen: React.FC<ReadingTestScreenProps> = ({ testData, onBack,
         return () => {
             validRefs.forEach((ref) => observer.unobserve(ref));
         };
-    }, [allQuestions]);
+    }, [activePartQuestions]);
+    
+    const currentQuestionIndex = useMemo(() => {
+        return activePartQuestions.findIndex(q => q.id === currentQuestionIdInView);
+    }, [currentQuestionIdInView, activePartQuestions]);
 
-    if (testData.passages.length === 0) {
-        return (
-             <div className="container mx-auto px-4 py-12 text-center">
-                 <button onClick={onBack} className="mb-8 inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold transition-colors">
-                    <ArrowLeftIcon className="h-5 w-5 mr-2" />
-                    Back to Practice Setup
+
+    const renderQuestion = (q: ReadingQuestion) => (
+        <div key={q.id} id={q.id} ref={el => { if (el) questionRefs.current[q.id] = el; }} className="scroll-mt-24">
+            <p className="text-lg text-slate-800 dark:text-slate-200 mb-4 font-semibold flex items-baseline">
+                <button
+                    onClick={() => handleMarkForReview(q.id)}
+                    className={`font-semibold rounded-md px-2 py-0.5 transition-colors mr-2 ${
+                        markedForReview.has(q.id)
+                        ? 'bg-yellow-200 text-yellow-800 hover:bg-yellow-300 dark:bg-yellow-800 dark:text-yellow-200 dark:hover:bg-yellow-700'
+                        : isSubmitted ? 'bg-transparent' : 'bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600'
+                    }`}
+                    aria-label={`Mark question ${q.id} for review`}
+                    disabled={isSubmitted}
+                >
+                    {markedForReview.has(q.id) ? 'Unmark' : 'Mark'}
                 </button>
-                <h2 className="text-2xl font-bold text-slate-700">{testData.title}</h2>
-                <p className="mt-4 text-slate-600">This test is currently empty. Content will be added soon!</p>
+                Question {q.id}
+            </p>
+            <p className="text-lg text-slate-800 dark:text-slate-300 mb-6 space-y-2" dangerouslySetInnerHTML={{ __html: q.questionText.replace(/____/g, '<span class="font-bold text-blue-600">____</span>') }} />
+            <div className="space-y-3">
+                {(Object.keys(q.options) as QuestionOption[]).map(optionKey => (
+                  q.options[optionKey] && (
+                     <label key={optionKey} className={`flex items-center p-4 border rounded-lg cursor-pointer transition-all duration-200 ${userAnswers[q.id] === optionKey && !isSubmitted ? 'bg-blue-100 dark:bg-blue-900/50 border-blue-500 shadow-sm' : getOptionClasses(q, optionKey)}`}>
+                        <input 
+                            type="radio" 
+                            name={`question-${q.id}`} 
+                            className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 dark:bg-slate-700 dark:border-slate-500"
+                            checked={userAnswers[q.id] === optionKey}
+                            onChange={() => handleAnswerSelect(q.id, optionKey)}
+                            disabled={isSubmitted}
+                        />
+                        <span className="ml-4 text-base text-slate-700 dark:text-slate-300"><span className="font-bold">{optionKey}.</span> {q.options[optionKey]}</span>
+                     </label>
+                  )
+                ))}
             </div>
-        )
-    }
-
-    const currentQuestionIndex = allQuestions.findIndex(q => q.id === currentQuestionIdInView);
-    const isPart7 = testData.part === 7 || (testData.part === 0 && testData.passages.some(p => p.questions.some(q => parseInt(q.id, 10) >= 147)));
-
-    const renderSidebar = () => (
-        <div className="w-full lg:w-[320px] flex-shrink-0">
-            <div className="lg:sticky top-24 self-start space-y-8">
-                <div className="bg-white p-6 rounded-lg shadow-lg">
-                    <button onClick={onBack} className="mb-4 w-full text-left inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold transition-colors">
-                        <ArrowLeftIcon className="h-5 w-5 mr-2" />
-                        Back to Practice Setup
-                    </button>
-                    
-                    {durationInSeconds != null ? (
-                        <Timer initialTime={durationInSeconds} onTimeUp={handleTimeUp} />
-                    ) : (
-                            <div className="text-center p-2 text-slate-500 font-semibold">Untimed Practice</div>
-                    )}
-
-                    <div className="text-center mt-4">
-                        {!isSubmitted ? (
-                            <button onClick={() => { if(window.confirm('Are you sure you want to submit?')) handleSubmit(); }} className="w-full px-8 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-colors duration-200">
-                                Check Answers
-                            </button>
-                        ) : (
-                            <button onClick={handleTryAgain} className="w-full px-8 py-3 bg-slate-600 text-white font-bold rounded-lg hover:bg-slate-700 transition-colors duration-200">
-                                Try Again
-                            </button>
-                        )}
-                    </div>
-                </div>
-                <div className="bg-white p-6 rounded-lg shadow-lg">
-                    <h3 className="text-lg font-bold mb-4">Question Palette</h3>
-                    <QuestionPalette 
-                        questions={allQuestions}
-                        answers={userAnswers}
-                        currentQuestionIndex={currentQuestionIndex > -1 ? currentQuestionIndex : 0}
-                        onQuestionSelect={handleQuestionSelect}
-                        markedForReview={markedForReview}
-                        columns={8}
-                    />
-                </div>
-            </div>
-        </div>
-    );
-    
-    // Original layout for Part 5 and 6
-    const renderOriginalLayout = () => (
-        <div className="flex flex-col lg:flex-row gap-8">
-            <div className="flex-1 min-w-0">
-                <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg border border-slate-200" ref={contentRef} onMouseUp={handleMouseUp}>
-                    <h2 className="text-3xl font-extrabold text-slate-900 mb-6 text-center">{testData.title}</h2>
-                    {testData.passages.map((passage, pIndex) => (
-                        <div key={passage.id} className={pIndex > 0 ? 'mt-12 pt-8 border-t-2 border-slate-200' : ''}>
-                            {passage.text && (
-                                <div className="mb-8 p-6 bg-slate-50 rounded-lg border border-slate-200">
-                                    <h3 className="text-lg font-semibold text-slate-800 mb-3">
-                                        Questions {passage.questions[0].id}-{passage.questions[passage.questions.length - 1].id} refer to the following text.
-                                    </h3>
-                                    <p className="text-slate-700 leading-relaxed whitespace-pre-wrap">{passage.text}</p>
-                                </div>
-                            )}
-                            <div className="space-y-8">
-                                {passage.questions.map((q) => (
-                                    <div key={q.id} id={q.id} ref={el => { if (el) questionRefs.current[q.id] = el; }} className="scroll-mt-24">
-                                        <p className="text-lg text-slate-800 mb-4 font-semibold flex items-baseline">
-                                            <button
-                                                onClick={() => handleMarkForReview(q.id)}
-                                                className={`font-semibold rounded-md px-2 py-0.5 transition-colors mr-2 ${
-                                                    markedForReview.has(q.id)
-                                                    ? 'bg-yellow-200 text-yellow-800 hover:bg-yellow-300'
-                                                    : isSubmitted ? 'bg-transparent' : 'bg-slate-100 hover:bg-slate-200'
-                                                }`}
-                                                aria-label={`Mark question ${q.id} for review`}
-                                                disabled={isSubmitted}
-                                            >
-                                                {q.id}.
-                                            </button>
-                                            <span>{q.questionText}</span>
-                                        </p>
-                                        <div className="space-y-3">
-                                            {(Object.keys(q.options) as QuestionOption[]).map(optionKey => (
-                                                <label key={optionKey} className={`flex items-start p-4 border rounded-lg transition-all duration-200 ${!isSubmitted ? 'cursor-pointer' : ''} ${getOptionClasses(q, optionKey)}`}>
-                                                    <div className="flex-shrink-0 mt-1">
-                                                        {isSubmitted && userAnswers[q.id] === optionKey && userAnswers[q.id] !== q.correctAnswer && <XCircleIcon className="h-5 w-5 text-red-600"/>}
-                                                        {isSubmitted && optionKey === q.correctAnswer && <CheckCircleIcon className="h-5 w-5 text-green-600"/>}
-                                                        {!isSubmitted && (
-                                                            <input 
-                                                                type="radio" 
-                                                                name={`question-${q.id}`} 
-                                                                className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300"
-                                                                checked={userAnswers[q.id] === optionKey}
-                                                                onChange={() => handleAnswerSelect(q.id, optionKey)}
-                                                            />
-                                                        )}
-                                                    </div>
-                                                    <span className="ml-4 text-base text-slate-700"><span className="font-bold">{optionKey}.</span> {q.options[optionKey]}</span>
-                                                </label>
-                                            ))}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-            {renderSidebar()}
-        </div>
-    );
-    
-    // New 2-column block layout for Part 7
-    const renderPart7Layout = () => (
-        <div className="flex flex-col lg:flex-row-reverse gap-8">
-            {renderSidebar()}
-            <div className="flex-1 min-w-0" onMouseUp={handleMouseUp}>
-                <div className="space-y-8" ref={contentRef}>
-                    {testData.passages.map((passage) => (
-                        <div key={passage.id} className="flex flex-col md:flex-row gap-6 bg-white p-6 rounded-xl shadow-lg border border-slate-200 scroll-mt-24" id={`passage-${passage.id}`}>
-                            {/* Left Column: Passage */}
-                            <div className="flex-1 prose prose-slate max-w-none">
-                                {passage.text && (
-                                    <>
-                                        <h3 className="text-base font-semibold text-slate-800 not-prose">
-                                            Questions {passage.questions[0].id}-{passage.questions[passage.questions.length - 1].id} refer to the following text.
-                                        </h3>
-                                        <div className="text-slate-700 leading-relaxed whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: passage.text.replace(/^---$/gm, '<hr class="my-4 border-slate-200" />') }}/>
-                                    </>
-                                )}
-                            </div>
-                            {/* Right Column: Questions */}
-                            <div className="md:w-[450px] lg:w-[400px] xl:w-[450px] flex-shrink-0 space-y-4">
-                                {passage.questions.map((q) => (
-                                    <div key={q.id} id={q.id} ref={el => { if (el) questionRefs.current[q.id] = el; }} className="scroll-mt-24 p-4 rounded-lg bg-slate-50 border border-slate-200">
-                                        <p className="text-base text-slate-800 mb-3 font-semibold flex items-baseline">
-                                            <button
-                                                onClick={() => handleMarkForReview(q.id)}
-                                                className={`font-semibold rounded-md px-2 py-0.5 transition-colors mr-2 ${
-                                                    markedForReview.has(q.id)
-                                                    ? 'bg-yellow-200 text-yellow-800 hover:bg-yellow-300'
-                                                    : isSubmitted ? 'bg-transparent' : 'bg-slate-200 hover:bg-slate-300'
-                                                }`}
-                                                aria-label={`Mark question ${q.id} for review`}
-                                                disabled={isSubmitted}
-                                            >
-                                                {q.id}.
-                                            </button>
-                                            <span>{q.questionText}</span>
-                                        </p>
-                                        <div className="space-y-2">
-                                            {(Object.keys(q.options) as QuestionOption[]).map(optionKey => (
-                                                <label key={optionKey} className={`flex items-start p-3 border rounded-lg transition-all duration-200 text-sm ${!isSubmitted ? 'cursor-pointer' : ''} ${getOptionClasses(q, optionKey)}`}>
-                                                    <div className="flex-shrink-0 mt-1 mr-3">
-                                                        {isSubmitted && userAnswers[q.id] === optionKey && userAnswers[q.id] !== q.correctAnswer && <XCircleIcon className="h-5 w-5 text-red-600"/>}
-                                                        {isSubmitted && optionKey === q.correctAnswer && <CheckCircleIcon className="h-5 w-5 text-green-600"/>}
-                                                        {!isSubmitted && (
-                                                            <input 
-                                                                type="radio" 
-                                                                name={`question-${q.id}`} 
-                                                                className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300"
-                                                                checked={userAnswers[q.id] === optionKey}
-                                                                onChange={() => handleAnswerSelect(q.id, optionKey)}
-                                                            />
-                                                        )}
-                                                    </div>
-                                                    <span className="flex-1 text-slate-700"><span className="font-bold">{optionKey}.</span> {q.options[optionKey]}</span>
-                                                </label>
-                                            ))}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </div>
-    );
-
-    return (
-        <div className="container mx-auto px-4 py-8">
-            {toastMessage && (
-                <div className="fixed bottom-5 right-5 bg-slate-800 text-white px-6 py-3 rounded-lg shadow-xl z-50 animate-bounce">
-                    {toastMessage}
+            {isSubmitted && q.explanation && (
+                <div className="mt-6 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg border-l-4 border-blue-500">
+                    <h5 className="font-bold text-slate-800 dark:text-slate-200">Explanation:</h5>
+                    <p className="text-slate-600 dark:text-slate-300 mt-1">{q.explanation}</p>
                 </div>
             )}
-            {selectionPopup && <AddVocabPopup top={selectionPopup.top} left={selectionPopup.left} onSave={handleSaveWord} />}
+        </div>
+    );
+
+    const formatPassageText = (text: string, questions: ReadingQuestion[]) => {
+        let formattedText = text;
+        const questionNumbers = questions.map(q => q.id);
+        
+        questionNumbers.forEach(num => {
+            const regex = new RegExp(`\\(${num}\\)`);
+            if (regex.test(formattedText)) {
+                 formattedText = formattedText.replace(regex, `<strong class="text-blue-600 dark:text-blue-400 font-bold">[${num}]</strong>`);
+            } else {
+                 const blankRegex = /____/;
+                 if(blankRegex.test(formattedText)) {
+                    formattedText = formattedText.replace(blankRegex, `<strong class="text-blue-600 dark:text-blue-400 font-bold">[${num}]</strong>`);
+                 }
+            }
+        });
+        return formattedText;
+    };
+
+    const renderPart5 = () => {
+        return part5Passages.flatMap(passage => passage.questions.map(q => (
+            <div key={q.id} className="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
+                {renderQuestion(q)}
+            </div>
+        )));
+    };
+
+    const renderPart6 = () => {
+        return part6Passages.map(passage => (
+            <div key={passage.id} className="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div className="prose prose-lg max-w-none text-slate-800 dark:text-slate-200 whitespace-pre-wrap leading-relaxed lg:border-r lg:pr-8 border-slate-200 dark:border-slate-700" dangerouslySetInnerHTML={{ __html: formatPassageText(passage.text, passage.questions) }} />
+                    <div className="space-y-8">
+                        {passage.questions.map(q => renderQuestion(q))}
+                    </div>
+                </div>
+            </div>
+        ));
+    };
+
+    const renderPart7 = () => {
+        return part7Passages.map(passage => (
+            <div key={passage.id} className="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                     <div className="prose prose-lg max-w-none text-slate-800 dark:text-slate-200 whitespace-pre-wrap leading-relaxed lg:border-r lg:pr-8 border-slate-200 dark:border-slate-700" dangerouslySetInnerHTML={{ __html: passage.text }} />
+                    <div className="space-y-8">
+                        {passage.questions.map(q => renderQuestion(q))}
+                    </div>
+                </div>
+            </div>
+        ));
+    };
+    
+    const renderSummary = () => {
+        const score = allQuestions.reduce((acc, q) => {
+            return userAnswers[q.id] === q.correctAnswer ? acc + 1 : acc;
+        }, 0);
+        const totalQuestions = allQuestions.length;
+        const percentage = totalQuestions > 0 ? Math.round((score / totalQuestions) * 100) : 0;
+    
+        return (
+            <div className="max-w-4xl mx-auto bg-white dark:bg-slate-800 p-8 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700">
+                <h2 className="text-3xl font-bold text-center mb-2 text-slate-900 dark:text-slate-100">Test Submitted</h2>
+                <p className="text-center text-lg text-slate-600 dark:text-slate-400 mb-8">{testData.title}</p>
+                <div className="text-center bg-slate-100 dark:bg-slate-900 p-6 rounded-lg mb-10">
+                    <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">Your Score</h3>
+                    <p className="text-6xl font-bold text-blue-600 dark:text-blue-400 my-2">{percentage}%</p>
+                    <p className="text-lg text-slate-600 dark:text-slate-300">You answered <span className="font-bold">{score}</span> out of <span className="font-bold">{totalQuestions}</span> questions correctly.</p>
+                </div>
+                <div className="flex justify-center gap-4">
+                    <button onClick={handleTryAgain} className="px-6 py-3 bg-slate-600 text-white font-bold rounded-lg hover:bg-slate-700 transition-colors">Try Again</button>
+                    <button onClick={onBack} className="px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">Back to Setup</button>
+                </div>
+                 <p className="text-center mt-6 text-slate-500 dark:text-slate-400">Scroll down to review the questions and explanations.</p>
+            </div>
+        )
+    };
+
+    const renderContent = () => (
+      <div className="lg:grid lg:grid-cols-3 lg:gap-8">
+        <div className="lg:col-span-2 space-y-12" ref={contentRef} onMouseUp={handleMouseUp}>
+            {isSubmitted && <div className="mb-12">{renderSummary()}</div>}
             
-            {isPart7 ? renderPart7Layout() : renderOriginalLayout()}
+            {activePart === 5 && renderPart5()}
+            {activePart === 6 && renderPart6()}
+            {activePart === 7 && renderPart7()}
+        </div>
+
+        <div className="mt-8 lg:mt-0 lg:sticky lg:top-24 lg:self-start space-y-8">
+             <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700">
+                 {durationInSeconds ? <Timer initialTime={durationInSeconds} onTimeUp={handleTimeUp} /> : <div className="text-center p-2 text-slate-500 dark:text-slate-400 font-semibold">Untimed Practice</div>}
+                 <button 
+                    onClick={() => { if(!isSubmitted && window.confirm('Are you sure you want to submit?')) handleSubmit(); }}
+                    disabled={isSubmitted}
+                    className="w-full mt-4 bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors duration-200 disabled:bg-green-300 dark:disabled:bg-green-800 disabled:cursor-not-allowed"
+                >
+                    {isSubmitted ? 'Submitted' : 'Submit Answers'}
+                </button>
+             </div>
+             <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700">
+                <h3 className="text-xl font-bold mb-4 dark:text-slate-200">Part Navigation</h3>
+                <div className="flex gap-2">
+                    {availableParts.map(partNum => (
+                        <button 
+                            key={`nav-${partNum}`}
+                            onClick={() => setActivePart(partNum)}
+                            className={`flex-1 py-2 font-semibold rounded-lg transition-colors ${activePart === partNum ? 'bg-blue-600 text-white' : 'bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600'}`}
+                        >
+                            Part {partNum}
+                        </button>
+                    ))}
+                </div>
+             </div>
+             <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700">
+                <h3 className="text-xl font-bold mb-4 dark:text-slate-200">Part {activePart} Questions</h3>
+                 <QuestionPalette 
+                    questions={activePartQuestions}
+                    answers={userAnswers} 
+                    currentQuestionIndex={currentQuestionIndex > -1 ? currentQuestionIndex : 0}
+                    onQuestionSelect={handleQuestionSelect}
+                    markedForReview={markedForReview}
+                    columns={8}
+                />
+             </div>
+        </div>
+      </div>
+    );
+    
+
+    return (
+        <div className="container mx-auto p-4 lg:p-8">
+            {toastMessage && (
+              <div className="fixed bottom-5 right-5 bg-slate-800 text-white px-6 py-3 rounded-lg shadow-xl z-50 animate-bounce">
+                  {toastMessage}
+              </div>
+            )}
+            {selectionPopup && <AddVocabPopup top={selectionPopup.top} left={selectionPopup.left} onSave={handleSaveWord} />}
+             <div className="flex justify-between items-center mb-8">
+                <div>
+                     <button onClick={onBack} className="inline-flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-semibold transition-colors">
+                        <ArrowLeftIcon className="h-5 w-5 mr-2" />
+                        Back to Setup
+                    </button>
+                     <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">{testData.title}</h2>
+                </div>
+                {isSubmitted && (
+                    <div className="text-right">
+                        <span className="text-sm font-bold text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/50 px-3 py-1 rounded-full">REVIEW MODE</span>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Scroll down to see explanations.</p>
+                    </div>
+                )}
+            </div>
+
+            {renderContent()}
         </div>
     );
 };

@@ -1,6 +1,5 @@
-
 import React, { useState, useMemo } from 'react';
-import { allReadingTests, allReading700Tests } from '../services/readingLibrary';
+import { allReadingTests, allReading700Tests, allReading2023Tests } from '../services/readingLibrary';
 import { ReadingTestData } from '../types';
 
 interface ReadingPracticeSetupScreenProps {
@@ -24,7 +23,7 @@ const ReadingPracticeSetupScreen: React.FC<ReadingPracticeSetupScreenProps> = ({
     const [selectedParts, setSelectedParts] = useState<Record<number, boolean>>({ 5: false, 6: false, 7: false });
     const [timeLimit, setTimeLimit] = useState<string>('');
 
-    const allTests = useMemo(() => [...allReadingTests, ...allReading700Tests], []);
+    const allTests = useMemo(() => [...allReadingTests, ...allReading700Tests, ...allReading2023Tests], []);
     const testSet = useMemo(() => allTests.find(t => t.id === testId), [testId, allTests]);
 
     const partInfo = useMemo(() => {
