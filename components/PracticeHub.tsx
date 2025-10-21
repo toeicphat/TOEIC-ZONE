@@ -15,11 +15,11 @@ import {
 
 interface PracticeHubProps {
   onNavigateToDictation: () => void;
-  onNavigateToReadingPractice: () => void;
   onNavigateToGrammar: () => void;
   onNavigateToVocabulary: () => void;
   onNavigateToSpeaking: () => void;
   onNavigateToWritingPractice: () => void;
+  onNavigateToReadingPractice: () => void;
 }
 
 const PracticeCard: React.FC<{
@@ -42,11 +42,11 @@ const PracticeCard: React.FC<{
 
 const PracticeHub: React.FC<PracticeHubProps> = ({ 
     onNavigateToDictation, 
-    onNavigateToReadingPractice, 
     onNavigateToGrammar, 
     onNavigateToVocabulary, 
     onNavigateToSpeaking, 
-    onNavigateToWritingPractice 
+    onNavigateToWritingPractice,
+    onNavigateToReadingPractice
 }) => {
     // The Google Drive audio player is now integrated directly.
     // States for manual input are no longer needed.
@@ -69,18 +69,18 @@ const PracticeHub: React.FC<PracticeHubProps> = ({
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
               <PracticeCard 
+                  title="Luyện tập Reading"
+                  description="Hone your reading comprehension skills with full-length practice tests for Parts 5, 6, and 7."
+                  onClick={onNavigateToReadingPractice}
+                  icon={BookOpenIcon}
+                  colorClass="text-green-500 dark:text-green-400"
+              />
+              <PracticeCard 
                   title="Nghe chép chính tả"
                   description="Listen to sentences and type what you hear to improve your listening and spelling."
                   onClick={onNavigateToDictation}
                   icon={HeadphoneIcon}
                   colorClass="text-blue-500 dark:text-blue-400"
-              />
-              <PracticeCard 
-                  title="Luyện tập Reading"
-                  description="Practice with TOEIC Reading questions for Part 5, 6, and 7."
-                  onClick={onNavigateToReadingPractice}
-                  icon={BookOpenIcon}
-                  colorClass="text-emerald-500 dark:text-emerald-400"
               />
               <PracticeCard 
                   title="Ngữ pháp"

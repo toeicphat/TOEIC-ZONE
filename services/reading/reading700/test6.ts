@@ -262,8 +262,8 @@ For a full description of the position and application form, please visit www.fo
         {
             id: 'passage-7-706-8',
             text: `**Water's Edge Apartments**
-We at Yanco Home Builders are pleased to announce that we are currently constructing 120 units in the Bridgeport district of Lake City. — [1] —. To date, site preparation and foundation construction have been completed. Framing of the building is nearing completion. — [2] —. Construction of these fine apartments is expected to be completed by next Spring.
-— [3] —. Ground-floor units with 3 bedrooms will have their own gardens and expanded patios. Second and third floor units will consist of 2 bedrooms and 2 baths with a balcony to the lake side. These terrific apartments with a lake view come with electric heating, fully-equipped kitchen appliances, a washing machine and drier, and a queen-sized sofa bed. — [4] —.
+We at Yanco Home Builders are pleased to announce that we are currently constructing 120 units in the Bridgeport district of Lake City. – [1] –. To date, site preparation and foundation construction have been completed. Framing of the building is nearing completion. – [2] –. Construction of these fine apartments is expected to be completed by next Spring.
+– [3] –. Ground-floor units with 3 bedrooms will have their own gardens and expanded patios. Second and third floor units will consist of 2 bedrooms and 2 baths with a balcony to the lake side. These terrific apartments with a lake view come with electric heating, fully-equipped kitchen appliances, a washing machine and drier, and a queen-sized sofa bed. – [4] –.
 In the heart of a friendly neighborhood close to parks and lakes, there is convenient access to public transportation, health care, and shopping centers. Call us today to get to know more about the perfect place to call home!
 Model units will be open for viewing, beginning August 15. Call us at 554-555-6012 for more information.`,
             questions: [
@@ -282,7 +282,7 @@ The Rupertson Corporation and the Belco Company announced today that they have s
                 { id: '168', questionText: 'What is NOT mentioned about Belco-Rupertson Corporation?', options: { A: 'It will be a large corporation.', B: 'It will move into a newly purchased office building.', C: 'It will begin doing business in May.', D: 'It is a combination of two companies.' }, correctAnswer: 'C' },
                 { id: '169', questionText: 'What kind of company will Belco-Rupertson Corporation be?', options: { A: 'A design and construction service provider', B: 'A financial company', C: 'An advertising agency', D: 'A manufacturer of computer equipment' }, correctAnswer: 'A' },
                 { id: '170', questionText: "Where will Belco-Rupertson's headquarters be located?", options: { A: 'In Spain', B: 'In France', C: 'In Germany', D: 'In Belgium' }, correctAnswer: 'D' },
-                { id: '171', questionText: 'In which of the positions marked [1], [2], [3] and [4] does the following sentence best belong? "Due to this relocation, most of Rupertson\'s offices in Germany will close."', options: { A: '[1]', B: '[2]', C: '[3]', D: '[4]' }, correctAnswer: 'D' }
+                { id: '171', questionText: 'In which of the positions marked [1], [2], [3] and [4] does the following sentence best belong? "Due to this relocation, most of Rupertson\\\'s offices in Germany will close."', options: { A: '[1]', B: '[2]', C: '[3]', D: '[4]' }, correctAnswer: 'D' }
             ]
         },
         {
@@ -430,31 +430,29 @@ Josefina Sanchez, Viaja Air Customer Service`,
         },
         {
             id: 'passage-7-706-15',
-            text: `**Summer Intern Wanted - Communications Position Open at Maden Associates**
-Maden is a consultant for online marketers around the world. We were founded in 1980, and are well known for our superior customer service traditions and business practices. We are currently seeking a summer intern to support our Communications Department. This is a great career opportunity for a college student who is planning to get into the communications field. We are seeking an outstanding professional who can keep strict deadlines.
-If you believe your potential, you may check the attached information including the optimal qualification and job description for application.
-**Responsibilities include:**
-- Assisting with writing and editing ad copy, e-mail messages, memos, and various other documents
-- Planning meetings, Monitoring industry trends, Conducting market research, Writing reports
-**Requirements:**
-- Previous experience in a communications setting preferred
-- Excellent written and verbal communication skills required
-- Computer literacy
-For immediate consideration, please send your resume, as an e-mail attachment, and include a cover letter.
+            text: `**From:** Esther Simon
+**To:** Mr. Berkley
+I attended the Jump Junior Dance Competition yesterday and took some photographs that I think will be perfect for your magazine. I have attached the pictures to this letter and have labeled each picture with a name and short description. I recommend you to consult these attachments. I hope you will be able to use these for your article about the competition.
 ---
-**To:** info@maden.net
-**From:** julies@nsl.com
-**Subject:** Summer Intern Position
-Dear Sir or Madam:
-I saw your ad for a summer internship, and I'm writing to apply for it. I'm presently working on a journalism degree in college. Every summer until now, I have worked in the school office handling the school's communications. My duties were similar to what you described in your ad, so I think I'm very qualified for the job you're advertising. I'm also computer-literate and familiar with many software applications.
-I'm a very hard worker and hoping to have a career in communications or journalism someday. Please look over my attached resume and let me know if you think I'd be suitable for your company. I look forward to your reply.
-Sincerely yours, June Williams`,
+**Picture Descriptions**
+- **Finalist:** All the finalists in the competition
+- **Shine-1:** The winner, Jennifer Shine on the stage
+- **Shine-2:** Ms. Shine at the awards ceremony
+- **Shine-3:** Ms. Shine hugging her coach, Matthew Collage
+- **Judges:** Judges evaluating a performance
+---
+**From:** Derek Berkley <dberkley@flipsidedance.com>
+**To:** Esther Simon <colorworks@simonphotos.com>
+**Date:** September 10
+Dear Mrs. Simon
+Thank you so much for the pictures! I looked over your work with the other editors and decided that "Shine-3" would be great to put on the front page. We would also like to use "Shine-1" and "Judges" in the article that one of our reporters is writing about the competition. We are offering to pay you our set fee of $50 per picture. Please let me know if this is acceptable and I will send out a contract for your review and signature.
+Regards, Derek Berkley, Flipside Dance Magazine`,
             questions: [
-                { id: '196', questionText: 'Which of the following is NOT a responsibility of the position?', options: { A: 'Writing reports', B: 'Planning meetings', C: 'Investing in the market', D: 'Checking out what is happening in the market' }, correctAnswer: 'C' },
-                { id: '197', questionText: 'What is a requirement for the position?', options: { A: 'The candidate must be over 25.', B: 'The candidate must have excellent speaking and writing skills.', C: 'The candidate must have a laptop computer.', D: 'The candidate must have managerial experience.' }, correctAnswer: 'B' },
-                { id: '198', questionText: 'What does Ms. Williams do now?', options: { A: 'She works in the school office.', B: 'She looks over resumes.', C: 'She works for Maden.', D: 'She attends a university.' }, correctAnswer: 'D' },
-                { id: '199', questionText: "Why does Ms. Williams feel she's qualified for the position?", options: { A: 'She is a recent graduate.', B: 'She has a degree in journalism.', C: 'She has computer skills and experience.', D: 'She hopes to work there someday.' }, correctAnswer: 'C' },
-                { id: '200', questionText: 'What did Ms. Williams include with her e-mail?', options: { A: 'A recommendation', B: 'A deadline', C: 'A resume', D: 'A transcript' }, correctAnswer: 'C' }
+                { id: '196', questionText: 'Why did Mrs. Simon contact Mr. Berkley?', options: { A: 'To enter a dance competition', B: 'To subscribe to a magazine', C: 'To arrange to have her pictures taken', D: 'To offer items for sale' }, correctAnswer: 'D' },
+                { id: '197', questionText: 'What did Mrs. Simon send with her letter?', options: { A: 'Her recent work', B: 'Contact information for a dancer', C: 'List of competition participants', D: 'A schedule for a competition' }, correctAnswer: 'A' },
+                { id: '198', questionText: 'What does Mr. Berkley want to display on the front page?', options: { A: 'A picture of Ms. Shine performing', B: 'A picture of the competition judges', C: 'A picture of Ms. Shine with Mr. Collage', D: 'A picture of the competition finalists' }, correctAnswer: 'C' },
+                { id: '199', questionText: 'What does the e-mail imply about Mr. Berkley?', options: { A: 'He wrote the article about sports.', B: 'He works with an editing team.', C: 'He was a judge at the dance competition.', D: 'He is a new employee at Flipside Dance Magazine.' }, correctAnswer: 'B' },
+                { id: '200', questionText: 'What does Mr. Berkley want Mrs. Simon to do next?', options: { A: 'Confirm a price', B: 'Contact an editor', C: 'Write an article', D: 'Attend a competition' }, correctAnswer: 'A' }
             ]
         }
     ]

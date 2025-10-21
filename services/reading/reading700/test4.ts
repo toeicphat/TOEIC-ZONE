@@ -1,439 +1,410 @@
 import { ReadingTestData } from '../../../types';
 
 const test4Part5: ReadingTestData = {
-    id: 704,
-    title: 'Part 5 - Test 4 (700+)',
-    part: 5,
+    id: 704, 
+    title: 'Part 5 - Test 4 (700+)', 
+    part: 5, 
     passages: [
         {
             id: 'passage-5-704-1',
             text: 'Directions: A word or phrase is missing in each of the sentences below. Four answer choices are given below each sentence. Select the best answer to complete the sentence.',
             questions: [
-                { id: '101', questionText: 'The land surveyor is well qualified to provide advice when a dispute _______ land boundaries occurs.', options: { A: 'from', B: 'toward', C: 'above', D: 'over' }, correctAnswer: 'D' },
-                { id: '102', questionText: 'All of the products you ordered yesterday will be professionally packaged and shipped _______ .', options: { A: 'objectively', B: 'specifically', C: 'extensively', D: 'promptly' }, correctAnswer: 'D' },
-                { id: '103', questionText: 'Passengers carrying baggage in excess _______ the maximum weight allowance of 80 pounds must notify the airline staff in advance.', options: { A: 'to', B: 'of', C: 'over', D: 'than' }, correctAnswer: 'B' },
-                { id: '104', questionText: 'According to the representative, _______ went up higher than at any other time in the past six months.', options: { A: 'employees', B: 'plans', C: 'profits', D: 'companies' }, correctAnswer: 'C' },
-                { id: '105', questionText: 'Stock prices are expected to rise this quarter _______ indications of a new economic boom.', options: { A: 'regarding', B: 'amid', C: 'about', D: 'near' }, correctAnswer: 'B' },
-                { id: '106', questionText: 'We will give prospective customers a good impression _______ they will be able to have easy access to a great deal of information on our Web site.', options: { A: 'as', B: 'owing to', C: 'due to', D: 'because of' }, correctAnswer: 'D' },
-                { id: '107', questionText: 'The CEO said that all supervisors should _______ the company picnic with their families.', options: { A: 'connect', B: 'participate', C: 'associate', D: 'attend' }, correctAnswer: 'D' },
-                { id: '108', questionText: '_______ interested in the advertisement should contact Ms. Allen in the Personnel Department.', options: { A: 'Anyone', B: 'Whoever', C: 'Some', D: 'Them' }, correctAnswer: 'A' },
-                { id: '109', questionText: 'In order to _______ how the company operates, employees should have some knowledge of the management structure.', options: { A: 'understand', B: 'understanding', C: 'understands', D: 'understood' }, correctAnswer: 'A' },
-                { id: '110', questionText: "Sales of the new product line were so unbelievably high that the company didn't have to slash the prices drastically to _______ the inventory.", options: { A: 'get ahead', B: 'stick to', C: 'make over', D: 'clear out' }, correctAnswer: 'D' },
-                { id: '111', questionText: 'The S&J Company is going to send some products to the advertising agency for _______ for this year\'s advertising campaign.', options: { A: 'reservation', B: 'evaluation', C: 'expectation', D: 'implication' }, correctAnswer: 'B' },
-                { id: '112', questionText: 'Surveyors are to choose one among _______ approaches regarding the valuation of the site.', options: { A: 'alternatives', B: 'differ', C: 'another', D: 'various' }, correctAnswer: 'D' },
-                { id: '113', questionText: "Our new power and energy solutions will reduce our customers' energy expenses _______.", options: { A: 'signify', B: 'to signify', C: 'significant', D: 'significantly' }, correctAnswer: 'D' },
-                { id: '114', questionText: '_______ the weather improves this afternoon, we will have to cancel the workshop and seminar.', options: { A: 'Without', B: 'Unless', C: 'As a result of', D: 'While' }, correctAnswer: 'B' },
-                { id: '115', questionText: 'After _______ herself to the clients, Mary Evans started the presentation on the new sewer management system.', options: { A: 'introducing', B: 'introduced', C: 'introduces', D: 'introduce' }, correctAnswer: 'A' },
-                { id: '116', questionText: 'Ms. Sanders _______ a formal contract to hire Ms. Collins as an assistant to support her work last week.', options: { A: 'sign', B: 'signs', C: 'signed', D: 'has signed' }, correctAnswer: 'C' },
-                { id: '117', questionText: 'We should take several factors into _______ before we put the new summer line on the market.', options: { A: 'considering', B: 'considerable', C: 'considerate', D: 'consideration' }, correctAnswer: 'D' },
-                { id: '118', questionText: 'Apple iPad has proven to be surprisingly _______ even in such a volatile market.', options: { A: 'profiting', B: 'profitable', C: 'profit', D: 'profited' }, correctAnswer: 'B' },
-                { id: '119', questionText: 'The need to reduce costs and to operate more _______ has become as important in health care as it is in many other industries.', options: { A: 'elusively', B: 'eventually', C: 'expressively', D: 'efficiently' }, correctAnswer: 'D' },
-                { id: '120', questionText: 'We are not going on holiday this year _______ there are some important projects to finish before the end of this quarter.', options: { A: 'because', B: 'whereas', C: 'despite', D: 'thus' }, correctAnswer: 'A' },
-                { id: '121', questionText: 'All advertisements must arrive a minimum of 15 days prior to the release date of the issue in _______ you wish it to be displayed.', options: { A: 'who', B: 'which', C: 'that', D: 'what' }, correctAnswer: 'B' },
-                { id: '122', questionText: 'We should review the _______ document to verify that the seating in the banquet hall has been arranged for our satisfaction.', options: { A: 'alleviated', B: 'abbreviated', C: 'adjourned', D: 'attached' }, correctAnswer: 'D' },
-                { id: '123', questionText: 'The Hugotown City Council is _______ bids from local companies to build a new picnic area at Network Socrates Sculpture Park.', options: { A: 'proceeding', B: 'competing', C: 'electing', D: 'accepting' }, correctAnswer: 'D' },
-                { id: '124', questionText: '_______ employee benefits, the Christopher Medical Center offers a generous amount of vacation time.', options: { A: 'For example', B: 'In terms of', C: 'Because', D: 'Whereas' }, correctAnswer: 'B' },
-                { id: '125', questionText: 'All orders placed online will be _______ from our Edison warehouse within 24 hours.', options: { A: 'replied', B: 'stored', C: 'shipped', D: 'arrived' }, correctAnswer: 'C' },
-                { id: '126', questionText: '_______ removing a part from your computer, always comply with all of the safety instructions.', options: { A: 'When', B: 'Yet', C: 'Provided that', D: 'In case' }, correctAnswer: 'A' },
-                { id: '127', questionText: 'Revenues from sales of outdoor sportswear have been _______ higher than expected over the last three months.', options: { A: 'optionally', B: 'considerably', C: 'eagerly', D: 'informatively' }, correctAnswer: 'B' },
-                { id: '128', questionText: 'Miniature World consumers are surveyed once a year to ensure that they _______ with the company\'s line of products.', options: { A: 'will have satisfied', B: 'are satisfied', C: 'were satisfying', D: 'will satisfy' }, correctAnswer: 'B' },
-                { id: '129', questionText: "Evangeline's Furniture cannot expand its product line until _______ space has been made available in its warehouse.", options: { A: 'sufficient', B: 'cooperative', C: 'competent', D: 'accurate' }, correctAnswer: 'A' },
-                { id: '130', questionText: 'The Customer Satisfaction Award was claimed by WalMart Stores last year, and, _______, it has secured a greater share of the consumer market.', options: { A: 'subsequently', B: 'irregularly', C: 'inappropriately', D: 'unanimously' }, correctAnswer: 'A' }
+                { id: '101', questionText: 'Mr. Barrientos has worked at the company ______ six years.', options: { A: 'for', B: 'since', C: 'with', D: 'lately' }, correctAnswer: 'A' },
+                { id: '102', questionText: 'The staff cafeteria stops ______ lunch at 2:00 P.M.', options: { A: 'taking', B: 'buying', C: 'serving', D: 'working' }, correctAnswer: 'C' },
+                { id: '103', questionText: 'The annual report will be ready after ______ make the necessary revisions.', options: { A: 'I', B: 'me', C: 'myself', D: 'my' }, correctAnswer: 'A' },
+                { id: '104', questionText: 'Mr. Louden was offered a full-time position at Fortelio Corporation ______ a division manager.', options: { A: 'about', B: 'as', C: 'after', D: 'around' }, correctAnswer: 'B' },
+                { id: '105', questionText: 'Kennedy Sports will ______ its end-of-season sale through the month of January.', options: { A: 'continuing', B: 'continued', C: 'continues', D: 'continue' }, correctAnswer: 'D' },
+                { id: '106', questionText: 'Ms. Najjar is going to give a presentation ______ workplace regulations at noon.', options: { A: 'near', B: 'to', C: 'past', D: 'on' }, correctAnswer: 'D' },
+                { id: '107', questionText: 'Mr. Telguld submitted the ______ surveys before the monthly board meeting.', options: { A: 'completely', B: 'completed', C: 'completing', D: 'completes' }, correctAnswer: 'B' },
+                { id: '108', questionText: 'Travel funds are available to student presenters coming to the conference from a significant _____.', options: { A: 'location', B: 'amount', C: 'reason', D: 'distance' }, correctAnswer: 'D' },
+                { id: '109', questionText: 'Ms. Okada is ______ a new social media campaign at the request of our office manager.', options: { A: 'organize', B: 'organized', C: 'organizing', D: 'organization' }, correctAnswer: 'C' },
+                { id: '110', questionText: 'The speaker will offer five tips for making wise purchasing _____.', options: { A: 'items', B: 'decisions', C: 'values', D: 'remedies' }, correctAnswer: 'B' },
+                { id: '111', questionText: 'Please log on to your online checking account ______ the next 30 days in order to keep it active.', options: { A: 'within', B: 'how', C: 'whether', D: 'and' }, correctAnswer: 'A' },
+                { id: '112', questionText: 'The Bradyville Inn ______ live jazz music in the dining area on Friday evenings.', options: { A: 'features', B: 'marks', C: 'sounds', D: 'collects' }, correctAnswer: 'A' },
+                { id: '113', questionText: "Leeann's Organic Fruit Spreads can be purchased ______ from the company's Web site.", options: { A: 'direction', B: 'directly', C: 'directness', D: 'directed' }, correctAnswer: 'B' },
+                { id: '114', questionText: "______ the event organizers' best efforts, they have been unable to attract enough volunteers this spring.", options: { A: 'Behind', B: 'Versus', C: 'Among', D: 'Despite' }, correctAnswer: 'D' },
+                { id: '115', questionText: 'Mr. Perez ______ as an industrial engineer at Gaberly Logistics for almost twenty years.', options: { A: 'employs', B: 'to be employed', C: 'is employing', D: 'has been employed' }, correctAnswer: 'D' },
+                { id: '116', questionText: "Soon after Ms. Manilla was hired, the sales department's productivity began to increase ______.", options: { A: 'mainly', B: 'respectively', C: 'noticeably', D: 'closely' }, correctAnswer: 'C' },
+                { id: '117', questionText: 'Small businesses ______ participate in the Get Ahead program will receive marketing tools to help them attract customers.', options: { A: 'that', B: 'they', C: 'what', D: 'whoever' }, correctAnswer: 'A' },
+                { id: '118', questionText: 'Our copy editors will review the manuscript ______ will not return it until the end of next week.', options: { A: 'or', B: 'once', C: 'either', D: 'but' }, correctAnswer: 'D' },
+                { id: '119', questionText: 'Mira Kumar was probably the ______ of all the interns at Kolbry Media last summer.', options: { A: 'ambitious', B: 'most ambitious', C: 'ambitiously', D: 'more ambitiously' }, correctAnswer: 'B' },
+                { id: '120', questionText: "Orbin's Fish Company expanded to a total of 26 stores ______ its takeover of a rival chain.", options: { A: 'whenever', B: 'toward', C: 'following', D: 'usually' }, correctAnswer: 'C' },
+                { id: '121', questionText: 'Ms. Cartwright told her team members that she wanted ______ to streamline the company\'s assembly process.', options: { A: 'theirs', B: 'they', C: 'them', D: 'themselves' }, correctAnswer: 'C' },
+                { id: '122', questionText: "Rupert's Food Service uses ______ technology to track all of its shipments.", options: { A: 'strict', B: 'numerous', C: 'advanced', D: 'crowded' }, correctAnswer: 'C' },
+                { id: '123', questionText: 'Our app includes a ______ so that users can determine whether they are within their budget goals.', options: { A: 'calculator', B: 'calculated', C: 'calculating', D: 'calculations' }, correctAnswer: 'A' },
+                { id: '124', questionText: 'To ______ that its facilities are cleaned every day, the Selboa Company has hired more janitors.', options: { A: 'ensure', B: 'affect', C: 'provide', D: 'secure' }, correctAnswer: 'A' },
+                { id: '125', questionText: 'During his term as a legislator, Jeremy Moran ______ promoted public awareness of the need for infrastructure improvements.', options: { A: 'act', B: 'action', C: 'active', D: 'actively' }, correctAnswer: 'D' },
+                { id: '126', questionText: "Pyxie Print's business is so new that we need to explain the full range of our services to ______ clients.", options: { A: 'trained', B: 'potential', C: 'elected', D: 'paid' }, correctAnswer: 'B' },
+                { id: '127', questionText: 'Phone orders that are ______ to local stores by 11:00 A.M. are eligible for same-day pickup.', options: { A: 'submitted', B: 'submission', C: 'submitting', D: 'submits' }, correctAnswer: 'A' },
+                { id: '128', questionText: 'An Oswald Hardware associate will ______ place an order for customers who need larger quantities than what is in stock.', options: { A: 'slightly', B: 'wholly', C: 'busily', D: 'gladly' }, correctAnswer: 'D' },
+                { id: '129', questionText: 'Mia Daushvili performed with the Bayhead Orchestra on Monday evening, ______ her virtuosic skills on the piccolo.', options: { A: 'displays', B: 'had displayed', C: 'displaying', D: 'was displayed' }, correctAnswer: 'C' },
+                { id: '130', questionText: 'When reviewing applicants for the clerk position, Ms. Ng will consider both education and ______ experience.', options: { A: 'prior', B: 'quick', C: 'lean', D: 'calm' }, correctAnswer: 'A' }
             ]
         }
     ]
 };
 
 const test4Part6: ReadingTestData = {
-    id: 704,
-    title: 'Part 6 - Test 4 (700+)',
-    part: 6,
+    id: 704, 
+    title: 'Part 6 - Test 4 (700+)', 
+    part: 6, 
     passages: [
-        {
-            id: 'passage-6-704-1',
-            text: `Questions 131-134 refer to the following letter.
-To the editor,
-
-An article published in the November 23 issue of Town News ("Longwood: Boom or Bust?") contains a minor (131)______ of fact. (132)______. He is actually the owner of the store. Mathew Americks is the manager.
-
-(133)______, the writer was confused because Dan's son, Ron Quinn, was the manager for some time.
-
-The owner of Longwood Sports Store is very proud of (134)______ business's vital role in the community. It is a good place to shop for various sporting goods.
-
-Sincerely,
-Janet Wilson
-Longwood resident`,
+         {
+            id: 'passage-6-4-1',
+            text: `Questions 131-134 refer to the following notice.
+D-Zine Pop
+D-Zine Pop is your source for information about the latest (131)______ in the world of fashion. What started as a social media experiment (132)______ into a content platform with subscribers in seventeen countries worldwide. We are constantly adding features to improve our user experience and share what apparel and clothing accessories are popular right now. We also make periodic updates to our terms of service. Subscribers' (133)______ access to content is contingent upon consenting to these terms; therefore, we encourage you to review and accept them at dzinepop.com/privacy. Contact our customer service team at support@dzinepop.com if you have any questions. (134)______.`,
             questions: [
-                { id: '131', questionText: 'Choose the best option for (131).', options: { A: 'error', B: 'matter', C: 'statement', D: 'report' }, correctAnswer: 'A' },
-                { id: '132', questionText: 'Choose the best option for (132).', options: { A: 'Dan Quinn has worked for Longwood Sports Store for 30 years.', B: 'This special issue will feature an article about Dan Quinn, the store manager.', C: 'He will be leaving Longwood Sports Store to pursue a contract with the new company.', D: 'Dan Quinn is identified in the article as the manager of Longwood Sports Store.' }, correctAnswer: 'D' },
-                { id: '133', questionText: 'Choose the best option for (133).', options: { A: 'However', B: 'Nevertheless', C: 'In addition', D: 'Perhaps' }, correctAnswer: 'D' },
-                { id: '134', questionText: 'Choose the best option for (134).', options: { A: 'your', B: 'her', C: 'his', D: 'our' }, correctAnswer: 'C' }
+                { id: '131', questionText: 'Choose the best option for (131).', options: { A: 'controversies', B: 'consumers', C: 'trends', D: 'versions' }, correctAnswer: 'C' },
+                { id: '132', questionText: 'Choose the best option for (132).', options: { A: 'evolving', B: 'evolution', C: 'will be evolving', D: 'has evolved' }, correctAnswer: 'D' },
+                { id: '133', questionText: 'Choose the best option for (133).', options: { A: 'continue', B: 'continued', C: 'continuation', D: 'continues' }, correctAnswer: 'B' },
+                { id: '134', questionText: 'Choose the best option for (134).', options: { A: 'Representatives are available 24 hours a day to assist you.', B: 'The changes made to our user privacy policy are no longer effective.', C: 'Fresh content is accessible through phone and desktop apps.', D: 'We are no longer offering a discounted rate if you renew your subscription.' }, correctAnswer: 'A' }
             ]
         },
         {
-            id: 'passage-6-704-2',
-            text: `Questions 135-138 refer to the following announcement.
-**Thai Cooking Lessons at the Regazzi Hotel**
-
-Learn how to cook delicious and authentic Thai food from a renowned expert. Chef Achara Srisai (135)______ a hands-on cooking lesson with genuine and traditional Thai recipes.
-
-On the first day of the two day workshop, she will introduce you to the ingredients, recipes, and cooking methods that make Thai food so unique.
-
-The second day will be your chance to create your own 3 course Thai meal under her expert guidance! Offered monthly, the lesson takes place at the Regazzi Hotel on two (136)______ Saturdays from 10:30 am to 12:30 pm. (137)______.
-
-The workshop is open to beginners and experienced cooks (138)______, so sign up today! Registration is required.`,
+            id: 'passage-6-4-2',
+            text: `Questions 135-138 refer to the following advertisement.
+Rescue your device with Phone Tune-Up
+Is your smartphone screen scratched or cracked? (135)______? Do your apps freeze or crash? The experts at Phone Tune-Up can help! We use nothing but the best quality parts to (136)______ your mobile phone. Let our certified technicians save you the time and expense involved in replacing your phone with a new one. When we are (137)______, you will think your old phone is brand new. To make an appointment, call 604-555-0198 or visit www.phonetuneup.com. Same-day service is often available (138)______ needed parts are in stock.`,
             questions: [
-                { id: '135', questionText: 'Choose the best option for (135).', options: { A: 'taught', B: 'teaches', C: 'to teach', D: 'will be taught' }, correctAnswer: 'B' },
-                { id: '136', questionText: 'Choose the best option for (136).', options: { A: 'consecutive', B: 'following', C: 'repeated', D: 'collective' }, correctAnswer: 'A' },
-                { id: '137', questionText: 'Choose the best option for (137).', options: { A: 'We will described the objectives of the seminar before beginning the first lesson.', B: "There'll be another plenary session late this afternoon after the workshop.", C: 'We will briefly described how to prepare for the workshop.', D: 'For a current schedule or to sign up, visit www.thaicookingregazzihotel.com.' }, correctAnswer: 'D' },
-                { id: '138', questionText: 'Choose the best option for (138).', options: { A: 'ahead', B: 'around', C: 'alike', D: 'along' }, correctAnswer: 'C' }
+                { id: '135', questionText: 'Choose the best option for (135).', options: { A: 'Does your printer need frequent ink refills?', B: 'Does it take all day for your battery to recharge?', C: 'Do you want to complete a short survey?', D: 'Do you pay too much for your data plan?' }, correctAnswer: 'B' },
+                { id: '136', questionText: 'Choose the best option for (136).', options: { A: 'remove', B: 'borrow', C: 'examine', D: 'repair' }, correctAnswer: 'D' },
+                { id: '137', questionText: 'Choose the best option for (137).', options: { A: 'trained', B: 'available', C: 'done', D: 'dismissed' }, correctAnswer: 'C' },
+                { id: '138', questionText: 'Choose the best option for (138).', options: { A: 'whose', B: 'must', C: 'if', D: 'of' }, correctAnswer: 'C' }
             ]
         },
         {
-            id: 'passage-6-704-3',
-            text: `Questions 139-142 refer to the following e-mail.
-From: FA@firstaidschool.com
-To: lavisksvs@gmail.com
-Sub: First-Aid Course
-Date: Sept 12
-
-Dear Mr. Lavis:
-You recently reserved a place for the October session of our first-aid course. I am writing to inform you of a change due to high (139)______ at the City Medical Center. We have separated one class into two groups, including yours, so we have changed the location to the Liverpool Boulevard clinic. The class (140)______ at the same time as originally scheduled, on Tuesday afternoons from 2 P.M. to 5 P.M.
-
-It will be taught by Sophia Henman, a nursing specialist (141)______ many years of experience. (142)______.
-
-If you are unable to attend the course, please call us at (245) 996-0247. Thank you.
-
-Yours sincerely,
-Shirley Valentine
-Administrative Secretary
-Liverpool Medical School`,
+            id: 'passage-6-4-3',
+            text: `Questions 139-142 refer to the following press release.
+FOR IMMEDIATE RELEASE
+SACRAMENTO (July 28)—The Sacramento-based supermarket chain Hsing Market announced today that it is opening a branch (139)______ in San Jose in October. It will occupy the building that once housed the Watson Office Superstore located at 1539 West Oak Street, which closed last year.
+Hsing Market CEO Alice Tran said, "We are very excited to (140)______ open a store in San Jose. (141)______. When the Watson building became available, we jumped on the opportunity to move in."
+As a neighborhood grocery store, Hsing Market prides itself on hiring applicants from the local community. Approximately 75 percent of all employees live within two miles of the store where they (142)______.`,
             questions: [
-                { id: '139', questionText: 'Choose the best option for (139).', options: { A: 'enrollment', B: 'rates', C: 'predictions', D: 'morale' }, correctAnswer: 'A' },
-                { id: '140', questionText: 'Choose the best option for (140).', options: { A: 'will have met', B: 'met', C: 'will meet', D: 'meeting' }, correctAnswer: 'C' },
-                { id: '141', questionText: 'Choose the best option for (141).', options: { A: 'for', B: 'with', C: 'in', D: 'from' }, correctAnswer: 'B' },
-                { id: '142', questionText: 'Choose the best option for (142).', options: { A: 'Again, we apologize for having to cancel the class on such short notice.', B: 'We apologize for any inconvenience this change of venue may cause.', C: 'We sincerely apologize for the delay and any inconvenience this may have caused.', D: 'We apologize, but we cannot accept these terms at this time.' }, correctAnswer: 'B' }
+                { id: '139', questionText: 'Choose the best option for (139).', options: { A: 'location', B: 'locate', C: 'to locate', D: 'locating' }, correctAnswer: 'A' },
+                { id: '140', questionText: 'Choose the best option for (140).', options: { A: 'finally', B: 'instead', C: 'likewise', D: 'suddenly' }, correctAnswer: 'A' },
+                { id: '141', questionText: 'Choose the best option for (141).', options: { A: 'The store features a variety of fresh and prepared foods.', B: 'We hope that you will be able to join us at our grand-opening celebration.', C: 'We have had our eyes on the city for quite some time.', D: 'Our corporate headquarters will be renovated soon.' }, correctAnswer: 'C' },
+                { id: '142', questionText: 'Choose the best option for (142).', options: { A: 'save', B: 'work', C: 'shop', D: 'register' }, correctAnswer: 'B' }
             ]
         },
         {
-            id: 'passage-6-704-4',
-            text: `Questions 143-146 refer to the following letter.
-Dear Ms. Jackson,
-Thank you for your application for a Sun debit card. (143)______.
-
-We'd like to welcome you as an (144)______ member of Sun Financial Services!
-
-You'll find an enclosed brochure containing all the information you need.
-
-Please remember that we can serve you best if our information about you is up to date. (145)______ your personal circumstances change-for example, your place of employment, financial situation, address, etc. — please notify the customer service office straight away.
-
-Don't hesitate to contact me or another customer service officer at (054) 555-2357 if you have any questions. (146)______, try our e-mail at finance@sunfs.com.`,
+            id: 'passage-6-4-4',
+            text: `Questions 143-146 refer to the following Web page information.
+About Leafi Cloth
+Tropick Textiles recently expanded the (143)______ of fabrics available on the market. In its quest to introduce environmentally friendly alternatives to cotton and other traditional fibers, the company (144)______ a new fiber made from materials that are typically discarded. Tropick Textiles takes banana and pineapple leaves and combines them with bamboo fibers to create Leafi Cloth. The plants' leaves are ordinarily disposed of (145)______ the fruit is harvested. Tropick Textiles' process prevents many leaves from entering a landfill, converting them instead into usable material. (146)______.`,
             questions: [
-                { id: '143', questionText: 'Choose the best option for (143).', options: { A: 'We are pleased to open a new customer service center.', B: 'We are sorry to inform you that your application has been rejected.', C: 'We are pleased to advise you that your application has been accepted.', D: 'We are happy to inform you that your promotion has been approved.' }, correctAnswer: 'C' },
-                { id: '144', questionText: 'Choose the best option for (144).', options: { A: 'equivalent', B: 'outstanding', C: 'official', D: 'intended' }, correctAnswer: 'C' },
-                { id: '145', questionText: 'Choose the best option for (145).', options: { A: 'Should', B: 'Could', C: 'Had', D: 'Did' }, correctAnswer: 'A' },
-                { id: '146', questionText: 'Choose the best option for (146).', options: { A: 'Favorably', B: 'Alternatively', C: 'Originally', D: 'Accordingly' }, correctAnswer: 'B' }
+                { id: '143', questionText: 'Choose the best option for (143).', options: { A: 'range', B: 'expense', C: 'strength', D: 'appearance' }, correctAnswer: 'A' },
+                { id: '144', questionText: 'Choose the best option for (144).', options: { A: 'are developed', B: 'has developed', C: 'will develop', D: 'to develop' }, correctAnswer: 'B' },
+                { id: '145', questionText: 'Choose the best option for (145).', options: { A: 'now', B: 'thus', C: 'even', D: 'once' }, correctAnswer: 'D' },
+                { id: '146', questionText: 'Choose the best option for (146).', options: { A: 'The resulting durable fabric is a suitable substitute for cotton cloth.', B: 'Inquiries regarding Leafi Cloth were directed to the sales department.', C: 'Tropick Textiles will celebrate its one-hundredth anniversary this year.', D: 'Manufacturing costs have been increasing for Tropick Textiles lately.' }, correctAnswer: 'A' }
             ]
         }
-    ]
+    ] 
 };
 
 const test4Part7: ReadingTestData = {
-    id: 704,
-    title: 'Part 7 - Test 4 (700+)',
-    part: 7,
+    id: 704, 
+    title: 'Part 7 - Test 4 (700+)', 
+    part: 7, 
     passages: [
         {
-            id: 'passage-7-704-1',
-            text: `**Looking for Senior Office Administrator**
-We have an immediate full-time position available at a busy law office in Norfolk. The candidate must be proficient at all clerical and basic accounting procedures. Must be comfortable with multi-tasking and have excellent interpersonal skills. Experience with standard spreadsheet programs is a must.
-Hours: 9 A.M. to 5 P.M., Monday - Friday.
-We offer a competitive salary plus health benefits and paid vacation.
-For more information, please email: charrison@norfolklaw.com.`,
-            questions: [
-                { id: '147', questionText: 'What type of business placed in this advertisement?', options: { A: 'A telephone company', B: 'An accounting firm', C: 'A computer store', D: 'A law firm' }, correctAnswer: 'D' },
-                { id: '148', questionText: 'What is NOT indicated about the position?', options: { A: 'It requires working on the computer.', B: 'It is full-time.', C: 'It requires working on the weekend.', D: 'It includes benefits.' }, correctAnswer: 'C' }
-            ]
-        },
-        {
-            id: 'passage-7-704-2',
-            text: `**Raily (3:34)**: Sally. Did you hear that Mr. Rutherford is retiring next month?
-**Sally (3:45)**: Yes, and he has mentioned Ms. Richmond as his possible replacement. She has been his faithful assistant for over 20 years, and Mr. Rutherford has a strong belief in her loyalty and sincerity.
-**Sally (3:46)**: But I don't think she's qualified for a marketing director. What do you think?
-**Raily (3:47)**: Well, I have to admit that she has done a great job for Mr. Rutherford, but ever since Ms. Roseberry has been with us, she has accomplished many things that made us what we are right now.
-**Sally (3:48)**: I'm totally with you. Let's promote her, then!`,
-            questions: [
-                { id: '149', questionText: 'What is special about Ms. Richmond?', options: { A: 'She has been a marketing director for 20 years.', B: 'She is renowned as a brilliant speaker.', C: 'She is retiring next month.', D: 'She has been assisting Mr. Rutherford for over 20 years.' }, correctAnswer: 'D' },
-                { id: '150', questionText: 'At 3:48, what does Sally mean when she writes, "I\'m totally with you"?', options: { A: 'Ms. Roseberry has made outstanding contributions to the company.', B: 'Mr. Rutherford is a sincere worker.', C: 'Ms. Richmond knows everything the company needs.', D: 'Raily provides great customer service.' }, correctAnswer: 'A' }
-            ]
-        },
-        {
-            id: 'passage-7-704-3',
-            text: `**To:** All employees
-**From:** Sarah McCaffrey <smccaffrey@infosearch.ca>
-**Date:** Wednesday 29 November
-**Subject:** Recognition Banquet
-
-It's the event you've all been waiting for. It's time for Info Search's annual employee banquet. Come and join us on December 28th for a night of great food, our yearly awards and even some live music by jazz musicians. This is a wonderful opportunity for all of our employees to have some fun and be recognized for their accomplishments this year. All pertinent information can be found below. Please RSVP to Sarah McCaffrey by next Friday at smccaffrey@infosearch.ca if you plan to attend.
-
-**Date:** Thursday, December 28
-**Time:** 18:00-23:00
-**Place:** Ambassador Hotel Banquet Hall (Second Floor)`,
-            questions: [
-                { id: '151', questionText: 'According to the e-mail, why is the company holding the event?', options: { A: 'To promote a new product', B: 'To recognize the achievements of employees', C: 'To improve relationships with clients', D: 'To set goals for the upcoming year' }, correctAnswer: 'B' },
-                { id: '152', questionText: 'What will the event feature?', options: { A: 'Live music', B: 'Dancing', C: 'Cash prizes', D: 'Sales presentations' }, correctAnswer: 'A' }
-            ]
-        },
-        {
-            id: 'passage-7-704-4',
-            text: `**Nice Room in Spacious Loft**
-
-Looking for a new roommate for 2 bedroom loft starting on January 1st. The location is great and very convenient, only a short walk to subway lines 2 and 5.
-The interior is quite charming with large windows and high ceilings. Loft includes a sizeable kitchen, living room, and 2 full bathrooms. Trash collection and water are included in monthly rent; all other utilities are split evenly. There is no parking included, but there is a garage across the street that offers monthly rental. For more information, call 840-619-1091.`,
-            questions: [
-                { id: '153', questionText: 'What is the purpose of the notice?', options: { A: 'Notify residents of an increase in utility fees', B: 'Advertise a room for rent', C: 'Announce a new subway line', D: 'Recruit a manager for an apartment building' }, correctAnswer: 'B' },
-                { id: '154', questionText: 'What is included in the notice?', options: { A: 'All utilities are included in the rent.', B: 'Residents must share a bathroom.', C: 'It is close to the subway.', D: 'Onsite parking is available.' }, correctAnswer: 'C' }
-            ]
-        },
-        {
-            id: 'passage-7-704-5',
-            text: `**To:** Felicia Thomas <fethomas@zdot.com>
-**From:** Joe Amici <jamici@amicis.com>
-**Date:** June 3
-**Subject:** Party on June 24
-
-Dear Ms. Thomas:
-I am writing to confirm the order you faxed on June 1 for your dinner party. — [1] —. The order indicates that you would like our lasagna and salad combination for 10 people. — [2] —. Each lasagna tray serves approximately 5 people, so I suggest you order one meat and one vegetarian.
-— [3] —. I would also like to offer you our cheesecake dessert package for only an additional thirty dollars. It is a great way to finish off a dinner party.
-— [4] —. Please let me know the final details of your order by June 20. We will have everything prepared and delivered to your home by 5 P.M. on June 24.
-Thank you for choosing Amici's Italian Restaurant for your catering needs.
-Joe Amici, Owner, Amici's Italian Restaurant`,
-            questions: [
-                { id: '155', questionText: 'What is the purpose of the e-mail?', options: { A: 'To reschedule a party', B: 'To offer a discount on delivery', C: 'To advertise a new restaurant', D: 'To finalize the details of an order' }, correctAnswer: 'D' },
-                { id: '156', questionText: 'How many people does Ms. Thomas expect to attend her party?', options: { A: '5', B: '10', C: '15', D: '20' }, correctAnswer: 'B' },
-                { id: '157', questionText: 'In which of the positions marked [1], [2], [3] and [4] does the following sentence best belong? "You also inquired about a vegetarian option."', options: { A: '[1]', B: '[2]', C: '[3]', D: '[4]' }, correctAnswer: 'B' }
-            ]
-        },
-        {
-            id: 'passage-7-704-6',
-            text: `**TO:** All employees
-**FROM:** Brian Lawton IDD Manager
-**DATE:** March, 17
-
-In mid-April, Internal Development Department (IDD) will offer a seminar entitled Successful Selling. This session is designed to provide you with the necessary tools you need to deliver compelling and effective sales pitches and proposals. In addition, the seminar will offer tips reducing the stress involved in delivering a speech or presentation.
-
-The workshop will be held on Friday, April 14th, from 9:00 A.M. -11:45 A.M., in Conference Room #2 of State Street office building. The presenter will be New York-based John LaFontaine, who has given more than 500 seminars and workshops across North America over his prestigious 15-year career. His seminars are always well attended, in part because of his remarkable ability to explain complicated topics in a simple and entertaining way. Those who have experienced any of his previous lectures delivered to our company will vouch for the quality of his presentations. To register for this seminar please contact Ryan Callahan at extension 4611, or send him an e-mail at rcallahan@mbsc.com no later than April 10th.
-
-This seminar is part of an ongoing series of IDD sales training workshops. Previous seminars covered such topics as efficient internet-searching techniques, time management proficiency, and group-communication skills. Topics that IDD plans to feature in the months to come will include effective phone communication, productive leadership, and successful negotiation skills.`,
-            questions: [
-                { id: '158', questionText: 'What is the purpose of the memo?', options: { A: 'To inform employees of a deadline for a project', B: 'To publicize an educational session', C: 'To ask for volunteers to give a presentation', D: 'To introduce a new employee' }, correctAnswer: 'B' },
-                { id: '159', questionText: 'What is indicated about John LaFontaine?', options: { A: 'He will be visiting the company for the first time.', B: 'He conducts workshops in his New York office.', C: 'He has traveled to foreign countries on business.', D: 'He is an experienced presenter.' }, correctAnswer: 'D' },
-                { id: '160', questionText: 'What is NOT a topic discussed at previous seminars?', options: { A: 'How to successfully negotiate', B: 'How to search the Internet', C: 'How to communicate in a group', D: 'How to manage your time' }, correctAnswer: 'A' }
-            ]
-        },
-        {
-            id: 'passage-7-704-7',
-            text: `**James (10:22):** Donna, as you know, I am organizing this year's local textile industry conference to be held next month. Could you recommend a good place to hold the reception?
-**Daniel (10:23):** Oh, it is you that are assigned the project, James.
-**James (10:27):** Yeah, Daniel. Donna, I remember that the hotel we used for our annual company banquet was fully equipped and the service was great!
-**Donna (10:30):** Sure, I think the Imperial Hotel might be one of the best options. Last year, I actually looked into several local hotels but had to decide to go with that one because it had much more extensive menu options than the other hotels had. Please keep in mind that it was a little more expensive.
-**Daniel (10:31):** Right. The venue was great in many ways, Donna.
-**James (10:32):** However, that's too bad. The budget is pretty limited. Do you remember how much they charged you?
-**Donna (10:34):** No, I'm sorry, but Mr. Potter has a copy of the contract. I will ask him to email it if you want.`,
-            questions: [
-                { id: '161', questionText: 'What does James request from Donna?', options: { A: 'A venue suggestion', B: 'Restaurant information', C: 'A travel destination', D: 'A flight schedule' }, correctAnswer: 'A' },
-                { id: '162', questionText: 'Why did Donna choose the Imperial Hotel last year?', options: { A: 'It offers a free pick-up service.', B: 'It has a lower price than others.', C: 'It has a wide selection of dishes.', D: 'It is well known for its unique interior.' }, correctAnswer: 'C' },
-                { id: '163', questionText: 'What does the Donna offer to do?', options: { A: 'Look up contact information on a website', B: 'Ask a colleague for some documents', C: 'Reserve a hotel in advance', D: 'Send a letter of recommendation' }, correctAnswer: 'B' },
-                { id: '164', questionText: 'At 10:32, what does James mean when he writes, "That\'s too bad"?', options: { A: 'A venue for an event is not affordable.', B: 'Mr. Potter has lots of paperwork.', C: 'An event hall is not equipped.', D: 'He forgot to make organization for a fair.' }, correctAnswer: 'A' }
-            ]
-        },
-        {
-            id: 'passage-7-704-8',
-            text: `**James River Landing Condominiums**
-The James River Landing Condominiums combine an authentic urban environment with the natural amenities of the James River. With both city and river views to choose from, it's the perfect blend of work and leisure, located just 3 minutes from downtown Richmond.
-You can be one of the first to buy one of these luxurious condominiums. Standard features include granite countertops, stainless steel appliances, hardwood floors, and two reserved parking places in the onsite parking garage. There will also be a fitness center that will be completed this fall.
-Please join us for our first open houses on August 7th and 8th. We also invite you to join us for our grand opening party on August 9th which will include hors d'oeuvres, wine, and tours of the different floor plans. All attendees will also be entered into a drawing with a chance to win gift certificates to downtown restaurants and attractions. Anyone who signs a contract by August 31st will receive $2,000 towards closing costs.
-For more information, please visit our website at www.jamesriverlanding.com`,
-            questions: [
-                { id: '165', questionText: 'What is suggested about the James River Landing Condominiums?', options: { A: 'They were recently constructed.', B: 'They are inexpensive.', C: 'They are for rent.', D: 'There is a waiting list.' }, correctAnswer: 'A' },
-                { id: '166', questionText: 'What is NOT currently available at the James River Landing Condominiums?', options: { A: 'Onsite parking', B: 'Stainless steel appliances', C: 'Hardwood floors', D: 'Fitness center' }, correctAnswer: 'D' },
-                { id: '167', questionText: 'When will the opening party be held?', options: { A: 'August 7th', B: 'August 8th', C: 'August 9th', D: 'August 31st' }, correctAnswer: 'C' },
-                { id: '168', questionText: 'What is offered to people who sign a contract by the end of August?', options: { A: 'A free upgrade', B: 'Money towards closing costs', C: 'A gift certificate', D: 'A discount on the sales price' }, correctAnswer: 'B' }
-            ]
-        },
-        {
-            id: 'passage-7-704-9',
-            text: `**Toronto Central Bank**
-To open a standard checking account with Toronto Central Bank, an applicant must:
-- be a resident of Canada;
-- provide proof of residence for a credit card statement, mortgage document, or utility bill that clearly shows the applicant's mailing address; and
-- verify identification with a passport or government issued ID.
-Some of the services provided for a standard checking account include:
-- Instant cash ATM card: access cash at thousands of cash machines across North America;
-- Free online banking: view your account, pay bills, and transfer money all from the comfort of your home
-- #1 ranked customer service: benefit from our industry-leading service department online or by telephone 24 hours a day, 365 days a year;
-- Free savings account: customers with an average monthly balance of $1000 or higher will have access to a savings account at no additional charge.`,
-            questions: [
-                { id: '169', questionText: 'For whom was the notice written?', options: { A: 'Government employees', B: 'Applicants for a cashier position', C: 'Potential bank customers', D: 'Credit card companies' }, correctAnswer: 'C' },
-                { id: '170', questionText: 'What is a requirement for opening an account?', options: { A: 'A balance transfer from another bank', B: 'A minimum balance of $1000', C: 'A phone call to customer service', D: 'A document confirming identification' }, correctAnswer: 'D' },
-                { id: '171', questionText: 'According to the notice, what is offered with an account?', options: { A: 'Free financial consultation', B: 'A free safety deposit box', C: 'A discount on credit card rates', D: 'Online bill payment' }, correctAnswer: 'D' }
-            ]
-        },
-        {
-            id: 'passage-7-704-10',
-            text: `Dear Mr. Sanchez,
-In our meeting last week with you and your fiancee, you expressed an interest in reserving our largest banquet hall for your wedding reception on August 18. At the time, I made a tentative reservation and sent a contract to you. —[1]—. I requested that the contract be signed and returned to my attention within ten business days. —[2]—.
-I need to know if you still intend to make use of our facilities as soon as possible. If not, we have another couple that is interested in the same banquet hall and is prepared to make a deposit. —[3]—. If I do not hear from you within the next 48 hours, I'm going to assume that you're no longer interested and will cancel the reservation. —[4]—. If you want to keep the reservation, please contact me as soon as possible. Should you no longer have the original contract, I would be more than happy to send you another copy. I look forward to your response.
-Sheila Brown, Event Coordinator`,
-            questions: [
-                { id: '172', questionText: 'Why is this e-mail written?', options: { A: 'To invite a friend to a wedding', B: 'To apologize for a clerical mistake', C: 'To request a response from a customer', D: 'To complain about poor service' }, correctAnswer: 'C' },
-                { id: '173', questionText: 'What does the letter suggest about Ms. Brown?', options: { A: 'She has cancelled a reservation.', B: 'She is getting married.', C: 'She has spoken to Mr. Sanchez previously.', D: 'She forgot to send the contract.' }, correctAnswer: 'C' },
-                { id: '174', questionText: 'The word "intend" in paragraph 2, line 1 is closest in meaning to', options: { A: 'finish', B: 'plan', C: 'reserve', D: 'communicate' }, correctAnswer: 'B' },
-                { id: '175', questionText: 'In which of the positions marked [1], [2], [3] and [4] does the following sentence best belong? "As of this morning, I have not yet received the executed contract."', options: { A: '[1]', B: '[2]', C: '[3]', D: '[4]' }, correctAnswer: 'B' }
-            ]
-        },
-        {
-            id: 'passage-7-704-11',
-            text: `Dear Mr. Hudson,
-According to our records, you leased a car from us a year ago. With winter fast approaching, you might consider having the vehicle brought in for its regular maintenance inspection. We would recommend that you call or email to schedule a time for you to bring the car to our service center. The car you leased from us has a five-year warranty which includes annual maintenance checks to ensure that the car is running smoothly and any defects are repaired.
-You should consider having your car inspected now even if it seems to be working perfectly. Simple equipment check-ups made now can save a great deal of money in repairs and replacements in the long run. Furthermore, you should not wait until the middle of winter to have your vehicle checked. It may take longer for us to schedule a service because so many others will be making similar appointments.
-Linda Anderson
+            id: 'passage-7-4-1',
+            text: `Zippy Petrol Mart
+M64 Motorway
+Leicester
+0113 4960423
+23 May
 ---
-**To:** landerson@apexcars.com
-**From:** khudson@unitedinsurance.com
-**Date:** November 3
-**Subject:** car inspection
-Dear Ms. Anderson,
-I received your letter regarding the car inspection. With the exception of routine oil changes, the vehicle has not been looked at since I signed the lease just over a year ago. So now would definitely be a good time to have it serviced. The car does not seem to be running as efficiently as before. I believe the brake pads in particular need to be looked into and possibly replaced. Will you be able to schedule an appointment sometime within the next ten days?
-I would also like to look into replacing the all-season tires with some winter tires. Could you please provide a quote for how much this would cost, including installation? Please contact me at 718-555-2369 to confirm a specific time for my appointment.
-Thank you.
-Ken Hudson, Human Resources Director, United Insurance`,
+Biscuits £2.00
+Fruit cup £0.95
+Crisps £1.10
+VAT Inclusive £0.81
+Total £4.86
+---
+Sign up for our Zippy Club rewards card. You could have earned 4 Zippy Club points on this transaction. Points can be used for discounted merchandise, car products, phone accessories, and more!`,
             questions: [
-                { id: '176', questionText: 'What is the purpose of the letter?', options: { A: 'To inquire about a warranty claim', B: 'To recommend a service', C: 'To report inspection results', D: 'To confirm an appointment' }, correctAnswer: 'B' },
-                { id: '177', questionText: 'According to Ms. Anderson, why should the inspection be scheduled promptly?', options: { A: 'It will be difficult to schedule an inspection later on', B: 'Winter cold can be hard on vehicles', C: 'A manufacturing error has been detected', D: 'Warranty will expire in the middle of the winter' }, correctAnswer: 'A' },
-                { id: '178', questionText: 'When did the car have its last inspection?', options: { A: 'Five years ago', B: 'One week ago', C: 'One month ago', D: 'One year ago' }, correctAnswer: 'D' },
-                { id: '179', questionText: "What is suggested about Mr. Hudson's vehicle?", options: { A: 'It was inspected recently.', B: 'It is broken.', C: 'It is in perfect condition.', D: 'It was quite efficient about 12 months ago.' }, correctAnswer: 'D' },
-                { id: '180', questionText: 'In the e-mail, the phrase "looked at" in paragraph 1, line 2 is closest in meaning to', options: { A: 'hold onto', B: 'examined', C: 'purchased', D: 'appointed' }, correctAnswer: 'B' }
+                { id: '147', questionText: 'What was purchased on May 23?', options: { A: 'Fuel', B: 'Snacks', C: 'Auto parts', D: 'Phone accessories' }, correctAnswer: 'B' },
+                { id: '148', questionText: 'What does the receipt indicate about Zippy Petrol Mart?', options: { A: 'It has multiple locations.', B: 'It accepts most major credit cards.', C: 'It has a customer rewards program.', D: 'It reduced the prices of all its merchandise.' }, correctAnswer: 'C' }
             ]
         },
         {
-            id: 'passage-7-704-12',
-            text: `**To:** All employees
-**From:** Betty Simmons <bettysms@worldmail.com>
-**Date:** November 21
-**Subject:** Annual Year End Party
-
-As another year comes to a close, we're pleased to announce the date of this year's Year End party. We're very lucky to have such a special group of employees who are always eager to participate in our company's social engagements. This year's party will be held on Saturday, December 18 from 5 P.M. to 10 P.M. at the Majestic Suites Hotel, the exact venue as last year.
-The company will be supplying food, beverages, and musical entertainment. Sign-up sheets will be posted in the employee break room from now until December 8. In order to receive a ticket, you must sign up if you plan to attend.
-Our administrative staff have been working hard to plan this special day so please sign-up as soon as possible. We look forward to another memorable event.
-Regards, Betty
----
-**To:** Betty Simmons <bettysms@worldmail.com>
-**From:** Andrew Fitzpatrick <andrewfzp@zmail.com>
-**Date:** November 22
-**Subject:** Year End Party
-
-As you may already know, we have recently formed a company basketball team. About ten people have joined so far, and we have been playing every Saturday at the Swift Creek High School Gym for the last few months. After receiving your e-mail about the company's Year End Party, I immediately realized that we have a game scheduled for the same date at 6 P.M. I know everyone involved will want to attend both events but I don't think we'll be able to reschedule the game. Would it be possible to change the date of the Year End Party instead? If you are willing to consider it, I would be happy to help make the arrangements and check the availability of the hotel banquet halls.
-Sorry for the inconvenience.`,
+            id: 'passage-7-4-2',
+            text: `Coming Soon: The Best of PBQ Radio
+During the week of April 21-27, PBQ Radio will be hosting a best-of-the-decade program. The most popular tunes by recording artists from the past decade will be played all day long. Both well-known and lesser-known recording artists will be featured. We plan to showcase each artist's top works.
+In addition to featuring the best music of the decade, we would like to highlight our region's businesses. Advertising time is available for purchase. Let our listeners know that your business is one of the best in the community! You can request a shout-out for your company from a program host, or our professional marketing team can write and record a 30-second advertisement.
+Visit www.pbqradio.com/advertise for details and pricing.`,
             questions: [
-                { id: '181', questionText: 'By when must employees indicate whether they will attend the Year End party?', options: { A: 'November 21', B: 'November 22', C: 'December 8', D: 'December 18' }, correctAnswer: 'C' },
-                { id: '182', questionText: "What is suggested about the company's events?", options: { A: "They are open to employees' family members.", B: 'They have been well attended in the past.', C: 'They are held at a different venue each year.', D: 'They usually include organized games.' }, correctAnswer: 'B' },
-                { id: '183', questionText: 'In the second e-mail, the word "formed" in line 1 is closest in meaning to', options: { A: 'coached', B: 'established', C: 'shaped', D: 'moved' }, correctAnswer: 'B' },
-                { id: '184', questionText: 'Why did Mr. Fitzpatrick send the e-mail to Ms. Simmons?', options: { A: 'To inform her that he cannot attend the event', B: 'To find out if refreshments are being provided by the hotel', C: 'To suggest that the company change the date of the event', D: 'To inquire about creating a company basketball team' }, correctAnswer: 'C' },
-                { id: '185', questionText: 'What did Mr. Fitzpatrick indicate about the party?', options: { A: 'The hotel is too far away.', B: 'The date is too close to Christmas.', C: 'The date conflicts with a company basketball game.', D: 'The date and time are perfect.' }, correctAnswer: 'C' }
+                { id: '149', questionText: 'For whom most likely was the notice written?', options: { A: 'Radio-show hosts', B: 'New recording artists', C: 'Business owners', D: 'Sound technicians' }, correctAnswer: 'C' },
+                { id: '150', questionText: 'What is true about PBQ Radio?', options: { A: 'It has been in business for ten years.', B: 'It is looking for experienced musicians.', C: 'It was voted the best station in the community.', D: 'It has its own marketing department.' }, correctAnswer: 'D' }
             ]
         },
         {
-            id: 'passage-7-704-13',
-            text: `**HTS Medical Seminars**
-1400 Westbury Avenue, Sarasota, Florida 60279
-Join fellow doctors from across the country for education seminars in a variety of fields. HTS seminars are led by some of today's top physicians at our Rowland Campus. All courses are accredited by American Council of Continuing Medical Education.
-Early registration is recommended as attendance is limited to 100 participants per seminar. Register online at www.htsmedseminars.com or call Valerie Bradshaw at 703-479-5500 for more information.
----
-**Upcoming Seminars Schedule**
-- Sep 3 (1-4 PM): Emergency Medicine, Dr. Walter Canfield
-- Sep 9 (3-5 PM): Primary Care and Women's Health, Dr. Michelle Leak
-- Sep 18 (12-3 PM): Infectious Diseases, Dr. Harold Kumar
-- Sep 22 (6:30-9 PM): Pediatric Medicine, Dr. John Kang
----
-**Tuition Payments**
-$130 if registered by August 10
-$140 if registered by August 17
-$150 if registered by August 24
-$175 at seminar (if seats are available)
----
-**HTS ONLINE REGISTRATION FORM**
-Name: Donald Sterling
-I am registering for: September 22
-Registration submitted on: August 18`,
+            id: 'passage-7-4-3',
+            text: `Frank Jabati [11:12 A.M.]: Hi, Maxine. I'm running late with this delivery today. Could you contact Ms. Dibello to let her know?
+Maxine Larsen [11:13 A.M.]: Sure! I know that she is eager to get those new items. She says she needs to set up her kitchen properly so that she can prepare a special meal tonight. What time do you think you will arrive there?
+Frank Jabati [11:15 A.M.]: I'm not sure—the road I was taking was closed for repairs. The detour road has heavy traffic.
+Maxine Larsen [11:17 A.M.]: Sorry to hear that. What's your estimate?
+Frank Jabati [11:19 A.M.]: Maybe around 1 P.M.
+Maxine Larsen [11:20 A.M.]: OK, great. I will get in touch with Ms. Dibello to confirm that she will be home at that time. Then I'll get back to you.
+Frank Jabati [11:22 A.M.]: Thanks!`,
             questions: [
-                { id: '186', questionText: 'For whom is the advertisement intended?', options: { A: 'Medical Students', B: 'Nurses', C: 'Facilities Managers', D: 'Doctors' }, correctAnswer: 'D' },
-                { id: '187', questionText: 'What is NOT suggested about the seminars?', options: { A: 'They are expected to be full.', B: 'They must be taken in sequence.', C: 'They are led by some of the best physicians.', D: 'They will all be held at the Rowland Campus.' }, correctAnswer: 'B' },
-                { id: '188', questionText: 'When will emergency room care be discussed?', options: { A: 'September 3', B: 'September 9', C: 'September 18', D: 'September 22' }, correctAnswer: 'A' },
-                { id: '189', questionText: 'How much will Mr. Sterling pay?', options: { A: '$130', B: '$140', C: '$150', D: '$175' }, correctAnswer: 'C' },
-                { id: '190', questionText: 'For what seminar is Mr. Sterling registering?', options: { A: 'Pediatric Medicine', B: 'Emergency Medicine', C: "Primary Care and Women's Health", D: 'Infectious Diseases' }, correctAnswer: 'A' }
+                { id: '151', questionText: 'What most likely has Ms. Dibello purchased?', options: { A: 'Linens', B: 'Bookshelves', C: 'Gardening tools', D: 'Appliances' }, correctAnswer: 'D' },
+                { id: '152', questionText: 'At 11:17 A.M., what does Ms. Larsen most likely mean when she writes, "What\'s your estimate"?', options: { A: 'She must verify the distance of a route.', B: 'She wants to know how much traffic there is.', C: 'She wants to know a delivery time.', D: 'She has to calculate a delivery charge.' }, correctAnswer: 'C' }
             ]
         },
         {
-            id: 'passage-7-704-14',
-            text: `**To:** Gallant Corporation employees <allemployees@GalCorp.com>
-**From:** Director, Human Resources <HRdirector@GalCorp.com>
-**Date:** November 20
-**Subject:** Fitness Center
-Dear Friends and Colleagues,
-Here at Gallant Corporation, we recognize the importance of our employees' health and fitness. That's why we have worked diligently over the past three years to ensure that our employee exercise facility is in excellent condition. We want our fitness center to cater to your needs. Over the past few years, we have purchased modern exercise equipment, renovated the men's and women's locker rooms, and developed our well-known exercise and diet program, "For Your Health and Well-being".
-We would like to thank everyone who took part in our annual survey about the fitness center. Based on your suggestions, a few changes will be made. These will go into effect on January 1 of next year. Most importantly, we are extending our weekday hours; now the center will remain open for an extra three hours from Monday through Thursday. Also, long-time members will be pleasantly surprised to know that our most popular personal trainer Jenna Sanchez is to be the new manager of the fitness center.
-We would like to encourage more employees to take advantage of our fitness center and programs. Memberships, as always, are subsidized and cost only $15 monthly. Further, for a limited time, we are offering a special introductory rate for new members. If you sign up by December 31, you will only be charged $10 per month for the first three months. Contact Jenna Sanchez to learn more information.
----
-**GALLANT FITNESS CENTER: NEW SCHEDULE**
-**Hours:** Mon-Thurs 6:30AM-9:30PM, Fri-Sun 6:30AM-9:30PM
-**Classes:** Mon/Wed 12-1:30PM, Tues/Thurs 5:30-7PM, Fri 7-8:30AM, Sat 9AM-12PM, Sun CLOSED
----
-**Don't Forget!**
-1. Limit equipment time to 30 mins if others are waiting.
-2. One guest per visit, minors under 18 must be supervised.
-3. No extra fees for classes, but size is limited to 15. Register early.
-4. All new members must participate in a 30-minute safety course.
-5. Members sign in and present card to enter.`,
+            id: 'passage-7-4-4',
+            text: `To: Janet Hubschmann
+From: customerservice@readymadeofficesupplies.net
+Date: September 3
+Subject: Thank you
+
+Dear Ms. Hubschmann,
+We here at Readymade Office Supplies are excited to welcome you to our Customers Count rewards program. Your account number 41120 is now registered.
+Be sure to enter your account number to earn points on all your purchases from our Web site. You will earn one point for every dollar you spend on qualifying purchases. Redeem your points on your account page for rewards, including free two-day expedited shipping, special discounts, and more. You can still order via mail from our print catalog, over the telephone from one of our helpful representatives, or by visiting our retail locations across the United States and Canada. However, those purchases do not currently qualify for the rewards program.
+Have questions? Please visit https://www.readymadeofficesupplies.net/customerservice.`,
             questions: [
-                { id: '191', questionText: 'What is the main purpose of the e-mail?', options: { A: 'To announce the opening of a fitness center', B: 'To discuss a new diet and exercise program', C: 'To find participants for a fitness survey', D: 'To inform employees of changes at the fitness center' }, correctAnswer: 'D' },
-                { id: '192', questionText: 'What will new members receive if they sign up before the end of the year?', options: { A: 'Free registration for group classes', B: 'A discounted membership fee for all of next year', C: 'Automatic enrollment in the program, "For Your Health and Well-being"', D: 'Reduced rates for 3 months' }, correctAnswer: 'D' },
-                { id: '193', questionText: 'What are fitness center members asked NOT to do?', options: { A: 'Invite minors under 18 years old', B: 'Skip class they registered for', C: 'Take personal items into classrooms', D: 'Work out at other fitness centers' }, correctAnswer: 'C' },
-                { id: '194', questionText: 'What must new members do to use this facility?', options: { A: 'Register for instruction by a personal trainer', B: 'Attend a safety course', C: 'Undergo a health evaluation', D: 'Pay for a one-year membership' }, correctAnswer: 'B' },
-                { id: '195', questionText: 'Which of the following is NOT stated about the fitness center?', options: { A: 'Gallant Corporation is trying to improve employees\' health care.', B: 'All staff members can participate in the courses without a cost.', C: 'The fitness center allows only the card holders to use the facility.', D: 'The center is not available until 6:30 A.M. on Friday this year.' }, correctAnswer: 'D' }
+                { id: '153', questionText: 'What types of purchases earn reward points?', options: { A: 'Those made online', B: 'Those made by mail', C: 'Those made by phone', D: 'Those made in a store' }, correctAnswer: 'A' },
+                { id: '154', questionText: 'What is a benefit of the program?', options: { A: 'Invitations to retail events', B: 'Free samples', C: 'Faster shipping', D: 'Extended product warranties' }, correctAnswer: 'C' }
             ]
         },
         {
-            id: 'passage-7-704-15',
-            text: `**To:** kkennedy@globalmail.com
-**From:** deborth@whitmooreproperties.com
-**Date:** August 5
-**Subject:** Guest house location
+            id: 'passage-7-4-5',
+            text: `Native Plant Society Headquarters
+161 Sussex Street
+Sydney, NSW 2001
+15 April
 
-Dear Kevin,
-I recently came across a property for sale that may be of interest to you. I have made some initial inquiries and I believe that it may be suitable to turn into a guest house like the one you have in mind. Presently, the location would probably not attract many drive-by customers; although it is near a major road and a popular restaurant, the closest tourist area is a few kilometers away. However, the construction of an amusement park just half a kilometer away will be complete in January of next year. So it seems safe to assume that in the near future there will be an increased demand for hotels in the area. I'm emailing you a copy of the property listing. If you need more information, I will call the agency, request a tour, and have a look inside the property. If it meets your needs, we should try to make an offer below the listing price because I think the price is a bit high given the interior renovations that are required. But I must say that I'm impressed by the property's special features, which would be nice for attracting guests.
-Sincerely, Deb Orth
----
-**Real estate listing #3827**
-- Commercial building located 3 kilometers east of Seven Springs
-- Previously operated as a multi-family apartment building
-- Building has 800 square foot units (15 guest rooms), all with a kitchen and full bath
-- Includes 10 onsite parking spaces
-**Special features**
-- Amenities include an outdoor swimming pool. 7 of the 15 rooms have a view of the pool.
-- Walk up attic with 1000 square feet of storage. No renovation necessary for common areas, although individual units could use aesthetic renovations such as new carpet and paint.
----
-**From:** Kevin Kennedy
-**To:** Deb Orth
-**Received:** August 5, 6:53 PM
+Yasmine Harabi
+247 Kooljak Road
+Perth, Western Australia 6280
+Membership number 4290
 
-Hello, Mr. Orth. I've got your e-mail and the related information. That is very helpful to me. By the way, I was wondering if we can get more parking spaces. I think it's better for each room to be provided with at least 1 space for parking. If it is possible, the property would be quite good. Please let me know about this issue as soon as possible. Thank you.`,
+Dear Ms. Harabi,
+Thank you for your continued support as a society member. Given your recent move, your membership has been transferred to the chapter located in the city of Perth. We will be mailing a replacement member identification card within a few days.
+Unlike the chapter in the city of Canberra, the Perth branch meets the first Saturday of every month, so your next meeting will be in three weeks. If you have any questions, please contact us weekdays between 8:00 a.m. and 4:00 p.m. at (08) 5555 0145.
+
+Sincerely,
+Leticia Davis
+Membership Department`,
             questions: [
-                { id: '196', questionText: 'What will happen in January?', options: { A: 'A new amusement park will open.', B: 'Renovation of the building will get under way.', C: 'A restaurant will open.', D: 'The construction of a new road will begin.' }, correctAnswer: 'A' },
-                { id: '197', questionText: 'What does Deb Orth offer to do?', options: { A: 'Visit a property for sale', B: 'Negotiate a lower price', C: 'Send photographs of the property', D: 'Request some quotes from contractors' }, correctAnswer: 'B' },
-                { id: '198', questionText: 'What feature does Deb Orth consider an advantage of the building?', options: { A: 'Its recently renovated common area', B: 'Its storage space', C: 'Its swimming pool', D: 'Its new carpeting' }, correctAnswer: 'C' },
-                { id: '199', questionText: "What was the building's prior use?", options: { A: 'A multi-family apartment', B: 'An inn', C: 'A restaurant', D: 'A real estate office' }, correctAnswer: 'A' },
-                { id: '200', questionText: 'How many parking spaces does Kevin want in total?', options: { A: '5', B: '10', C: '15', D: '20' }, correctAnswer: 'C' }
+                { id: '155', questionText: 'What is the purpose of the letter?', options: { A: 'To announce a special event', B: 'To explain changes based on a relocation', C: 'To propose a new meeting time', D: 'To request updated contact information' }, correctAnswer: 'B' },
+                { id: '156', questionText: 'What is suggested about the city of Canberra?', options: { A: 'It is famous for its many gardens.', B: "It houses the headquarters of Ms. Davis' organization.", C: 'It is where Ms. Harabi previously lived.', D: "It is home to some of Australia's rarest plants." }, correctAnswer: 'C' },
+                { id: '157', questionText: 'What can be concluded about the Native Plant Society?', options: { A: 'It is under new leadership.', B: 'Its membership is growing.', C: 'It is raising membership dues.', D: 'Its chapters hold monthly meetings.' }, correctAnswer: 'D' }
+            ]
+        },
+        {
+            id: 'passage-7-4-6',
+            text: `https://www.greenroofplus.com
+Basics | Photos | Resources | News
+
+What Are Green Roofs?
+Green roofs are an energy-saving option for office buildings and homes. A green roof is one that's covered with grasses, flowers, or other plants. It lowers heating and cooling costs while increasing a structure's aesthetic appeal. This Web site is designed for sharing ideas, photos, and resources to create and maintain a green roof.
+Planting a rooftop garden is a rewarding do-it-yourself project, but special waterproofing and other preparations require the services of an experienced contractor. Costs vary widely by region, roof size, and complexity of the garden you want to create. Be sure to get estimates from at least two contractors.
+If your contractor determines that your roof can handle the extra weight of soil, plants, and irrigation, ask about the project's timeline. Small, simple rooftop gardens may take only one week to complete.`,
+            questions: [
+                { id: '158', questionText: 'According to the Web page, what can visitors to the Web site do?', options: { A: 'Discuss how to create a garden', B: 'Learn how to maximize vegetable production', C: 'Seek advice about landscaping problems', D: 'Help contractors calculate costs' }, correctAnswer: 'A' },
+                { id: '159', questionText: 'What is NOT mentioned about green roofs?', options: { A: 'They decrease energy bills.', B: 'They remove pollution from the air.', C: 'They make a structure more beautiful.', D: 'They can be installed on commercial and residential buildings.' }, correctAnswer: 'B' },
+                { id: '160', questionText: 'In paragraph 3, line 1, the word "handle" is closest in meaning to', options: { A: 'touch', B: 'control', C: 'deliver', D: 'support' }, correctAnswer: 'D' }
+            ]
+        },
+        {
+            id: 'passage-7-4-7',
+            text: `Martino Technical has been providing live sound-mixing services for more than 30 years. We use the latest technology to produce the best sound.
+The majority of our clients are heavy-metal and classic-rock musicians. Before they go on tour, we rehearse with them to ensure that the sounds are perfectly blended and balanced. In addition, we create recordings for them that they can post on social media to promote their shows.
+Our sound-mixing engineers are known for their experience and professionalism and have an impressive track record working on tours worldwide. They have worked with many popular music groups, including The Peakes, Firebrand, and Cellar Cats, and make bands sound just as good during live performances as they do on their records.
+Contact us by e-mailing information@martinotechnical.ie.`,
+            questions: [
+                { id: '161', questionText: 'What is indicated about Martino Technical?', options: { A: 'It acquires most clients through social media.', B: 'It was founded over 30 years ago.', C: 'It has received many industry awards.', D: 'It has offices throughout the world.' }, correctAnswer: 'B' },
+                { id: '162', questionText: 'The word “promote” in paragraph 2, line 4, is closest in meaning to', options: { A: 'encourage', B: 'schedule', C: 'publicize', D: 'advance' }, correctAnswer: 'C' },
+                { id: '163', questionText: 'What is NOT stated about the live sound-mixing engineers?', options: { A: 'They create promotional materials.', B: 'They have considerable expertise.', C: 'They travel abroad frequently.', D: 'They have degrees in music.' }, correctAnswer: 'D' }
+            ]
+        },
+        {
+            id: 'passage-7-4-8',
+            text: `To: Employees <employees@bonahoomenterprises.com>
+From: Marcia Noh <mnoh@bonahoomenterprises.com>
+Date: November 14
+Subject: November 28 event
+
+Dear all,
+On the evening of November 28, there will be a formal dinner to honor our company president and founder, Mr. Bonahoom. At the dinner, we will express our appreciation for his leadership over these past twenty years in making Bonahoom Enterprises a successful company and a great place to work. — [1] —.
+This event will be held in the private banquet room at Chez Bistro and is intended to be a surprise, so please avoid mentioning it to him. Those few who are involved with the setup will arrive at 5 P.M. All other attendees should come no later than 6:15 P.M. in anticipation of Mr. Bonahoom's arrival at 6:30 P.M. We expect the celebration to wrap up no later than 8 P.M. — [2] —.
+There is no need to bring a gift. — [3] —. We do ask, though, that you find time this week to sign a card for him. It can be found at Ms. Mueller's desk, inside an envelope marked "November 28."
+Finally, you are welcome to bring one guest with you to the event if you wish. — [4] —. Kindly RSVP to this e-mail so we can get a complete count of the number of attendees.
+
+All the best,
+Marcia Noh`,
+            questions: [
+                { id: '164', questionText: 'What is the main purpose of the e-mail?', options: { A: 'To ask staff to sign up to give speeches at a celebration', B: 'To find people willing to bring various items to a dinner', C: 'To invite workers to a surprise party', D: 'To look for volunteers to help plan an event' }, correctAnswer: 'C' },
+                { id: '165', questionText: 'According to the e-mail, when are most people expected to arrive?', options: { A: 'At 5:00 P.M.', B: 'At 6:15 P.M.', C: 'At 6:30 P.M.', D: 'At 8:00 P.M.' }, correctAnswer: 'B' },
+                { id: '166', questionText: 'What should people do if they want to sign a card?', options: { A: 'They should request it from Mr. Bonahoom.', B: 'They should e-mail Ms. Noh.', C: 'They should wait for it to be passed around the office.', D: "They should go to Ms. Mueller's desk." }, correctAnswer: 'D' },
+                { id: '167', questionText: 'In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong?\n"The senior staff will be presenting a commemorative plaque on behalf of the whole office."', options: { A: '[1]', B: '[2]', C: '[3]', D: '[4]' }, correctAnswer: 'B' }
+            ]
+        },
+        {
+            id: 'passage-7-4-9',
+            text: `Colin Wikander (10:23 A.M.) I have reviewed the draft of the new client questionnaire, and it looks great overall. I would make the question about bookkeeping strategies more open-ended, though. As written, it may lead respondents to give simple yes or no answers.
+Midori Sakai (10:24 A.M.) That's a good point. We'll need to fix that. I also want to add a couple of questions about how financial and tax reports have been handled in the past.
+Ela Hamidah (10:24 A.M.) I could look at the bookkeeping question to see what I can come up with.
+Colin Wikander (10:25 A.M.) Well, it's four pages already.
+Midori Sakai (10:27 A.M.) That's true. I'll just wait for Ela's revision of the third question. Then Jack Neligan can put a draft of the form up on our Web site.
+Colin Wikander (10:28 A.M.) Is it true that we are not planning to collect any paper forms?
+Midori Sakai (10:30 A.M.) We might do that, but digital collection is preferable to avoid the lag time of waiting for our clients to print, fill out, and scan the forms to send them back.`,
+            questions: [
+                { id: '168', questionText: 'What type of company do the writers most likely work for?', options: { A: 'Publishing', B: 'Accounting', C: 'Retail', D: 'Design' }, correctAnswer: 'B' },
+                { id: '169', questionText: 'What does Mr. Wikander suggest about a question?', options: { A: 'It is mislabeled.', B: 'It is difficult to read.', C: 'It should be reworded.', D: 'It should be made optional.' }, correctAnswer: 'C' },
+                { id: '170', questionText: 'At 10:25 A.M., what does Mr. Wikander most likely mean when he writes, "Well, it\'s four pages already"?', options: { A: 'He is surprised by the long answers clients gave.', B: 'He is impressed with how quickly the questionnaire is coming along.', C: 'He thinks information in the first four pages should be cut out.', D: 'He thinks the questionnaire should not be any longer.' }, correctAnswer: 'D' },
+                { id: '171', questionText: 'Why does Ms. Sakai think that paperless forms will be preferable?', options: { A: 'They allow for faster data collection.', B: 'They reduce the number of errors.', C: 'They are good for the environment.', D: 'They do not take up space in an office.' }, correctAnswer: 'A' }
+            ]
+        },
+        {
+            id: 'passage-7-4-10',
+            text: `https://www.trehospitalityassociation.com/discussion/tunisia
+I have been a member of the TRE Hospitality Association for many years, but until now, I have posted messages only on the Greece and Egypt forums. — [1] —. This is my first post on the Tunisia forum.
+I am looking for recommendations for a janitorial service on the island of Djerba. My company is opening a hotel there. Our hotel will offer 80 rooms with two restaurants on-site. — [2] —. I would like to contract with a company that can provide about four full-time custodial workers and housekeepers, plus an additional five workers on an as-needed basis for large events on our property. — [3] —.
+I may have met some of you previously at one of our hospitality conferences. If so, please remind me. In fact, I attended the most recent one in Rabat. — [4] —. I would like to reconnect!
+John Karikas, Director of Development
+Synecdoche Hotel Group`,
+            questions: [
+                { id: '172', questionText: 'Why did Mr. Karikas write the post?', options: { A: 'To promote a job fair', B: 'To request referrals to a service provider', C: 'To recommend a tourist destination', D: 'To invite colleagues to a grand opening' }, correctAnswer: 'B' },
+                { id: '173', questionText: 'What is suggested about the TRE Hospitality Association?', options: { A: 'It is based in Egypt.', B: 'It was recently expanded to include hotel owners.', C: 'It is an international organization.', D: 'It offers janitorial services.' }, correctAnswer: 'C' },
+                { id: '174', questionText: 'What is indicated about Mr. Karikas?', options: { A: 'He teaches a hospitality course.', B: 'He lives in Rabat.', C: 'He is a former restaurant owner.', D: 'He attended at least one hospitality conference.' }, correctAnswer: 'D' },
+                { id: '175', questionText: 'In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong?\n"It will also have a large meeting room."', options: { A: '[1]', B: '[2]', C: '[3]', D: '[4]' }, correctAnswer: 'B' }
+            ]
+        },
+        {
+            id: 'passage-7-4-11',
+            text: `To: Manuel Torres <m.torres@opalmail.co.uk>
+From: Anya Patel <a.patel@support.harlund.co.uk>
+Date: 3 May
+Subject: Auto insurance
+Dear Mr. Torres,
+Welcome to Harlund Ltd. We are pleased to provide you with comprehensive automobile insurance for your new vehicle. We have received your first payment of £36.00, and your coverage is now in effect. Your policy number is M413927.
+Your billing schedule is based on an annual premium of £432.00. The remaining payments of £36.00 per month are due on the fifteenth day of each month starting in June.
+You can visit us online at www.harlund.co.uk to pay bills and manage your policy. Our Web site offers easy options for managing your account information and for making payments with scheduled transfers directly from your bank.
+Should you have any questions or wish to change your policy, call the customer support centre at 020 7946 0516. In the event of a vehicle incident, please contact an agent as soon as possible at 020 7946 0520. Be sure to have your policy number at hand. Thank you for trusting Harlund Ltd. We look forward to providing you with superior service.
+Best regards,
+Anya Patel, Harlund Ltd. Customer Support Agent
+---
+*E-mail*
+To: Anya Patel <a.patel@support.harlund.co.uk>
+From: Manuel Torres <m.torres@opalmail.co.uk>
+Date: 4 May
+Subject: RE: Auto insurance
+Dear Ms. Patel,
+Thank you for the confirmation. I'm happy to have insurance from a trustworthy company. For your reference, the new car is now registered in my name.
+Although I made the initial payment to you by credit card, I plan to follow the process outlined in your e-mail for future payments.
+I also wanted to let you know that I have not yet received the insurance certificate. I looked for one that I could download from your Web site, but I could not find anything. Could you please send me a copy of the certificate?
+Sincerely,
+Manuel Torres`,
+            questions: [
+                { id: '176', questionText: 'What can be inferred about Mr. Torres?', options: { A: 'He is moving to a new home.', B: 'He recently bought a car.', C: 'He will be retiring soon.', D: 'He recently opened a bank account.' }, correctAnswer: 'B' },
+                { id: '177', questionText: 'In the first e-mail, the word “coverage" in paragraph 1, line 3, is closest in meaning to', options: { A: 'measurement', B: 'information', C: 'commentary', D: 'protection' }, correctAnswer: 'D' },
+                { id: '178', questionText: 'What does Ms. Patel recommend that Mr. Torres do?', options: { A: 'Call an agent if needed', B: 'Register at a local office', C: 'Place an order promptly', D: 'Revise an agreement' }, correctAnswer: 'A' },
+                { id: '179', questionText: 'How does Mr. Torres intend to make future payments?', options: { A: 'By cash', B: 'By credit card', C: 'By electronic transfer', D: 'By personal check' }, correctAnswer: 'C' },
+                { id: '180', questionText: 'What does Mr. Torres state that he looked for?', options: { A: 'Directions to an office', B: 'A document to download', C: 'Reviews from customers', D: 'Contact information' }, correctAnswer: 'B' }
+            ]
+        },
+        {
+            id: 'passage-7-4-12',
+            text: `Tour Schedule for Book Launch by Andrew Darr
+At each appearance, Mr. Darr will read an excerpt from his new novel, Down the Mountainside, followed by a question-and-answer session. Afterward, Mr. Darr will be available to autograph copies of his books.
+| Venue | City | Date | Time |
+|---|---|---|---|
+| Neighbourhood Books | Toronto, Ontario | 18 May | 6:00 P.M. |
+| Weinstock Books and Stationery | Ottawa, Ontario | 27 May | 7:00 P.M. |
+| Portage Avenue Books | Winnipeg, Manitoba | 6 June | 6:30 P.M. |
+| Downtown Books and Café | Regina, Saskatchewan | 15 June | 7:00 P.M. |
+---
+Book Review: Down the Mountainside
+Reviewer: Camile Lin
+Date: 15 May
+Andrew Darr, the author of the best-selling series about detective Charles Martin, will be visiting our city this week, appearing at Neighbourhood Books to promote his new novel, Down the Mountainside. The new work sees Martin investigating mysterious events at a ski resort in the French Alps.
+Darr's storytelling has come a long way since readers first met Charles Martin in The Doorbell, and this installment is Darr's strongest work to date. Fans of the stories will welcome the return of Darr's wit after a three-year wait, and newcomers to the Martin series are sure to find themselves captivated.
+The story includes the right balance of suspense and humour, with an ending that is unpredictable, even to the most devoted Darr reader. I highly recommend this book to all mystery fans. You won't be disappointed.`,
+            questions: [
+                { id: '181', questionText: 'According to the schedule, what is NOT mentioned as an activity for Mr. Darr?', options: { A: 'Reading from his book', B: 'Answering questions', C: 'Signing books for individuals', D: 'Taking photos with participants' }, correctAnswer: 'D' },
+                { id: '182', questionText: 'What city is the book reviewer from?', options: { A: 'Toronto', B: 'Ottawa', C: 'Winnipeg', D: 'Regina' }, correctAnswer: 'A' },
+                { id: '183', questionText: 'What is most likely true about Down the Mountainside?', options: { A: "It is the author's first book.", B: 'It is a collection of short stories.', C: 'It is part of a series.', D: 'It is being translated into French.' }, correctAnswer: 'C' },
+                { id: '184', questionText: 'Who is Mr. Martin?', options: { A: "A fan of the author's", B: 'A character in the book', C: 'The writer of the review', D: 'The owner of a bookstore' }, correctAnswer: 'B' },
+                { id: '185', questionText: 'According to the review, who would most likely read Down the Mountainside?', options: { A: 'People who like to read mysteries', B: 'People who enjoy novels based on true stories', C: 'People who travel frequently', D: 'People who prefer science fiction' }, correctAnswer: 'A' }
+            ]
+        },
+        {
+            id: 'passage-7-4-13',
+            text: `Annual Citrus Production in Yuma County
+- 82 tons of citrus fruit
+- Over 120,000 boxes of lemons
+- 15,000 boxes of oranges
+- 9,000 boxes of grapefruit
+- $190 million in revenue
+Employing close to 3,000 workers and contributing nearly $2 million in taxes to fund public services for the county
+-Arizona Agriculture Division
+---
+City West Bank
+455 Canyon Avenue
+Phoenix, Arizona 85007
+March 21
+Domingo Ramirez, Director
+Arizona Agriculture Division
+55 Sixth Avenue
+Yuma, Arizona 85364
+Dear Mr. Ramirez,
+I read the recent report from the Arizona Agriculture Division summarizing Yuma County's success in the citrus industry. City West Bank wants to help the Arizona Agriculture Division you lead by expanding this industry further. We offer low-interest loans and provide expert advice through our connections to area chambers of commerce and to agricultural researchers at Arizona's state universities.
+We recognize that agritourism in southwest Arizona is growing as a result of the popularity of farm tours, bird-watching, and scenic country lodging, but tourism is unlikely to surpass the strength of this region's agriculture production. We support farmers in many counties in Arizona and are poised to help the citrus growers in Yuma County. Together, we can accomplish great things.
+Cordially,
+Bianca Schreiber
+Industry Investment Programs
+---
+Schreiber Named Vice President of National Investment Strategies
+PHOENIX (January 19)—City West Bank announced today that Ms. Bianca Schreiber will be promoted to vice president of National Investment Strategies effective February 1. Ms. Schreiber currently oversees City West Bank's Industry Investment Programs, serving businesses throughout Arizona.
+Bank President William Dolle cited Ms. Schreiber's record of successful investment in the agricultural sector. "Ms. Schreiber's efforts in working with the director of the Arizona Agriculture Division have significantly boosted citrus production. Yuma County now produces as many grapefruit as it does oranges. Ms. Schreiber's keen insight will make her even more valuable to us in her new role," remarked Mr. Dolle.`,
+            questions: [
+                { id: '186', questionText: 'What does the report indicate about the Yuma County region?', options: { A: 'It does not tax fruit that is sold there.', B: 'Several types of fruit are cultivated there.', C: 'More workers are needed for agricultural jobs.', D: 'New types of fruit are being produced there.' }, correctAnswer: 'B' },
+                { id: '187', questionText: 'What is one reason Ms. Schreiber writes to Mr. Ramirez?', options: { A: 'To explain the benefits of doing business together', B: 'To clarify information in the report', C: 'To remind him to make a loan payment', D: 'To offer him advice from university agricultural researchers' }, correctAnswer: 'A' },
+                { id: '188', questionText: 'According to the letter, why do tourists visit Yuma County?', options: { A: 'To shop at farmers markets', B: 'To take pictures', C: 'To enjoy theme parks', D: 'To observe wildlife' }, correctAnswer: 'D' },
+                { id: '189', questionText: 'What is suggested about Mr. Ramirez?', options: { A: "He accepted Ms. Schreiber's proposal.", B: 'He used to be employed by City West Bank.', C: 'He is a member of the Yuma Chamber of Commerce.', D: 'He recently bought a citrus farm.' }, correctAnswer: 'A' },
+                { id: '190', questionText: 'For what accomplishment does Mr. Dolle praise Ms. Schreiber?', options: { A: 'Arranging the shipping of agricultural products', B: 'Opening many City West Bank branch offices', C: 'Helping to increase grapefruit production to 15,000 boxes', D: 'Promoting Yuma County as a vacation destination' }, correctAnswer: 'C' }
+            ]
+        },
+        {
+            id: 'passage-7-4-14',
+            text: `https://www.unetcon.org/messages_audreysmith80
+Unetcon - Message Center
+Pending Invitations
+From: Don Fitzpatrick
+Branch Manager, Wilsonville Financial
+To: Audrey Smith
+Dear Audrey,
+Please accept this invitation to connect professionally on Unetcon. I am a fellow Stonerook University graduate and am always looking to expand my network. In this case, I am also reaching out to see if you would be interested in joining the private Stonerook alumni group page to stay current with everything that our fellow graduates are up to. https://www.unetcon.org/private/stonerookugrads.
+Kind regards,
+Don Fitzpatrick
+---
+https://www.unetcon.org/private/stonerookugrads
+Stonerook University Graduates
+Check out the continued success and latest updates from Stonerook graduate Jonah Hilliard.
+Current: Director, Albright School of Business; Founder and Director, Clear Path
+Education: Master of Business Administration - Turnbull University; Bachelor of Arts in Education Studies - Stonerook University
+Professional: Mr. Hilliard has led the Albright School of Business since 2017. Between 2007 and 2017, he carried out extensive research on emerging markets in West Africa while teaching business management in Lagos, Nigeria. Two years ago, he founded Clear Path, a business that advises students from around the globe who wish to pursue studies in the United States.
+Contact: Phone: 843-555-0139; E-mail: jhilliard@mccleese.edu; Office: 403 Cordon Hall, 530 N Kensington St, Charleston, SC 29425
+---
+*E-mail*
+From: Audrey Smith <audrey_smith80@rapidonet.co.uk>
+To: Jonah Hilliard <jhilliard@mccleese.edu>
+Date: 19 September
+Subject: Referral
+Dear Jonah,
+It has been a long time since we last talked. I recently came across your profile on Unetcon and saw that you are now leading the business school at McCleese! My research in Lagos ended last year, when I accepted a position as lead consultant at Pryor and Martell. I have been based here in Manchester ever since.
+Congratulations to you on your most recent business venture—Clear Path already has quite an impressive reputation! I have a nephew who is interested in pursuing a degree in management information systems in the United States, and I was hoping I could put you both in touch so that he can take advantage of your new company's expertise in this area.
+Best,
+Audrey Smith`,
+            questions: [
+                { id: '191', questionText: 'What does the invitation indicate about Unetcon?', options: { A: 'It is a business consulting firm.', B: 'It is a financial services company.', C: 'It is an employment agency.', D: 'It is a professional networking Web site.' }, correctAnswer: 'D' },
+                { id: '192', questionText: 'According to the Web page, where is Mr. Hilliard currently working?', options: { A: 'In Lagos', B: 'In Charleston', C: 'In Wilsonville', D: 'In Manchester' }, correctAnswer: 'B' },
+                { id: '193', questionText: 'What is suggested about Ms. Smith?', options: { A: 'She taught at Stonerook University.', B: 'She works at Wilsonville Financial.', C: "She accepted Mr. Fitzpatrick's invitation.", D: 'She plans to visit Lagos this year.' }, correctAnswer: 'D' },
+                { id: '194', questionText: 'What do Ms. Smith and Mr. Hilliard have in common?', options: { A: 'They cofounded Clear Path.', B: 'They are colleagues at Pryor and Martell.', C: 'They were classmates at Turnbull University.', D: 'They both conducted research in Nigeria.' }, correctAnswer: 'D' },
+                { id: '195', questionText: "What is one purpose of Ms. Smith's e-mail to Mr. Hilliard?", options: { A: 'To request his professional services', B: 'To provide a professional reference', C: 'To conduct an informational interview', D: 'To apply for a position at Albright School of Business' }, correctAnswer: 'A' }
             ]
         }
     ]
