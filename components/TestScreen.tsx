@@ -39,7 +39,7 @@ const TestScreen: React.FC<TestScreenProps> = ({ testData, userAnswers: initialA
         if (questionId && questionRefs.current[questionId]) {
             questionRefs.current[questionId]?.scrollIntoView({
                 behavior: 'smooth',
-                block: 'center',
+                block: 'start',
             });
         }
     };

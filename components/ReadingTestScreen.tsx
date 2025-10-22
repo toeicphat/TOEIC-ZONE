@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { ReadingTestData, QuestionOption, ReadingQuestion, User, ReadingPassage } from '../types';
-import { CheckCircleIcon, XCircleIcon, ArrowLeftIcon } from './icons';
+import { ArrowLeftIcon } from './icons';
 import Timer from './Timer';
 import QuestionPalette from './QuestionPalette';
 import AddVocabPopup from './AddVocabPopup';
@@ -18,6 +18,13 @@ interface UserAnswers {
     [questionId: string]: QuestionOption | null;
 }
 
+const formatPassageText = (text: string) => {
+    let formattedText = text.replace(/\((\d{3,4})\)_{2,}/g, 
+        `<strong class="bg-blue-100 dark:bg-blue-800/50 text-blue-700 dark:text-blue-200 px-1.5 py-0.5 rounded-md shadow-sm">$&</strong>`
+    );
+    return formattedText.replace(/\n/g, '<br />');
+};
+
 const ReadingTestScreen: React.FC<ReadingTestScreenProps> = ({ testData, onBack, currentUser, durationInSeconds }) => {
     const [userAnswers, setUserAnswers] = useState<UserAnswers>({});
     const [isSubmitted, setIsSubmitted] = useState(false);
@@ -27,6 +34,9 @@ const ReadingTestScreen: React.FC<ReadingTestScreenProps> = ({ testData, onBack,
     const { selectionPopup, toastMessage, handleMouseUp, handleSaveWord } = useWordSelection(contentRef);
     const isSubmittedRef = useRef(false);
     const questionRefs = useRef<Record<string, HTMLDivElement | null>>({});
+    
+    const [activePart, setActivePart] = useState<number>(0);
+    const [scrollToQuestionId, setScrollToQuestionId] = useState<string | null>(null);
 
     const { part5Passages, part6Passages, part7Passages } = useMemo(() => {
         const p5: ReadingPassage[] = [];
@@ -56,32 +66,13 @@ const ReadingTestScreen: React.FC<ReadingTestScreenProps> = ({ testData, onBack,
         return parts;
     }, [part5Passages, part6Passages, part7Passages]);
     
-    const [activePart, setActivePart] = useState<number>(availableParts[0] || 0);
-
     useEffect(() => {
-        if (availableParts.length > 0 && !availableParts.includes(activePart)) {
+        if (availableParts.length > 0 && activePart === 0) {
             setActivePart(availableParts[0]);
         }
     }, [availableParts, activePart]);
     
-    useEffect(() => {
-        questionRefs.current = {};
-        setCurrentQuestionIdInView(null);
-    }, [activePart]);
-
-    const activePartPassages = useMemo(() => {
-        switch (activePart) {
-            case 5: return part5Passages;
-            case 6: return part6Passages;
-            case 7: return part7Passages;
-            default: return [];
-        }
-    }, [activePart, part5Passages, part6Passages, part7Passages]);
-    
-    const activePartQuestions = useMemo(() => activePartPassages.flatMap(p => p.questions), [activePartPassages]);
-    
     const allQuestions = useMemo(() => [...part5Passages, ...part6Passages, ...part7Passages].flatMap(p => p.questions), [part5Passages, part6Passages, part7Passages]);
-
 
     const handleSubmit = useCallback(() => {
         if (isSubmittedRef.current) return;
@@ -147,14 +138,40 @@ const ReadingTestScreen: React.FC<ReadingTestScreenProps> = ({ testData, onBack,
     };
     
     const handleQuestionSelect = (index: number) => {
-        const questionId = activePartQuestions[index]?.id;
-        if (questionId && questionRefs.current[questionId]) {
-            questionRefs.current[questionId]?.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start',
-            });
+        const question = allQuestions[index];
+        if (!question) return;
+
+        let part = 0;
+        const questionIdNum = parseInt(question.id);
+
+        if (questionIdNum >= 101 && questionIdNum <= 130) {
+            part = 5;
+        } else if (questionIdNum >= 131 && questionIdNum <= 146) {
+            part = 6;
+        } else if (questionIdNum >= 147 && questionIdNum <= 200) {
+            part = 7;
+        }
+
+        if (part !== 0 && availableParts.includes(part)) {
+            if (activePart !== part) {
+                questionRefs.current = {};
+                setActivePart(part);
+            }
+            setScrollToQuestionId(question.id);
         }
     };
+    
+    useEffect(() => {
+        if (scrollToQuestionId && questionRefs.current[scrollToQuestionId]) {
+            setTimeout(() => {
+                 questionRefs.current[scrollToQuestionId]?.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start',
+                });
+            }, 100); // Small delay to allow tab content to render
+            setScrollToQuestionId(null);
+        }
+    }, [scrollToQuestionId, activePart]);
     
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -170,39 +187,48 @@ const ReadingTestScreen: React.FC<ReadingTestScreenProps> = ({ testData, onBack,
             }
         );
 
-        const refs = questionRefs.current;
-        const validRefs = Object.values(refs).filter(ref => ref !== null) as HTMLDivElement[];
-        validRefs.forEach((ref) => observer.observe(ref));
+        const currentRefs = Object.values(questionRefs.current).filter(Boolean) as HTMLDivElement[];
+        currentRefs.forEach((ref) => observer.observe(ref));
 
         return () => {
-            validRefs.forEach((ref) => observer.unobserve(ref));
+            currentRefs.forEach((ref) => observer.unobserve(ref));
         };
-    }, [activePartQuestions]);
+    }, [activePart, allQuestions]);
     
     const currentQuestionIndex = useMemo(() => {
-        return activePartQuestions.findIndex(q => q.id === currentQuestionIdInView);
-    }, [currentQuestionIdInView, activePartQuestions]);
+        return allQuestions.findIndex(q => q.id === currentQuestionIdInView);
+    }, [currentQuestionIdInView, allQuestions]);
 
 
     const renderQuestion = (q: ReadingQuestion) => (
         <div key={q.id} id={q.id} ref={el => { if (el) questionRefs.current[q.id] = el; }} className="scroll-mt-24">
-            <p className="text-lg text-slate-800 dark:text-slate-200 mb-4 font-semibold flex items-baseline">
-                <button
-                    onClick={() => handleMarkForReview(q.id)}
-                    className={`font-semibold rounded-md px-2 py-0.5 transition-colors mr-2 ${
-                        markedForReview.has(q.id)
-                        ? 'bg-yellow-200 text-yellow-800 hover:bg-yellow-300 dark:bg-yellow-800 dark:text-yellow-200 dark:hover:bg-yellow-700'
-                        : isSubmitted ? 'bg-transparent' : 'bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600'
-                    }`}
+            <div className="flex items-start gap-3 mb-4">
+                <div 
+                    className="flex items-baseline gap-2 pt-1"
+                    onClick={() => !isSubmitted && handleMarkForReview(q.id)}
                     aria-label={`Mark question ${q.id} for review`}
-                    disabled={isSubmitted}
+                    role="button"
+                    tabIndex={isSubmitted ? -1 : 0}
                 >
-                    {markedForReview.has(q.id) ? 'Unmark' : 'Mark'}
-                </button>
-                Question {q.id}
-            </p>
-            <p className="text-lg text-slate-800 dark:text-slate-300 mb-6 space-y-2" dangerouslySetInnerHTML={{ __html: q.questionText.replace(/____/g, '<span class="font-bold text-blue-600">____</span>') }} />
-            <div className="space-y-3">
+                    <span 
+                         className={`flex-shrink-0 font-semibold rounded-md px-3 py-1 transition-colors text-lg text-center cursor-pointer ${
+                            markedForReview.has(q.id)
+                                ? 'bg-yellow-200 text-yellow-800 hover:bg-yellow-300 dark:bg-yellow-800 dark:text-yellow-200 dark:hover:bg-yellow-700'
+                                : isSubmitted 
+                                    ? 'bg-transparent text-slate-800 dark:text-slate-200 cursor-default' 
+                                    : 'bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200'
+                        }`}
+                    >
+                        {q.id}
+                    </span>
+                    <p 
+                        className="text-lg text-slate-800 dark:text-slate-300 space-y-2 flex-1"
+                        dangerouslySetInnerHTML={{ __html: q.questionText.replace(/____/g, '<span class="font-bold text-blue-600">____</span>') }} 
+                    />
+                </div>
+            </div>
+            
+            <div className="space-y-3 pl-4">
                 {(Object.keys(q.options) as QuestionOption[]).map(optionKey => (
                   q.options[optionKey] && (
                      <label key={optionKey} className={`flex items-center p-4 border rounded-lg cursor-pointer transition-all duration-200 ${userAnswers[q.id] === optionKey && !isSubmitted ? 'bg-blue-100 dark:bg-blue-900/50 border-blue-500 shadow-sm' : getOptionClasses(q, optionKey)}`}>
@@ -220,31 +246,13 @@ const ReadingTestScreen: React.FC<ReadingTestScreenProps> = ({ testData, onBack,
                 ))}
             </div>
             {isSubmitted && q.explanation && (
-                <div className="mt-6 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg border-l-4 border-blue-500">
+                <div className="mt-6 ml-4 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg border-l-4 border-blue-500">
                     <h5 className="font-bold text-slate-800 dark:text-slate-200">Explanation:</h5>
                     <p className="text-slate-600 dark:text-slate-300 mt-1">{q.explanation}</p>
                 </div>
             )}
         </div>
     );
-
-    const formatPassageText = (text: string, questions: ReadingQuestion[]) => {
-        let formattedText = text;
-        const questionNumbers = questions.map(q => q.id);
-        
-        questionNumbers.forEach(num => {
-            const regex = new RegExp(`\\(${num}\\)`);
-            if (regex.test(formattedText)) {
-                 formattedText = formattedText.replace(regex, `<strong class="text-blue-600 dark:text-blue-400 font-bold">[${num}]</strong>`);
-            } else {
-                 const blankRegex = /____/;
-                 if(blankRegex.test(formattedText)) {
-                    formattedText = formattedText.replace(blankRegex, `<strong class="text-blue-600 dark:text-blue-400 font-bold">[${num}]</strong>`);
-                 }
-            }
-        });
-        return formattedText;
-    };
 
     const renderPart5 = () => {
         return part5Passages.flatMap(passage => passage.questions.map(q => (
@@ -255,29 +263,81 @@ const ReadingTestScreen: React.FC<ReadingTestScreenProps> = ({ testData, onBack,
     };
 
     const renderPart6 = () => {
-        return part6Passages.map(passage => (
-            <div key={passage.id} className="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div className="prose prose-lg max-w-none text-slate-800 dark:text-slate-200 whitespace-pre-wrap leading-relaxed lg:border-r lg:pr-8 border-slate-200 dark:border-slate-700" dangerouslySetInnerHTML={{ __html: formatPassageText(passage.text, passage.questions) }} />
-                    <div className="space-y-8">
-                        {passage.questions.map(q => renderQuestion(q))}
+        return part6Passages.map(passage => {
+            const titleIndex = passage.text.indexOf('\n\n');
+            const title = titleIndex !== -1 ? passage.text.substring(0, titleIndex) : '';
+            const body = titleIndex !== -1 ? passage.text.substring(titleIndex + 2) : passage.text;
+            
+            return (
+                <div key={passage.id} className="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
+                    {title && <p className="font-bold text-lg mb-4 text-slate-800 dark:text-slate-200">{title}</p>}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div className="prose prose-lg max-w-none text-slate-800 dark:text-slate-200 whitespace-pre-wrap leading-relaxed lg:border-r lg:pr-8 border-slate-200 dark:border-slate-700" dangerouslySetInnerHTML={{ __html: formatPassageText(body) }} />
+                        <div className="space-y-8">
+                            {passage.questions.map(q => renderQuestion(q))}
+                        </div>
                     </div>
                 </div>
-            </div>
-        ));
+            );
+        });
     };
 
     const renderPart7 = () => {
-        return part7Passages.map(passage => (
-            <div key={passage.id} className="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                     <div className="prose prose-lg max-w-none text-slate-800 dark:text-slate-200 whitespace-pre-wrap leading-relaxed lg:border-r lg:pr-8 border-slate-200 dark:border-slate-700" dangerouslySetInnerHTML={{ __html: passage.text }} />
-                    <div className="space-y-8">
-                        {passage.questions.map(q => renderQuestion(q))}
+        const groupedPassages: ReadingPassage[][] = [];
+        if (part7Passages.length > 0) {
+            let currentGroup: ReadingPassage[] = [];
+            part7Passages.forEach(passage => {
+                if (passage.questions && passage.questions.length > 0) {
+                    if (currentGroup.length > 0) {
+                        groupedPassages.push(currentGroup);
+                    }
+                    currentGroup = [passage];
+                } else {
+                    currentGroup.push(passage);
+                }
+            });
+            if (currentGroup.length > 0) {
+                groupedPassages.push(currentGroup);
+            }
+        }
+
+        return groupedPassages.map((passageGroup, groupIndex) => {
+            const mainPassage = passageGroup[0]; 
+            const allQuestionsInGroup = mainPassage.questions;
+            const questionIds = allQuestionsInGroup.map(q => parseInt(q.id, 10)).sort((a, b) => a - b);
+            
+            let titleText = '';
+            if (questionIds.length > 0) {
+                const firstId = questionIds[0];
+                const lastId = questionIds[questionIds.length - 1];
+                const passageType = passageGroup.length > 1 ? "texts" : "text";
+
+                titleText = firstId === lastId 
+                    ? `Question ${firstId} refers to the following ${passageType}.`
+                    : `Questions ${firstId}-${lastId} refer to the following ${passageType}.`;
+            }
+
+            return (
+                <div key={`group-${groupIndex}`} className="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
+                    {titleText && <p className="font-bold text-lg mb-4 text-slate-800 dark:text-slate-200">{titleText}</p>}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div className="lg:pr-8 lg:border-r border-slate-200 dark:border-slate-700">
+                            {passageGroup.map((passage, passageIndex) => (
+                                <div key={`${passage.id}-${passageIndex}`} className={passageIndex > 0 ? "mt-8 pt-8 border-t-2 border-dashed border-slate-300 dark:border-slate-600" : ""}>
+                                    <div 
+                                        className="prose prose-lg max-w-none text-slate-800 dark:text-slate-200 whitespace-pre-wrap leading-relaxed" 
+                                        dangerouslySetInnerHTML={{ __html: formatPassageText(passage.text) }} 
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                        <div className="space-y-8">
+                            {allQuestionsInGroup.map(q => renderQuestion(q))}
+                        </div>
                     </div>
                 </div>
-            </div>
-        ));
+            );
+        });
     };
     
     const renderSummary = () => {
@@ -300,61 +360,78 @@ const ReadingTestScreen: React.FC<ReadingTestScreenProps> = ({ testData, onBack,
                     <button onClick={handleTryAgain} className="px-6 py-3 bg-slate-600 text-white font-bold rounded-lg hover:bg-slate-700 transition-colors">Try Again</button>
                     <button onClick={onBack} className="px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">Back to Setup</button>
                 </div>
-                 <p className="text-center mt-6 text-slate-500 dark:text-slate-400">Scroll down to review the questions and explanations.</p>
+                 <p className="text-center mt-6 text-slate-500 dark:text-slate-400">Scroll down or select a different part to review questions and explanations.</p>
             </div>
         )
     };
 
-    const renderContent = () => (
-      <div className="lg:grid lg:grid-cols-3 lg:gap-8">
-        <div className="lg:col-span-2 space-y-12" ref={contentRef} onMouseUp={handleMouseUp}>
-            {isSubmitted && <div className="mb-12">{renderSummary()}</div>}
-            
-            {activePart === 5 && renderPart5()}
-            {activePart === 6 && renderPart6()}
-            {activePart === 7 && renderPart7()}
-        </div>
+    const renderActivePartContent = () => {
+        switch(activePart) {
+            case 5: return renderPart5();
+            case 6: return renderPart6();
+            case 7: return renderPart7();
+            default: return null;
+        }
+    }
 
-        <div className="mt-8 lg:mt-0 lg:sticky lg:top-24 lg:self-start space-y-8">
-             <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700">
-                 {durationInSeconds ? <Timer initialTime={durationInSeconds} onTimeUp={handleTimeUp} /> : <div className="text-center p-2 text-slate-500 dark:text-slate-400 font-semibold">Untimed Practice</div>}
-                 <button 
-                    onClick={() => { if(!isSubmitted && window.confirm('Are you sure you want to submit?')) handleSubmit(); }}
-                    disabled={isSubmitted}
-                    className="w-full mt-4 bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors duration-200 disabled:bg-green-300 dark:disabled:bg-green-800 disabled:cursor-not-allowed"
-                >
-                    {isSubmitted ? 'Submitted' : 'Submit Answers'}
-                </button>
-             </div>
-             <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700">
-                <h3 className="text-xl font-bold mb-4 dark:text-slate-200">Part Navigation</h3>
-                <div className="flex gap-2">
-                    {availableParts.map(partNum => (
-                        <button 
-                            key={`nav-${partNum}`}
-                            onClick={() => setActivePart(partNum)}
-                            className={`flex-1 py-2 font-semibold rounded-lg transition-colors ${activePart === partNum ? 'bg-blue-600 text-white' : 'bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600'}`}
-                        >
-                            Part {partNum}
-                        </button>
-                    ))}
+    const renderContent = () => {
+        return (
+            <div className="lg:grid lg:grid-cols-3 lg:gap-8">
+                <div className="lg:col-span-2 space-y-8" ref={contentRef} onMouseUp={handleMouseUp}>
+                    {isSubmitted && <div className="mb-12">{renderSummary()}</div>}
+                    
+                    <div className="bg-white dark:bg-slate-800 p-2 rounded-lg shadow-md flex justify-center gap-2 sticky top-20 z-20 backdrop-blur-sm bg-white/80 dark:bg-slate-800/80">
+                        {availableParts.map(partNum => (
+                            <button
+                                key={partNum}
+                                onClick={() => {
+                                    if (activePart !== partNum) {
+                                        questionRefs.current = {};
+                                        setActivePart(partNum);
+                                    }
+                                }}
+                                className={`px-6 py-2 font-semibold rounded-md transition-colors text-sm ${
+                                    activePart === partNum
+                                        ? 'bg-blue-600 text-white shadow'
+                                        : 'bg-transparent text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                                }`}
+                            >
+                                Part {partNum}
+                            </button>
+                        ))}
+                    </div>
+
+                    <div className="space-y-8">
+                        {renderActivePartContent()}
+                    </div>
                 </div>
-             </div>
-             <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700">
-                <h3 className="text-xl font-bold mb-4 dark:text-slate-200">Part {activePart} Questions</h3>
-                 <QuestionPalette 
-                    questions={activePartQuestions}
-                    answers={userAnswers} 
-                    currentQuestionIndex={currentQuestionIndex > -1 ? currentQuestionIndex : 0}
-                    onQuestionSelect={handleQuestionSelect}
-                    markedForReview={markedForReview}
-                    columns={8}
-                />
-             </div>
-        </div>
-      </div>
-    );
-    
+
+                <div className="mt-8 lg:mt-0 lg:sticky lg:top-24 lg:self-start space-y-8">
+                    <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700">
+                        {durationInSeconds && !isSubmitted ? <Timer initialTime={durationInSeconds} onTimeUp={handleTimeUp} /> : <div className="text-center p-2 text-slate-500 dark:text-slate-400 font-semibold">{isSubmitted ? 'Test Finished' : 'Untimed Practice'}</div>}
+                        <button 
+                            onClick={() => { if(!isSubmitted && window.confirm('Are you sure you want to submit?')) handleSubmit(); }}
+                            disabled={isSubmitted}
+                            className="w-full mt-4 bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors duration-200 disabled:bg-green-300 dark:disabled:bg-green-800 disabled:cursor-not-allowed"
+                        >
+                            {isSubmitted ? 'Submitted' : 'Submit Answers'}
+                        </button>
+                    </div>
+                    <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700">
+                        <h3 className="text-xl font-bold mb-4 dark:text-slate-200">Question Palette</h3>
+                        <QuestionPalette 
+                            questions={allQuestions}
+                            answers={userAnswers} 
+                            currentQuestionIndex={currentQuestionIndex > -1 ? currentQuestionIndex : 0}
+                            onQuestionSelect={handleQuestionSelect}
+                            markedForReview={markedForReview}
+                            columns={8}
+                        />
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="container mx-auto p-4 lg:p-8">
@@ -370,7 +447,7 @@ const ReadingTestScreen: React.FC<ReadingTestScreenProps> = ({ testData, onBack,
                         <ArrowLeftIcon className="h-5 w-5 mr-2" />
                         Back to Setup
                     </button>
-                     <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">{testData.title}</h2>
+                     <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mt-2">{testData.title}</h2>
                 </div>
                 {isSubmitted && (
                     <div className="text-right">
