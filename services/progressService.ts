@@ -40,6 +40,8 @@ const initialProgress: UserProgress = {
     dictation: [],
     speaking: [],
     writing: [],
+    // FIX: Add missing 'pronunciation' property to align with UserProgress type.
+    pronunciation: [],
 };
 
 export const getProgress = async (username: string): Promise<UserProgress> => {

@@ -1,9 +1,9 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { User, UserProgress, TestResult, ProgressCategory, UserSettings } from '../types';
 import { getProgress, clearProgress } from '../services/progressService';
 import { getSettings } from '../services/settingsService';
-import { BookOpenIcon, BrainIcon, HeadphoneIcon, PuzzleIcon, TypeIcon, TrophyIcon, TrashIcon, ArrowLeftIcon, TargetIcon, CalendarIcon } from './icons';
+// FIX: Import SoundWaveIcon for the 'pronunciation' category.
+import { BookOpenIcon, BrainIcon, HeadphoneIcon, PuzzleIcon, TypeIcon, TrophyIcon, TrashIcon, ArrowLeftIcon, TargetIcon, CalendarIcon, SoundWaveIcon } from './icons';
 import { LoadingIcon } from './icons';
 
 interface MyProgressScreenProps {
@@ -12,6 +12,7 @@ interface MyProgressScreenProps {
     isOwnProgress: boolean;
 }
 
+// FIX: Add 'pronunciation' category to satisfy the Record<ProgressCategory, ...> type and display it.
 const categoryInfo: Record<ProgressCategory, { name: string; icon: React.FC<any> }> = {
     miniTest: { name: 'AI Mini-Test', icon: TrophyIcon },
     reading: { name: 'Reading', icon: BookOpenIcon },
@@ -20,6 +21,7 @@ const categoryInfo: Record<ProgressCategory, { name: string; icon: React.FC<any>
     dictation: { name: 'Dictation', icon: HeadphoneIcon },
     speaking: { name: 'Speaking', icon: HeadphoneIcon },
     writing: { name: 'Writing', icon: TypeIcon },
+    pronunciation: { name: 'Pronunciation', icon: SoundWaveIcon },
 };
 
 const ResultRow: React.FC<{ result: TestResult }> = ({ result }) => {
@@ -281,7 +283,8 @@ export const MyProgressScreen: React.FC<MyProgressScreenProps> = ({ viewingUser,
         );
     }
 
-    const allCategories: ProgressCategory[] = ['miniTest', 'reading', 'grammar', 'vocabulary', 'dictation', 'speaking', 'writing'];
+    // FIX: Add 'pronunciation' to the list of categories to be rendered.
+    const allCategories: ProgressCategory[] = ['miniTest', 'reading', 'grammar', 'vocabulary', 'dictation', 'speaking', 'writing', 'pronunciation'];
     
     const formatDate = (dateString: string | undefined) => {
         if (!dateString) return 'Not Set';

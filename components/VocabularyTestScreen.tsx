@@ -1,13 +1,22 @@
 
+
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { VocabularyTest, VocabItem, User, TranslationEvaluationResult, ContextMeaningSentence } from '../types';
 import { updateWordSrsLevel } from '../services/vocabularyService';
 import { generateSentenceForTranslation, evaluateTranslation, generateContextSentences } from '../services/geminiService';
-import { BookOpenIcon, BrainIcon, ShuffleIcon, ArrowLeftIcon, ArrowRightIcon, CheckCircleIcon, XCircleIcon, GridIcon, PuzzleIcon, TypeIcon, LightBulbIcon, HeadphoneIcon, TargetIcon, LinkIcon, FlipIcon, SparklesIcon, LoadingIcon, RefreshIcon, QuestionMarkCircleIcon } from './icons';
+import { BookOpenIcon, BrainIcon, ShuffleIcon, ArrowLeftIcon, ArrowRightIcon, CheckCircleIcon, XCircleIcon, GridIcon, PuzzleIcon, TypeIcon, LightBulbIcon, HeadphoneIcon, TargetIcon, LinkIcon, FlipIcon, SparklesIcon, LoadingIcon, RefreshIcon, QuestionMarkCircleIcon, TranslateIcon } from './icons';
 import AudioPlayer from './AudioPlayer';
 import { addTestResult } from '../services/progressService';
 
-type StudyMode = 'flashcards' | 'listening_words' | 'quiz' | 'matching_game' | 'scrambler' | 'spelling_recall' | 'audio_dictation' | 'definition_match' | 'listening_translation' | 'context_meaning';
+type StudyMode = 'flashcards' | 'listening_words' | 'quiz' | 'matching_game' | 'scrambler' | 'spelling_recall' | 'audio_dictation' | 'definition_match' | 'listening_translation' | 'context_meaning' | 'spoken_translation';
+
+interface VocabularyTestScreenProps {
+    testData: VocabularyTest;
+    onBack: () => void;
+    currentUser: User;
+    onStartSpokenTranslationPractice: (test: VocabularyTest) => void;
+}
+
 
 interface QuizQuestion {
     questionText: string; // The definition
@@ -133,7 +142,7 @@ const WordCountModal: React.FC<{
 };
 
 
-const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => void, currentUser: User }> = ({ testData, onBack, currentUser }) => {
+const VocabularyTestScreen: React.FC<VocabularyTestScreenProps> = ({ testData, onBack, currentUser, onStartSpokenTranslationPractice }) => {
     const [wordCount, setWordCount] = useState<number | null>(() => testData.words.length <= 30 ? testData.words.length : null);
 
     const wordsForSession = useMemo(() => {
@@ -1645,12 +1654,15 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
             case 'audio_dictation': return renderAudioDictation();
             case 'listening_translation': return renderListeningTranslation();
             case 'context_meaning': return renderContextMeaning();
+            case 'spoken_translation':
+                onStartSpokenTranslationPractice(testData);
+                return null;
             default:
                 return renderFlashcards();
         }
     };
     
-     const studyModes: { id: StudyMode; name: string; icon: React.FC<any> }[] = [
+     const studyModes: { id: StudyMode; name: string; icon: React.FC<any>, isNew?: boolean }[] = [
         { id: 'flashcards', name: 'Flashcards', icon: BookOpenIcon },
         { id: 'listening_words', name: 'Listening Words', icon: HeadphoneIcon },
         { id: 'quiz', name: 'Quiz', icon: BrainIcon },
@@ -1660,6 +1672,7 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
         { id: 'spelling_recall', name: 'Spelling Recall', icon: TypeIcon },
         { id: 'audio_dictation', name: 'Audio Dictation', icon: HeadphoneIcon },
         { id: 'listening_translation', name: 'Listen & Translate (AI)', icon: SparklesIcon },
+        { id: 'spoken_translation', name: 'Spoken Translation (AI)', icon: TranslateIcon, isNew: true },
         { id: 'context_meaning', name: 'Context Meaning (AI)', icon: SparklesIcon },
     ];
 
@@ -1691,13 +1704,18 @@ const VocabularyTestScreen: React.FC<{ testData: VocabularyTest, onBack: () => v
                 </div>
                 
                 <div className="mb-8">
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-2">
                          {studyModes.map(m => (
                             <button 
                                 key={m.id}
                                 onClick={() => setMode(m.id)}
-                                className={`flex flex-col sm:flex-row items-center justify-center gap-2 px-3 py-2 rounded-lg font-semibold transition-colors text-xs sm:text-sm ${mode === m.id ? 'bg-blue-600 text-white' : 'bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'}`}
+                                className={`relative flex flex-col sm:flex-row items-center justify-center gap-2 px-3 py-2 rounded-lg font-semibold transition-colors text-xs sm:text-sm ${mode === m.id ? 'bg-blue-600 text-white' : 'bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'}`}
                             >
+                                {m.isNew && (
+                                    <span className="absolute -top-2 -right-2 bg-yellow-300 text-red-600 text-xs font-bold px-2 py-0.5 rounded-full border border-yellow-400 transform rotate-12">
+                                        NEW
+                                    </span>
+                                )}
                                 <m.icon className="h-5 w-5"/>
                                 <span className="mt-1 sm:mt-0">{m.name}</span>
                             </button>

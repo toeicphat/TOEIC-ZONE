@@ -1,10 +1,5 @@
 
 
-
-
-
-
-
 export interface User {
     username: string;
     password: string;
@@ -31,6 +26,7 @@ export enum AppState {
     VocabularyHome = 'VOCABULARY_HOME',
     VocabularyPartHome = 'VOCABULARY_PART_HOME',
     VocabularyTest = 'VOCABULARY_TEST',
+    SPOKEN_TRANSLATION_PRACTICE = 'SPOKEN_TRANSLATION_PRACTICE',
     SpeakingHome = 'SPEAKING_HOME',
     SpeakingPart1 = 'SPEAKING_PART_1',
     SpeakingPart2 = 'SPEAKING_PART_2',
@@ -41,6 +37,8 @@ export enum AppState {
     WritingPart1 = 'WRITING_PART_1',
     WritingPart2 = 'WRITING_PART_2',
     WritingPart3 = 'WRITING_PART_3',
+    PronunciationHome = 'PRONUNCIATION_HOME',
+    SingleWordPractice = 'SINGLE_WORD_PRACTICE',
     MyProgress = 'MY_PROGRESS',
     MiniTest = 'MINI_TEST',
     MiniTestResults = 'MINI_TEST_RESULTS',
@@ -112,6 +110,29 @@ export interface TranslationEvaluationResult {
     score: number;
     feedback_vi: string;
 }
+
+export interface SpokenTranslationEvaluationResult {
+    estimated_accuracy_percent: number;
+    feedback_vi: string;
+}
+
+
+// For Pronunciation Practice
+export interface PhoneticWord {
+    word: string;
+    phonetic: string;
+}
+
+export interface PhonemeEvaluation {
+    phoneme: string;
+    score: 'correct' | 'approximate' | 'incorrect';
+}
+
+export interface SingleWordEvaluationResult {
+    overallScore: number;
+    feedback_vi: string;
+}
+
 
 // For Reading Practice
 export interface ReadingQuestion {
@@ -393,7 +414,7 @@ export interface TestResult {
     date: number; // timestamp
 }
 
-export type ProgressCategory = 'miniTest' | 'reading' | 'grammar' | 'vocabulary' | 'dictation' | 'speaking' | 'writing';
+export type ProgressCategory = 'miniTest' | 'reading' | 'grammar' | 'vocabulary' | 'dictation' | 'speaking' | 'writing' | 'pronunciation';
 
 export interface UserProgress {
     miniTest: TestResult[];
@@ -403,6 +424,7 @@ export interface UserProgress {
     dictation: TestResult[];
     speaking: TestResult[];
     writing: TestResult[];
+    pronunciation: TestResult[];
 }
 
 // --- Unified API Configuration ---

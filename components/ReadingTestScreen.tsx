@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { ReadingTestData, QuestionOption, ReadingQuestion, User, ReadingPassage } from '../types';
-import { ArrowLeftIcon } from './icons';
+import { ArrowLeftIcon, ClockIcon } from './icons';
 import Timer from './Timer';
 import QuestionPalette from './QuestionPalette';
 import AddVocabPopup from './AddVocabPopup';
@@ -25,11 +25,19 @@ const formatPassageText = (text: string) => {
     return formattedText.replace(/\n/g, '<br />');
 };
 
+const formatTime = (timeInSeconds: number) => {
+    if (isNaN(timeInSeconds) || timeInSeconds < 0) return '00:00';
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = timeInSeconds % 60;
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+};
+
 const ReadingTestScreen: React.FC<ReadingTestScreenProps> = ({ testData, onBack, currentUser, durationInSeconds }) => {
     const [userAnswers, setUserAnswers] = useState<UserAnswers>({});
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [currentQuestionIdInView, setCurrentQuestionIdInView] = useState<string | null>(null);
     const [markedForReview, setMarkedForReview] = useState<Set<string>>(new Set());
+    const [timeSpent, setTimeSpent] = useState(0);
     const contentRef = useRef<HTMLDivElement>(null);
     const { selectionPopup, toastMessage, handleMouseUp, handleSaveWord } = useWordSelection(contentRef);
     const isSubmittedRef = useRef(false);
@@ -106,6 +114,7 @@ const ReadingTestScreen: React.FC<ReadingTestScreenProps> = ({ testData, onBack,
         isSubmittedRef.current = false;
         setUserAnswers({});
         setMarkedForReview(new Set());
+        setTimeSpent(0);
     };
     
     const handleAnswerSelect = (questionId: string, option: QuestionOption) => {
@@ -355,6 +364,11 @@ const ReadingTestScreen: React.FC<ReadingTestScreenProps> = ({ testData, onBack,
                     <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">Your Score</h3>
                     <p className="text-6xl font-bold text-blue-600 dark:text-blue-400 my-2">{percentage}%</p>
                     <p className="text-lg text-slate-600 dark:text-slate-300">You answered <span className="font-bold">{score}</span> out of <span className="font-bold">{totalQuestions}</span> questions correctly.</p>
+                    {!durationInSeconds && (
+                        <p className="text-md text-slate-500 dark:text-slate-400 mt-2">
+                            Time Spent: <span className="font-bold">{formatTime(timeSpent)}</span>
+                        </p>
+                    )}
                 </div>
                 <div className="flex justify-center gap-4">
                     <button onClick={handleTryAgain} className="px-6 py-3 bg-slate-600 text-white font-bold rounded-lg hover:bg-slate-700 transition-colors">Try Again</button>
@@ -408,7 +422,20 @@ const ReadingTestScreen: React.FC<ReadingTestScreenProps> = ({ testData, onBack,
 
                 <div className="mt-8 lg:mt-0 lg:sticky lg:top-24 lg:self-start space-y-8">
                     <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700">
-                        {durationInSeconds && !isSubmitted ? <Timer initialTime={durationInSeconds} onTimeUp={handleTimeUp} /> : <div className="text-center p-2 text-slate-500 dark:text-slate-400 font-semibold">{isSubmitted ? 'Test Finished' : 'Untimed Practice'}</div>}
+                        {durationInSeconds ? (
+                            <Timer initialTime={durationInSeconds} onTimeUp={handleTimeUp} isRunning={!isSubmitted} /> 
+                        ) : (
+                            isSubmitted ? (
+                                <div className="flex items-center justify-center p-2 rounded-lg">
+                                    <ClockIcon className="h-6 w-6 text-slate-500 dark:text-slate-400" />
+                                    <span className="ml-3 text-lg font-semibold text-slate-800 dark:text-slate-200">
+                                        Time Spent: {formatTime(timeSpent)}
+                                    </span>
+                                </div>
+                            ) : (
+                                <Timer isStopwatch={true} isRunning={!isSubmitted} onTimeUpdate={setTimeSpent} />
+                            )
+                        )}
                         <button 
                             onClick={() => { if(!isSubmitted && window.confirm('Are you sure you want to submit?')) handleSubmit(); }}
                             disabled={isSubmitted}
@@ -426,6 +453,7 @@ const ReadingTestScreen: React.FC<ReadingTestScreenProps> = ({ testData, onBack,
                             onQuestionSelect={handleQuestionSelect}
                             markedForReview={markedForReview}
                             columns={8}
+                            isSubmitted={isSubmitted}
                         />
                     </div>
                 </div>

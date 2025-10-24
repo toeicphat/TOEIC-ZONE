@@ -148,7 +148,7 @@ Ketan Chauhan`,
                 { id: '143', questionText: 'Choose the best option for (143).', options: { A: 'deliver', B: 'delivery', C: 'deliverable', D: 'delivers' }, correctAnswer: 'D' },
                 { id: '144', questionText: 'Choose the best option for (144).', options: { A: 'In spite of', B: 'Therefore', C: 'Because of', D: 'Although' }, correctAnswer: 'B' },
                 { id: '145', questionText: 'Choose the best option for (145).', options: { A: 'writing', B: 'written', C: 'wrote', D: 'write' }, correctAnswer: 'B' },
-                { id: '146', questionText: 'Choose the best option for (146).', options: { A: "Since I'm returning a defective item, I expect you to pick up the shipping charges.", B: 'We appreciate your business, and we welcome your comments and suggestions.', C: "So I'd like to return the delivered product and receive a refund.", D: 'I am writing to request a copy of the full assembly directions for the model I purchased.' }, correctAnswer: 'D' }
+                { id: '146', questionText: 'Choose the best option for (146).', options: { A: "Since I'm returning a defective item, I expect you to pick up the shipping charges.", B: 'We appreciate your business, and we welcome your comments and suggestions.', C: "So I'd like to return the delivered product and receive a refund.", D: 'I am writing to request a copy of the full assembly directions for the model I purchased.' }, correctAnswer: 'A' }
             ]
         }
     ]

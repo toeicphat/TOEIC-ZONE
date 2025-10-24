@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { 
     TargetIcon, 
@@ -9,7 +10,7 @@ import {
     PuzzleIcon,
     MicrophoneIcon,
     TypeIcon,
-    PlayIcon
+    SoundWaveIcon
 } from './icons';
 
 
@@ -20,6 +21,7 @@ interface PracticeHubProps {
   onNavigateToVocabulary: () => void;
   onNavigateToSpeaking: () => void;
   onNavigateToWritingPractice: () => void;
+  onNavigateToPronunciation: () => void;
 }
 
 const PracticeCard: React.FC<{
@@ -28,11 +30,17 @@ const PracticeCard: React.FC<{
     onClick: () => void;
     icon: React.ElementType;
     colorClass: string;
-}> = ({ title, description, onClick, icon: Icon, colorClass }) => (
+    isNew?: boolean;
+}> = ({ title, description, onClick, icon: Icon, colorClass, isNew }) => (
     <button 
         onClick={onClick}
-        className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer border border-slate-200 dark:border-slate-700 text-left w-full h-full flex flex-col"
+        className="relative bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer border border-slate-200 dark:border-slate-700 text-left w-full h-full flex flex-col"
     >
+        {isNew && (
+            <span className="absolute top-3 right-3 bg-yellow-300 text-red-600 text-xs font-bold px-2 py-1 rounded-full border border-yellow-400 transform rotate-12">
+                NEW
+            </span>
+        )}
         <Icon className={`h-10 w-10 mb-4 ${colorClass}`} />
         <h3 className={`text-2xl font-bold mb-2 ${colorClass}`}>{title}</h3>
         <p className="text-slate-600 dark:text-slate-400 flex-grow">{description}</p>
@@ -46,7 +54,8 @@ const PracticeHub: React.FC<PracticeHubProps> = ({
     onNavigateToGrammar, 
     onNavigateToVocabulary, 
     onNavigateToSpeaking, 
-    onNavigateToWritingPractice 
+    onNavigateToWritingPractice,
+    onNavigateToPronunciation
 }) => {
     // The Google Drive audio player is now integrated directly.
     // States for manual input are no longer needed.
@@ -74,6 +83,14 @@ const PracticeHub: React.FC<PracticeHubProps> = ({
                   onClick={onNavigateToDictation}
                   icon={HeadphoneIcon}
                   colorClass="text-blue-500 dark:text-blue-400"
+              />
+               <PracticeCard 
+                  title="Phát âm (Thử nghiệm)"
+                  description="Luyện tập phát âm với từ, câu, và đoạn văn được AI đánh giá."
+                  onClick={onNavigateToPronunciation}
+                  icon={SoundWaveIcon}
+                  colorClass="text-teal-500 dark:text-teal-400"
+                  isNew={true}
               />
               <PracticeCard 
                   title="Luyện tập Reading"

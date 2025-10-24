@@ -1,4 +1,5 @@
 
+
 import React, { useState, useCallback, useEffect } from 'react';
 import PracticeHub from './components/PracticeHub';
 import DictationScreen from './components/DictationScreen';
@@ -10,6 +11,7 @@ import GrammarTopicScreen from './components/GrammarTopicScreen';
 import VocabularyScreen from './components/VocabularyScreen';
 import VocabularyPartScreen from './components/VocabularyPartScreen';
 import VocabularyTestScreen from './components/VocabularyTestScreen';
+import SpokenTranslationScreen from './components/SpokenTranslationScreen';
 import SpeakingScreen from './components/SpeakingScreen';
 import SpeakingPart1Screen from './components/SpeakingPart1Screen';
 import SpeakingPart2Screen from './components/SpeakingPart2Screen';
@@ -20,6 +22,8 @@ import WritingPracticeScreen from './components/WritingPracticeScreen';
 import WritingPart1Screen from './components/WritingPart1Screen';
 import WritingPart2Screen from './components/WritingPart2Screen';
 import WritingPart3Screen from './components/WritingPart3Screen';
+import PronunciationHomeScreen from './components/PronunciationHomeScreen';
+import PronunciationPracticeScreen from './components/PronunciationPracticeScreen';
 import StatsFooter from './components/StatsFooter';
 import LoginScreen from './components/LoginScreen';
 import { MyProgressScreen } from './components/MyProgressScreen';
@@ -135,6 +139,14 @@ const App: React.FC = () => {
     };
     initializeApp();
 }, []);
+
+  // FIX: This effect handles state redirection to prevent rendering loops.
+  useEffect(() => {
+    if (appState === AppState.StudentManagement && currentUser?.username !== 'admin') {
+        // If a non-admin user is somehow in the student management state, redirect them to the practice hub.
+        setAppState(AppState.PracticeHub);
+    }
+  }, [appState, currentUser]);
 
   const handleLoginSuccess = useCallback(async (user: User) => {
     setIsLoggingIn(true);
@@ -350,6 +362,15 @@ const App: React.FC = () => {
       setAppState(AppState.VocabularyPartHome);
   }, []);
 
+  const handleStartSpokenTranslationPractice = useCallback((test: VocabularyTest) => {
+    setSelectedVocabularyTest(test);
+    setAppState(AppState.SPOKEN_TRANSLATION_PRACTICE);
+  }, []);
+
+  const handleBackToVocabularyTest = useCallback(() => {
+    setAppState(AppState.VocabularyTest);
+  }, []);
+
   // Speaking Navigation Handlers
     const handleSelectSpeakingPart = useCallback((part: number) => {
         setSelectedSpeakingPart(part);
@@ -388,6 +409,11 @@ const App: React.FC = () => {
         setAppState(AppState.WritingPracticeHome);
     }, []);
     
+    // Pronunciation Navigation Handlers
+    const handleNavigateToPronunciation = useCallback(() => setAppState(AppState.PronunciationHome), []);
+    const handleStartSingleWordPractice = useCallback(() => setAppState(AppState.SingleWordPractice), []);
+
+
     const handleNavigateToDictation = useCallback(() => setAppState(AppState.DictationPracticeHome), []);
     const handleNavigateToReadingPractice = useCallback(() => setAppState(AppState.ReadingPracticeHome), []);
     const handleNavigateToGrammar = useCallback(() => setAppState(AppState.GrammarHome), []);
@@ -396,7 +422,7 @@ const App: React.FC = () => {
 
     const renderContent = () => {
         if (!currentUser) return null;
-        // FIX: The prop names for PracticeHub need to be assigned from the handler functions.
+
         const practiceHubProps = {
             onNavigateToDictation: handleNavigateToDictation,
             onNavigateToReadingPractice: handleNavigateToReadingPractice,
@@ -404,6 +430,7 @@ const App: React.FC = () => {
             onNavigateToVocabulary: handleNavigateToVocabulary,
             onNavigateToSpeaking: handleNavigateToSpeaking,
             onNavigateToWritingPractice: handleNavigateToWritingPractice,
+            onNavigateToPronunciation: handleNavigateToPronunciation,
         };
         switch (appState) {
             case AppState.PracticeHub:
@@ -448,7 +475,18 @@ const App: React.FC = () => {
                 return <VocabularyPartScreen partData={selectedVocabularyPart} onSelectTest={handleSelectVocabularyTest} onBack={handleBackToVocabularyHome} />;
             case AppState.VocabularyTest:
                 if (!selectedVocabularyTest) return null;
-                return <VocabularyTestScreen testData={selectedVocabularyTest} onBack={handleBackToVocabularyPartHome} currentUser={currentUser} />;
+                return <VocabularyTestScreen 
+                    testData={selectedVocabularyTest} 
+                    onBack={handleBackToVocabularyPartHome} 
+                    currentUser={currentUser} 
+                    onStartSpokenTranslationPractice={handleStartSpokenTranslationPractice}
+                />;
+            case AppState.SPOKEN_TRANSLATION_PRACTICE:
+                if (!selectedVocabularyTest) return null;
+                return <SpokenTranslationScreen
+                    currentVocabularyList={selectedVocabularyTest.words}
+                    onBack={handleBackToVocabularyTest}
+                />;
             case AppState.SpeakingHome:
                 return <SpeakingScreen onSelectPart={handleSelectSpeakingPart} />;
             case AppState.SpeakingPart1:
@@ -469,6 +507,10 @@ const App: React.FC = () => {
                 return <WritingPart2Screen onBack={handleBackToWritingHome} currentUser={currentUser} />;
             case AppState.WritingPart3:
                 return <WritingPart3Screen onBack={handleBackToWritingHome} currentUser={currentUser} />;
+            case AppState.PronunciationHome:
+                return <PronunciationHomeScreen onStartSingleWordPractice={handleStartSingleWordPractice} />;
+            case AppState.SingleWordPractice:
+                return <PronunciationPracticeScreen onBack={() => setAppState(AppState.PronunciationHome)} currentUser={currentUser} />;
             case AppState.MyProgress:
                 if (selectedStudent) {
                     return <MyProgressScreen 
@@ -482,10 +524,7 @@ const App: React.FC = () => {
                 }
                 return <MyProgressScreen viewingUser={currentUser} onBack={handleGoHome} isOwnProgress={true} />;
             case AppState.StudentManagement:
-                if (currentUser?.username !== 'admin') {
-                    setAppState(AppState.PracticeHub);
-                    return null;
-                }
+                // The check for admin is now in a useEffect hook to prevent render loops.
                 return <StudentManagementScreen users={users} onViewStudentProgress={(user) => { setSelectedStudent(user); setAppState(AppState.MyProgress) }} />;
             case AppState.Settings:
                 if (!userSettings) return null;
@@ -535,7 +574,7 @@ const App: React.FC = () => {
                     <nav className="container mx-auto px-4 py-3 flex justify-between items-center">
                         <div className="flex items-center gap-2 cursor-pointer" onClick={handleGoHome}>
                             <LogoIcon className="h-8 w-8 text-orange-600" />
-                            <span className="text-xl font-bold text-slate-800 dark:text-slate-100">TOEIC Zone</span>
+                            <span className="text-xl font-bold text-slate-800 dark:text-slate-100">TOEIC Pavex</span>
                             <span className="hidden lg:inline-block align-middle ml-2" aria-hidden="true">🎃 🎃 🎃 🎃 🎃 🎃 🎃 🎃 🎃 🎃 🎃</span>
                         </div>
                         <div className="hidden md:flex items-center gap-2">

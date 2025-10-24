@@ -1,4 +1,5 @@
-import { UserProgress, UserSettings, VocabularyWord, TestResult, ProgressCategory, VocabItem } from '../types';
+
+import { UserProgress, UserSettings, VocabularyWord, TestResult, ProgressCategory, VocabItem, API_BASE_URL } from '../types';
 
 // Helper to create a successful JSON response
 const createJsonResponse = (data: any, status = 200) => {
@@ -36,139 +37,135 @@ const db = {
 };
 
 const initialProgress: UserProgress = {
-    miniTest: [], reading: [], grammar: [], vocabulary: [], dictation: [], speaking: [], writing: []
+    miniTest: [], reading: [], grammar: [], vocabulary: [], dictation: [], speaking: [], writing: [], pronunciation: []
 };
-
-const originalFetch = window.fetch;
 
 export const mockFetch = async (url: RequestInfo | URL, config?: RequestInit): Promise<Response> => {
     const urlString = url.toString();
     const method = config?.method?.toUpperCase() || 'GET';
-    const body = config?.body ? JSON.parse(config.body as string) : {};
+    const body = config?.body ? JSON.parse(config.body.toString()) : {};
+
+    // --- PROGRESS API ---
+    if (urlString.startsWith(`${API_BASE_URL}/api/progress/`) && method === 'GET' && !urlString.includes('/result')) {
+        const urlUsername = urlString.split('/').pop()!;
+        console.log(`[API MOCK] GET /api/progress/${urlUsername}`);
+        const progress = db.getItem(`progress_${urlUsername}`) || initialProgress;
+        return createJsonResponse(progress);
+    }
     
-    console.log(`[API MOCK] Intercepted ${method} ${urlString}`);
-
-    // --- Progress API ---
-    const progressMatch = urlString.match(/\/api\/progress\/([a-zA-Z0-9_.@-]*)$/);
-    if (progressMatch) {
-        const username = progressMatch[1];
-        if (method === 'GET') {
-            const progress = db.getItem(`progress_${username}`) || { ...initialProgress };
-            return createJsonResponse(progress);
-        }
-        if (method === 'DELETE') {
-            db.removeItem(`progress_${username}`);
-            return createJsonResponse({ message: 'Progress cleared' });
-        }
-    }
-
-    if (urlString.endsWith('/api/progress/result') && method === 'POST') {
-        const { username, category, result } = body as { username: string, category: ProgressCategory, result: TestResult };
+    if (urlString === `${API_BASE_URL}/api/progress/result` && method === 'POST') {
+        const { username, category, result } = body;
+        console.log(`[API MOCK] POST /api/progress/result for ${username}`);
         const progress: UserProgress = db.getItem(`progress_${username}`) || { ...initialProgress };
-        if (progress[category]) {
-            progress[category].unshift(result); // Add to the beginning of the list
-        } else {
-            progress[category] = [result];
+        if (!progress[category]) {
+            progress[category] = [];
         }
+        progress[category].push(result);
         db.setItem(`progress_${username}`, progress);
-        return createJsonResponse({ message: 'Result added' });
+        return createJsonResponse({ success: true });
     }
 
-    // --- Settings API ---
-    const settingsMatch = urlString.match(/\/api\/settings\/([a-zA-Z0-9_.@-]*)$/);
-    if (settingsMatch && method === 'GET') {
-        const username = settingsMatch[1];
-        const settings = db.getItem(`settings_${username}`) || {};
+    if (urlString.startsWith(`${API_BASE_URL}/api/progress/`) && method === 'DELETE') {
+        const urlUsername = urlString.split('/').pop()!;
+        console.log(`[API MOCK] DELETE /api/progress/${urlUsername}`);
+        db.removeItem(`progress_${urlUsername}`);
+        return createJsonResponse({ success: true });
+    }
+
+    // --- SETTINGS API ---
+    if (urlString.startsWith(`${API_BASE_URL}/api/settings/`) && method === 'GET') {
+        const urlUsername = urlString.split('/').pop()!;
+        console.log(`[API MOCK] GET /api/settings/${urlUsername}`);
+        const settings = db.getItem(`settings_${urlUsername}`) || {};
         return createJsonResponse(settings);
     }
 
-    if (urlString.endsWith('/api/settings') && method === 'POST') {
-        const { username, settings } = body as { username: string, settings: UserSettings };
-        const existingSettings = db.getItem(`settings_${username}`) || {};
-        const newSettings = { ...existingSettings, ...settings };
-        db.setItem(`settings_${username}`, newSettings);
-        return createJsonResponse(newSettings);
+    if (urlString === `${API_BASE_URL}/api/settings` && method === 'POST') {
+        const { username, settings } = body;
+        console.log(`[API MOCK] POST /api/settings for ${username}`);
+        db.setItem(`settings_${username}`, settings);
+        return createJsonResponse({ success: true });
     }
 
-    // --- Vocabulary API ---
-    const vocabListMatch = urlString.match(/\/api\/vocabulary\/([a-zA-Z0-9_.@-]*)$/);
-    if (vocabListMatch && method === 'GET') {
-        const username = vocabListMatch[1];
-        const vocabList: VocabularyWord[] = db.getItem(`vocabulary_${username}`) || [];
+    // --- VOCABULARY API ---
+    if (urlString.startsWith(`${API_BASE_URL}/api/vocabulary/`) && !urlString.includes('/word/') && !urlString.includes('/srs') && method === 'GET') {
+        const urlUsername = urlString.split('/').pop()!;
+        console.log(`[API MOCK] GET /api/vocabulary/${urlUsername}`);
+        const vocabList = db.getItem(`vocab_${urlUsername}`) || [];
         return createJsonResponse(vocabList);
     }
     
-    const vocabWordMatch = urlString.match(/\/api\/vocabulary\/word\/(.*)$/);
-    if (vocabWordMatch && method === 'DELETE') {
-        const { username } = body;
-        const wordId = decodeURIComponent(vocabWordMatch[1]);
-        let vocabList: VocabularyWord[] = db.getItem(`vocabulary_${username}`) || [];
-        vocabList = vocabList.filter(w => w.id !== wordId);
-        db.setItem(`vocabulary_${username}`, vocabList);
-        return createJsonResponse({ message: 'Word deleted' });
-    }
-
-    if (urlString.endsWith('/api/vocabulary/word') && method === 'POST') {
-        const { username, word } = body as { username: string, word: VocabularyWord };
-        let vocabList: VocabularyWord[] = db.getItem(`vocabulary_${username}`) || [];
+    if (urlString === `${API_BASE_URL}/api/vocabulary/word` && method === 'POST') {
+        const { username, word } = body;
+        console.log(`[API MOCK] POST /api/vocabulary/word for ${username}`);
+        let vocabList: VocabularyWord[] = db.getItem(`vocab_${username}`) || [];
         const existingIndex = vocabList.findIndex(w => w.id === word.id);
         if (existingIndex > -1) {
-            vocabList[existingIndex] = word; // Update
+            vocabList[existingIndex] = word;
         } else {
-            vocabList.unshift(word); // Add new
+            vocabList.push(word);
         }
-        db.setItem(`vocabulary_${username}`, vocabList);
-        return createJsonResponse(word);
+        db.setItem(`vocab_${username}`, vocabList);
+        return createJsonResponse({ success: true });
     }
-    
-    if (urlString.endsWith('/api/vocabulary/srs') && method === 'POST') {
-        const { username, wordId, performance, wordDetails, source } = body as { username: string, wordId: string, performance: 'hard' | 'good' | 'easy', wordDetails?: VocabItem, source?: string };
-        let vocabList: VocabularyWord[] = db.getItem(`vocabulary_${username}`) || [];
-        let wordIndex = vocabList.findIndex(w => w.id === wordId);
-        
-        let word: VocabularyWord;
-        if (wordIndex > -1) {
-            word = vocabList[wordIndex];
-        } else if (wordDetails) {
-             // Create new word if it doesn't exist
+
+    if (urlString.startsWith(`${API_BASE_URL}/api/vocabulary/word/`) && method === 'DELETE') {
+        const wordId = decodeURIComponent(urlString.split('/').pop()!);
+        const { username } = body;
+        console.log(`[API MOCK] DELETE /api/vocabulary/word/${wordId} for ${username}`);
+        let vocabList: VocabularyWord[] = db.getItem(`vocab_${username}`) || [];
+        vocabList = vocabList.filter(w => w.id !== wordId);
+        db.setItem(`vocab_${username}`, vocabList);
+        return createJsonResponse({ success: true });
+    }
+
+    if (urlString === `${API_BASE_URL}/api/vocabulary/srs` && method === 'POST') {
+        const { username, wordId, performance, wordDetails, source } = body;
+        console.log(`[API MOCK] POST /api/vocabulary/srs for ${username}`);
+        let vocabList: VocabularyWord[] = db.getItem(`vocab_${username}`) || [];
+        let word = vocabList.find(w => w.id === wordId);
+
+        const now = Date.now();
+        const intervals = [1, 2, 4, 8, 16, 32, 64, 128, 256]; // days
+        const dayInMillis = 24 * 60 * 60 * 1000;
+
+        if (!word) {
              word = {
                 id: wordId,
                 word: wordDetails.word,
                 definition: wordDetails.definition,
                 srsLevel: 0,
-                nextReviewDate: Date.now(),
+                nextReviewDate: now,
                 lastReviewedDate: null,
-                sourceText: source
-             };
-             vocabList.unshift(word);
-             wordIndex = 0;
-        } else {
-             return createJsonResponse({ error: 'Word not found and no details to create it' }, 404);
-        }
-
-        // Simulate SRS logic
-        let newLevel = word.srsLevel;
-        if (performance === 'easy') newLevel = Math.min(8, newLevel + 2);
-        else if (performance === 'good') newLevel = Math.min(8, newLevel + 1);
-        else if (performance === 'hard') newLevel = Math.max(0, newLevel - 1);
-
-        const srsIntervals = [0, 1, 2, 4, 8, 15, 30, 60, 120]; // days
-        const nextReview = new Date();
-        nextReview.setDate(nextReview.getDate() + srsIntervals[newLevel]);
-
-        word.srsLevel = newLevel;
-        word.nextReviewDate = nextReview.getTime();
-        word.lastReviewedDate = Date.now();
-        
-        if (wordIndex > -1) {
-            vocabList[wordIndex] = word;
+                sourceText: source,
+            };
+            vocabList.push(word);
         }
         
-        db.setItem(`vocabulary_${username}`, vocabList);
+        word.lastReviewedDate = now;
+
+        if (performance === 'easy') {
+            word.srsLevel = Math.min(word.srsLevel + 2, intervals.length - 1);
+        } else if (performance === 'good') {
+            word.srsLevel = Math.min(word.srsLevel + 1, intervals.length - 1);
+        } else { // 'hard'
+            word.srsLevel = Math.max(0, word.srsLevel - 2);
+        }
+        
+        word.nextReviewDate = now + intervals[word.srsLevel] * dayInMillis;
+        
+        const existingIndex = vocabList.findIndex(w => w.id === wordId);
+        if (existingIndex > -1) {
+            vocabList[existingIndex] = word;
+        }
+
+        db.setItem(`vocab_${username}`, vocabList);
         return createJsonResponse(word);
     }
-    
-    // Fallback for unmocked routes (like loading external scripts)
-    console.log(`[API MOCK] Unhandled route: ${method} ${urlString}. Calling original fetch.`);
-    return originalFetch(url, config);
+
+    console.warn(`[API MOCK] Unhandled request: ${method} ${urlString}`);
+    return new Response(JSON.stringify({ error: 'Not Found' }), {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' },
+    });
 };

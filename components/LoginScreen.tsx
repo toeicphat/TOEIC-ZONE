@@ -31,7 +31,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess, users, isLogg
         <div className="text-center">
             <div className="flex items-center justify-center mb-4">
                 <LogoIcon className="h-12 w-12 text-blue-600" />
-                <h1 className="ml-3 text-3xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">TOEIC Zone</h1>
+                <h1 className="ml-3 text-3xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">TOEIC Pavex</h1>
             </div>
             <h2 className="text-xl text-slate-600 dark:text-slate-300">Sign in to your account</h2>
         </div>

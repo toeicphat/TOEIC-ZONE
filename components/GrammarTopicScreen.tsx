@@ -1,7 +1,7 @@
 
+
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
-// FIX: Moved generateDeterminerExercise to import from geminiService as it is not exported from grammarLibrary
-import { getGrammarTopicContent, getGrammarQuizQuestions, getGrammarQuizLevels } from '../services/grammarLibrary';
+import { getGrammarTopicContent, getGrammarQuizLevels } from '../services/grammarLibrary';
 import { generateDeterminerExercise } from '../services/geminiService';
 import { GrammarTopicContent, DeterminerExercise, User } from '../types';
 import SelectionCard from './SelectionCard';
