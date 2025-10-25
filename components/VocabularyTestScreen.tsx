@@ -1662,18 +1662,18 @@ const VocabularyTestScreen: React.FC<VocabularyTestScreenProps> = ({ testData, o
         }
     };
     
-     const studyModes: { id: StudyMode; name: string; icon: React.FC<any>, isNew?: boolean }[] = [
+     const studyModes: { id: StudyMode; name: string; icon: React.FC<any>, isNew?: boolean, isPremium?: boolean }[] = [
         { id: 'flashcards', name: 'Flashcards', icon: BookOpenIcon },
-        { id: 'listening_words', name: 'Listening Words', icon: HeadphoneIcon },
+        { id: 'listening_words', name: 'Nghe & chọn từ', icon: HeadphoneIcon, isPremium: true },
         { id: 'quiz', name: 'Quiz', icon: BrainIcon },
         { id: 'matching_game', name: 'Matching Game', icon: GridIcon },
-        { id: 'definition_match', name: 'Definition Match', icon: LinkIcon },
+        { id: 'definition_match', name: 'Ghép từ & nghĩa', icon: LinkIcon },
         { id: 'scrambler', name: 'Scrambler', icon: PuzzleIcon },
         { id: 'spelling_recall', name: 'Spelling Recall', icon: TypeIcon },
-        { id: 'audio_dictation', name: 'Audio Dictation', icon: HeadphoneIcon },
-        { id: 'listening_translation', name: 'Listen & Translate (AI)', icon: SparklesIcon },
-        { id: 'spoken_translation', name: 'Spoken Translation (AI)', icon: TranslateIcon, isNew: true },
-        { id: 'context_meaning', name: 'Context Meaning (AI)', icon: SparklesIcon },
+        { id: 'audio_dictation', name: 'Nghe & Điền từ lẻ', icon: HeadphoneIcon },
+        { id: 'listening_translation', name: 'Nghe & Dịch câu', icon: SparklesIcon, isPremium: true },
+        { id: 'spoken_translation', name: 'Dịch nói đoạn văn', icon: TranslateIcon, isNew: true },
+        { id: 'context_meaning', name: 'Đoán từ ngữ cảnh', icon: SparklesIcon, isPremium: true },
     ];
 
     if (!wordCount) {
@@ -1716,6 +1716,11 @@ const VocabularyTestScreen: React.FC<VocabularyTestScreenProps> = ({ testData, o
                                         NEW
                                     </span>
                                 )}
+                                {m.isPremium && (
+                                    <span className="absolute -top-2 -right-2 bg-amber-200 text-blue-700 text-xs font-bold px-2 py-0.5 rounded-full border-2 border-amber-400 transform rotate-12 bling-bling">
+                                        PREMIUM
+                                    </span>
+                                )}
                                 <m.icon className="h-5 w-5"/>
                                 <span className="mt-1 sm:mt-0">{m.name}</span>
                             </button>
@@ -1727,6 +1732,32 @@ const VocabularyTestScreen: React.FC<VocabularyTestScreenProps> = ({ testData, o
                      {renderContent()}
                 </div>
             </div>
+             <style>{`
+                @keyframes shimmer {
+                  0% {
+                    transform: translateX(-100%);
+                  }
+                  100% {
+                    transform: translateX(100%);
+                  }
+                }
+
+                .bling-bling {
+                  overflow: hidden;
+                  -webkit-mask-image: -webkit-radial-gradient(white, black);
+                }
+
+                .bling-bling::after {
+                  content: '';
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  width: 100%;
+                  height: 100%;
+                  background: linear-gradient(100deg, rgba(255,255,255,0) 20%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0) 80%);
+                  animation: shimmer 2.5s infinite;
+                }
+            `}</style>
         </div>
     );
 };
