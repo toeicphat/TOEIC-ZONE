@@ -23,7 +23,7 @@ const blobToBase64 = (blob: Blob): Promise<string> => {
     });
 };
 
-type PracticeState = 'loading' | 'getting_mic' | 'practice' | 'recording' | 'processing' | 'summary';
+type PracticeState = 'loading' | 'practice' | 'recording' | 'processing' | 'summary';
 
 interface Result {
     sourceText: string;
@@ -52,22 +52,17 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
     
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const audioChunksRef = useRef<Blob[]>([]);
-    const audioStreamRef = useRef<MediaStream | null>(null);
     const recordTimeoutRef = useRef<number | null>(null);
 
-    const cleanupMedia = useCallback(() => {
+    const cleanupOnUnmount = useCallback(() => {
         if (recordTimeoutRef.current) clearTimeout(recordTimeoutRef.current);
-        if (mediaRecorderRef.current?.state === 'recording') {
+        if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
             mediaRecorderRef.current.stop();
-        }
-        if (audioStreamRef.current) {
-            audioStreamRef.current.getTracks().forEach(track => track.stop());
-            audioStreamRef.current = null;
         }
     }, []);
 
     const loadSentences = useCallback(() => {
-        cleanupMedia();
+        cleanupOnUnmount();
         setPracticeState('loading');
         const testData = getListeningTranslationTest(testId);
         if (testData && testData.sentences.length > 0) {
@@ -77,36 +72,17 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
             setResults([]);
             setRecordings([]);
             setError(null);
-            setPracticeState('getting_mic');
+            setPracticeState('practice');
         } else {
             setError("Could not load sentences for this test.");
             setPracticeState('practice');
         }
-    }, [testId, cleanupMedia]);
+    }, [testId, cleanupOnUnmount]);
 
     useEffect(() => {
         loadSentences();
-        // Cleanup on unmount
-        return () => cleanupMedia();
+        return () => cleanupOnUnmount();
     }, []);
-
-    useEffect(() => {
-        const getMicrophone = async () => {
-            if (practiceState === 'getting_mic') {
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    audioStreamRef.current = stream;
-                    setPracticeState('practice');
-                } catch (err) {
-                    console.error("Microphone access error:", err);
-                    setError("Microphone access is required. Please enable it in your browser and try again.");
-                    setPracticeState('practice'); // Go to practice to show the error
-                }
-            }
-        };
-        getMicrophone();
-    }, [practiceState]);
-
 
     const stopRecording = useCallback(() => {
         if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
@@ -118,14 +94,8 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
         }
     }, []);
 
-    const startRecording = useCallback(() => {
-        if (!audioStreamRef.current) {
-            setError("Microphone is not available. Please allow access and retry.");
-            setPracticeState('practice');
-            return;
-        }
-        
-        const mediaRecorder = new MediaRecorder(audioStreamRef.current);
+    const startRecording = useCallback((stream: MediaStream) => {
+        const mediaRecorder = new MediaRecorder(stream);
         mediaRecorderRef.current = mediaRecorder;
         audioChunksRef.current = [];
 
@@ -134,15 +104,11 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
         };
 
         mediaRecorder.onstop = () => {
+            // Immediately stop the tracks to release the microphone after each recording.
+            stream.getTracks().forEach(track => track.stop());
+
             const audioBlob = new Blob(audioChunksRef.current, { type: mediaRecorder.mimeType });
             setRecordings(prev => [...prev, audioBlob.size > 0 ? audioBlob : null]);
-            
-            if (currentIndex < practiceSentences.length - 1) {
-                setCurrentIndex(prev => prev + 1);
-                setPracticeState('practice');
-            } else {
-                setPracticeState('processing');
-            }
         };
         
         mediaRecorder.start();
@@ -150,40 +116,64 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
 
         recordTimeoutRef.current = window.setTimeout(stopRecording, timeLimit * 1000);
 
-    }, [currentIndex, practiceSentences.length, stopRecording, timeLimit]);
+    }, [stopRecording, timeLimit]);
 
+    // Effect to advance to the next state after a recording is saved.
+    useEffect(() => {
+        // This check ensures we only transition state after a new recording has been added.
+        if (recordings.length > 0 && recordings.length === currentIndex + 1) {
+             if (currentIndex < practiceSentences.length - 1) {
+                setCurrentIndex(prev => prev + 1);
+                setPracticeState('practice');
+            } else {
+                setPracticeState('processing');
+            }
+        }
+    }, [recordings, currentIndex, practiceSentences.length]);
 
-    const handleAudioEnd = useCallback(() => {
+    const handleAudioEnd = useCallback(async () => {
         if (practiceState === 'practice') {
-            startRecording();
+            try {
+                // Request a fresh media stream for each recording.
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                startRecording(stream);
+            } catch (err) {
+                 console.error("Microphone access error on demand:", err);
+                 setError("Microphone access is required. Please enable it in your browser and try again.");
+                 // Record a failure (null) and move to the next question automatically.
+                 setRecordings(prev => [...prev, null]);
+            }
         }
     }, [practiceState, startRecording]);
 
     useEffect(() => {
         const processAllRecordings = async () => {
-            if (practiceState === 'processing') {
+            if (practiceState === 'processing' && recordings.length === practiceSentences.length) {
                 const finalResults: Result[] = [];
                 for (let i = 0; i < practiceSentences.length; i++) {
                     const sourceText = practiceSentences[i];
                     const recording = recordings[i];
-                    let transcribedText: string | null = null;
+                    let transcribedText: string | null = "No audio recorded or transcribed.";
                     let evaluation: SpokenTranslationEvaluationResult | null = null;
 
                     if (recording) {
                         try {
                             const audioBase64 = await blobToBase64(recording);
-                            transcribedText = await transcribeVietnameseAudio(audioBase64, recording.type);
-                            if (transcribedText) {
+                            const transcription = await transcribeVietnameseAudio(audioBase64, recording.type);
+                             if (transcription) {
+                                transcribedText = transcription;
                                 evaluation = await evaluateSpokenTranslation(sourceText, transcribedText);
+                            } else {
+                                transcribedText = "Transcription failed.";
                             }
                         } catch (e) {
                             console.error(`Error processing sentence ${i}:`, e);
+                            transcribedText = "Error during processing.";
                         }
                     }
                     finalResults.push({ sourceText, transcribedText, evaluation });
                 }
                 
-                cleanupMedia();
                 setResults(finalResults);
                 
                 const validResults = finalResults.filter(r => r.evaluation?.estimated_accuracy_percent !== undefined);
@@ -203,7 +193,7 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
         };
 
         processAllRecordings();
-    }, [practiceState, recordings, practiceSentences, currentUser, testId, cleanupMedia]);
+    }, [practiceState, recordings, practiceSentences, currentUser, testId]);
     
     const getScoreColor = (score: number) => {
         if (score >= 85) return 'text-green-500';
@@ -216,7 +206,7 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
         <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
             <p className="font-semibold text-slate-500 dark:text-slate-400 mb-2">Sentence {index + 1}</p>
             <p className="mb-2"><span className='font-bold'>Original:</span> {result.sourceText}</p>
-            <p className="mb-3"><span className='font-bold'>Your translation:</span> <span className="italic">{result.transcribedText || "No audio recorded or transcribed."}</span></p>
+            <p className="mb-3"><span className='font-bold'>Your translation:</span> <span className="italic">{result.transcribedText}</span></p>
             {result.evaluation ? (
                 <div className='flex items-center gap-4 bg-slate-100 dark:bg-slate-700 p-3 rounded-md'>
                     <div className='text-center'>
@@ -234,12 +224,12 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
     const renderContent = () => {
         const currentSentence = practiceSentences[currentIndex];
 
-        if (practiceState === 'loading' || practiceState === 'getting_mic' || (!currentSentence && practiceState !== 'summary' && practiceState !== 'processing')) {
+        if (practiceState === 'loading' || (!currentSentence && practiceState !== 'summary' && practiceState !== 'processing')) {
              return (
                 <div className="text-center p-8 min-h-[300px] flex flex-col justify-center">
                     <LoadingIcon className="h-12 w-12 text-blue-600 mx-auto animate-spin" />
                     <h3 className="mt-4 text-xl font-semibold">
-                        {practiceState === 'getting_mic' ? 'Accessing microphone...' : 'Loading Test...'}
+                        Loading Test...
                     </h3>
                 </div>
             );
@@ -258,7 +248,7 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
             case 'practice':
                 return (
                     <div>
-                        <h2 className="text-2xl font-bold text-center mb-2">Listen & Translate ({currentIndex + 1} / {practiceSentences.length})</h2>
+                        <h2 className="text-2xl font-bold text-center mb-2">Listen &amp; Translate ({currentIndex + 1} / {practiceSentences.length})</h2>
                         <p className="text-center text-slate-600 dark:text-slate-400 mb-6">Listen to the sentence. Recording will start automatically.</p>
                         <AudioPlayer audioScript={currentSentence} autoPlay={true} onPlaybackEnd={handleAudioEnd} />
                         <div className="text-center mt-6 text-slate-500">
@@ -269,7 +259,7 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
             case 'recording':
                 return (
                      <div>
-                        <h2 className="text-2xl font-bold text-center mb-2">Listen & Translate ({currentIndex + 1} / {practiceSentences.length})</h2>
+                        <h2 className="text-2xl font-bold text-center mb-2">Listen &amp; Translate ({currentIndex + 1} / {practiceSentences.length})</h2>
                         <p className="text-center text-slate-600 dark:text-slate-400 mb-6">Recording your Vietnamese translation...</p>
                          <div className="mt-8 flex flex-col items-center gap-4">
                              <div className="flex items-center gap-4">
@@ -331,7 +321,7 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
      return (
         <div className="container mx-auto px-4 py-8">
             <div className="max-w-3xl mx-auto">
-                 <button onClick={onBack} className="mb-6 inline-flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-semibold transition-colors disabled:opacity-50" disabled={practiceState !== 'summary' && practiceState !== 'practice' && practiceState !== 'loading'}>
+                 <button onClick={onBack} className="mb-6 inline-flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-semibold transition-colors disabled:opacity-50" disabled={practiceState === 'recording' || practiceState === 'processing'}>
                     <ArrowLeftIcon className="h-5 w-5 mr-2" />
                     Back to Setup
                 </button>
