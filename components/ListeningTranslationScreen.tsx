@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { SpokenTranslationEvaluationResult, User } from '../types';
 import { transcribeVietnameseAudio, evaluateSpokenTranslation } from '../services/geminiService';
@@ -24,7 +23,7 @@ const blobToBase64 = (blob: Blob): Promise<string> => {
     });
 };
 
-type PracticeState = 'loading' | 'practice' | 'recording' | 'evaluating' | 'summary';
+type PracticeState = 'loading' | 'practice' | 'recording' | 'processing' | 'summary';
 
 interface Result {
     sourceText: string;
@@ -49,11 +48,9 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
     const [practiceSentences, setPracticeSentences] = useState<string[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [results, setResults] = useState<Result[]>([]);
-    const [evaluationProgress, setEvaluationProgress] = useState(0);
     
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const audioChunksRef = useRef<Blob[]>([]);
-    const recordingsRef = useRef<(Blob | null)[]>([]);
     const audioStreamRef = useRef<MediaStream | null>(null);
     const recordTimeoutRef = useRef<number | null>(null);
 
@@ -63,7 +60,6 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
         if (testData && testData.sentences.length > 0) {
             const randomSentences = shuffleArray(testData.sentences).slice(0, 5);
             setPracticeSentences(randomSentences);
-            recordingsRef.current = new Array(randomSentences.length).fill(null);
             setCurrentIndex(0);
             setResults([]);
             setError(null);
@@ -78,74 +74,70 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
         loadSentences();
     }, [loadSentences]);
 
-    // Cleanup effect for when the component unmounts
-    useEffect(() => {
-        return () => {
-            if (recordTimeoutRef.current) {
-                clearTimeout(recordTimeoutRef.current);
-            }
-            if (audioStreamRef.current) {
-                audioStreamRef.current.getTracks().forEach(track => track.stop());
-                audioStreamRef.current = null;
-            }
-        };
+    const cleanupMedia = useCallback(() => {
+        if (recordTimeoutRef.current) clearTimeout(recordTimeoutRef.current);
+        if (mediaRecorderRef.current?.state === 'recording') {
+            mediaRecorderRef.current.stop();
+        }
+        if (audioStreamRef.current) {
+            audioStreamRef.current.getTracks().forEach(track => track.stop());
+            audioStreamRef.current = null;
+        }
     }, []);
-    
-    const handleBulkEvaluation = useCallback(async () => {
-        setPracticeState('evaluating');
-        const finalResults: Result[] = [];
 
-        for (let i = 0; i < practiceSentences.length; i++) {
-            setEvaluationProgress(i + 1);
-            const sourceText = practiceSentences[i];
-            const recording = recordingsRef.current[i];
-            let transcribedText: string | null = null;
-            let evaluation: SpokenTranslationEvaluationResult | null = null;
-            
-            if (recording) {
-                try {
-                    const audioBase64 = await blobToBase64(recording);
-                    transcribedText = await transcribeVietnameseAudio(audioBase64, recording.type);
-                    if (transcribedText) {
-                        evaluation = await evaluateSpokenTranslation(sourceText, transcribedText);
-                    }
-                } catch (e) {
-                    console.error(e);
-                    // Don't set a generic error, just let the result be null
-                }
+    useEffect(() => {
+        return () => cleanupMedia();
+    }, [cleanupMedia]);
+
+    useEffect(() => {
+        if (practiceState === 'summary' && results.length === practiceSentences.length && results.length > 0) {
+            const validResults = results.filter(r => r.evaluation?.estimated_accuracy_percent !== undefined);
+            if (validResults.length > 0 && currentUser) {
+                 const avgScore = Math.round(validResults.reduce((acc, res) => acc + (res.evaluation?.estimated_accuracy_percent || 0), 0) / validResults.length);
+                 addTestResult(currentUser.username, 'speaking', {
+                    id: `spoken-translation-test-${testId}-${Date.now()}`,
+                    title: `Listening & Translation Test ${testId}`,
+                    score: avgScore,
+                    total: 100,
+                    date: Date.now()
+                });
             }
-            finalResults.push({ sourceText, transcribedText, evaluation });
         }
+    }, [practiceState, results, currentUser, testId, practiceSentences.length]);
 
-        const validResults = finalResults.filter(r => r.evaluation?.estimated_accuracy_percent !== undefined);
-        if (validResults.length > 0 && currentUser) {
-             const avgScore = Math.round(validResults.reduce((acc, res) => acc + (res.evaluation?.estimated_accuracy_percent || 0), 0) / validResults.length);
-             addTestResult(currentUser.username, 'speaking', {
-                id: `spoken-translation-test-${testId}-${Date.now()}`,
-                title: `Listening & Translation Test ${testId}`,
-                score: avgScore,
-                total: 100,
-                date: Date.now()
-            });
+
+    const processSingleRecording = useCallback(async (recording: Blob | null) => {
+        setPracticeState('processing');
+        const sourceText = practiceSentences[currentIndex];
+        let transcribedText: string | null = null;
+        let evaluation: SpokenTranslationEvaluationResult | null = null;
+
+        if (recording) {
+            try {
+                const audioBase64 = await blobToBase64(recording);
+                transcribedText = await transcribeVietnameseAudio(audioBase64, recording.type);
+                if (transcribedText) {
+                    evaluation = await evaluateSpokenTranslation(sourceText, transcribedText);
+                }
+            } catch (e) {
+                console.error(`Error processing sentence ${currentIndex}:`, e);
+                // The result will be stored with null values for transcription/evaluation
+            }
         }
+        
+        setResults(prev => [...prev, { sourceText, transcribedText, evaluation }]);
 
-        setResults(finalResults);
-        setPracticeState('summary');
-    }, [practiceSentences, currentUser, testId]);
-
-    const handleNextOrEvaluate = useCallback(() => {
         if (currentIndex < practiceSentences.length - 1) {
             setCurrentIndex(prev => prev + 1);
             setPracticeState('practice');
         } else {
-            handleBulkEvaluation();
+            setPracticeState('summary');
         }
-    }, [currentIndex, practiceSentences.length, handleBulkEvaluation]);
-
+    }, [currentIndex, practiceSentences]);
 
     const stopRecording = useCallback(() => {
         if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
-            mediaRecorderRef.current.stop(); // This will trigger the 'onstop' handler
+            mediaRecorderRef.current.stop(); 
         }
         if (recordTimeoutRef.current) {
             clearTimeout(recordTimeoutRef.current);
@@ -157,7 +149,7 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
         try {
             setError(null);
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            audioStreamRef.current = stream; // Keep track of the current stream for cleanup
+            audioStreamRef.current = stream;
 
             const mediaRecorder = new MediaRecorder(stream);
             mediaRecorderRef.current = mediaRecorder;
@@ -168,38 +160,27 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
             };
 
             mediaRecorder.onstop = () => {
-                // Release the microphone now that recording for this sentence is done
-                if (stream) {
-                    stream.getTracks().forEach(track => track.stop());
-                    audioStreamRef.current = null;
-                }
-
                 const audioBlob = new Blob(audioChunksRef.current, { type: mediaRecorder.mimeType });
-                recordingsRef.current[currentIndex] = audioBlob.size > 0 ? audioBlob : null;
                 
-                if (recordTimeoutRef.current) {
-                    clearTimeout(recordTimeoutRef.current);
-                    recordTimeoutRef.current = null;
-                }
-                // Move to the next step
-                handleNextOrEvaluate();
+                stream.getTracks().forEach(track => track.stop());
+                audioStreamRef.current = null;
+                
+                processSingleRecording(audioBlob.size > 0 ? audioBlob : null);
             };
             
             mediaRecorder.start();
             setPracticeState('recording');
 
-            recordTimeoutRef.current = window.setTimeout(() => {
-                stopRecording();
-            }, timeLimit * 1000);
+            recordTimeoutRef.current = window.setTimeout(stopRecording, timeLimit * 1000);
 
         } catch (err) {
             console.error("Microphone access error:", err);
             setError("Microphone access denied. Please enable microphone permissions and try again.");
             setPracticeState('practice');
         }
-    }, [currentIndex, handleNextOrEvaluate, stopRecording, timeLimit]);
+    }, [processSingleRecording, stopRecording, timeLimit]);
 
-     const handleAudioEnd = useCallback(() => {
+    const handleAudioEnd = useCallback(() => {
         if (practiceState === 'practice') {
             startRecording();
         }
@@ -235,7 +216,7 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
     const renderContent = () => {
         const currentSentence = practiceSentences[currentIndex];
 
-        if (practiceState === 'loading' || (!currentSentence && practiceState !== 'summary')) {
+        if (practiceState === 'loading' || (!currentSentence && practiceState !== 'summary' && practiceState !== 'processing')) {
              return (
                 <div className="text-center p-8">
                     <LoadingIcon className="h-12 w-12 text-blue-600 mx-auto animate-spin" />
@@ -284,12 +265,12 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
                         </div>
                     </div>
                 );
-            case 'evaluating':
+            case 'processing':
                  return (
-                    <div className="text-center p-8">
+                    <div className="text-center p-8 min-h-[200px] flex flex-col justify-center">
                         <LoadingIcon className="h-12 w-12 text-blue-600 mx-auto animate-spin" />
-                        <h3 className="mt-4 text-xl font-semibold">Evaluating your translations...</h3>
-                        <p className="mt-2 text-slate-500">Analyzing sentence {evaluationProgress} of {practiceSentences.length}</p>
+                        <h3 className="mt-4 text-xl font-semibold">Processing your audio...</h3>
+                        <p className="mt-2 text-slate-500">Sentence {currentIndex + 1} of {practiceSentences.length}</p>
                     </div>
                 );
             
@@ -330,7 +311,7 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
      return (
         <div className="container mx-auto px-4 py-8">
             <div className="max-w-3xl mx-auto">
-                 <button onClick={onBack} className="mb-6 inline-flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-semibold transition-colors disabled:opacity-50" disabled={practiceState === 'recording' || practiceState === 'evaluating'}>
+                 <button onClick={onBack} className="mb-6 inline-flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-semibold transition-colors disabled:opacity-50" disabled={practiceState === 'recording' || practiceState === 'processing'}>
                     <ArrowLeftIcon className="h-5 w-5 mr-2" />
                     Back to Setup
                 </button>
