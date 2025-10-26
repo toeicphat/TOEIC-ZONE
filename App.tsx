@@ -1,6 +1,4 @@
 
-
-
 import React, { useState, useCallback, useEffect } from 'react';
 import PracticeHub from './components/PracticeHub';
 import DictationScreen from './components/DictationScreen';

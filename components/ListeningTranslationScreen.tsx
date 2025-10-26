@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { SpokenTranslationEvaluationResult, User } from '../types';
 import { transcribeVietnameseAudio, evaluateSpokenTranslation } from '../services/geminiService';
@@ -77,20 +78,18 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
         loadSentences();
     }, [loadSentences]);
 
-    const cleanupMedia = useCallback(() => {
-        if (recordTimeoutRef.current) clearTimeout(recordTimeoutRef.current);
-        if (mediaRecorderRef.current?.state === 'recording') {
-            mediaRecorderRef.current.stop();
-        }
-        if (audioStreamRef.current) {
-            audioStreamRef.current.getTracks().forEach(track => track.stop());
-            audioStreamRef.current = null;
-        }
-    }, []);
-
+    // Cleanup effect for when the component unmounts
     useEffect(() => {
-        return () => cleanupMedia();
-    }, [cleanupMedia]);
+        return () => {
+            if (recordTimeoutRef.current) {
+                clearTimeout(recordTimeoutRef.current);
+            }
+            if (audioStreamRef.current) {
+                audioStreamRef.current.getTracks().forEach(track => track.stop());
+                audioStreamRef.current = null;
+            }
+        };
+    }, []);
     
     const handleBulkEvaluation = useCallback(async () => {
         setPracticeState('evaluating');
@@ -112,12 +111,13 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
                     }
                 } catch (e) {
                     console.error(e);
+                    // Don't set a generic error, just let the result be null
                 }
             }
             finalResults.push({ sourceText, transcribedText, evaluation });
         }
 
-        const validResults = finalResults.filter(r => r.evaluation !== null);
+        const validResults = finalResults.filter(r => r.evaluation?.estimated_accuracy_percent !== undefined);
         if (validResults.length > 0 && currentUser) {
              const avgScore = Math.round(validResults.reduce((acc, res) => acc + (res.evaluation?.estimated_accuracy_percent || 0), 0) / validResults.length);
              addTestResult(currentUser.username, 'speaking', {
@@ -145,14 +145,21 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
 
     const stopRecording = useCallback(() => {
         if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
-            mediaRecorderRef.current.stop();
+            mediaRecorderRef.current.stop(); // This will trigger the 'onstop' handler
+        }
+        if (recordTimeoutRef.current) {
+            clearTimeout(recordTimeoutRef.current);
+            recordTimeoutRef.current = null;
         }
     }, []);
 
     const startRecording = useCallback(async () => {
         try {
-            audioStreamRef.current = await navigator.mediaDevices.getUserMedia({ audio: true });
-            const mediaRecorder = new MediaRecorder(audioStreamRef.current);
+            setError(null);
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            audioStreamRef.current = stream; // Keep track of the current stream for cleanup
+
+            const mediaRecorder = new MediaRecorder(stream);
             mediaRecorderRef.current = mediaRecorder;
             audioChunksRef.current = [];
 
@@ -161,9 +168,20 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
             };
 
             mediaRecorder.onstop = () => {
-                cleanupMedia();
+                // Release the microphone now that recording for this sentence is done
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                    audioStreamRef.current = null;
+                }
+
                 const audioBlob = new Blob(audioChunksRef.current, { type: mediaRecorder.mimeType });
                 recordingsRef.current[currentIndex] = audioBlob.size > 0 ? audioBlob : null;
+                
+                if (recordTimeoutRef.current) {
+                    clearTimeout(recordTimeoutRef.current);
+                    recordTimeoutRef.current = null;
+                }
+                // Move to the next step
                 handleNextOrEvaluate();
             };
             
@@ -179,7 +197,7 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
             setError("Microphone access denied. Please enable microphone permissions and try again.");
             setPracticeState('practice');
         }
-    }, [cleanupMedia, currentIndex, handleNextOrEvaluate, stopRecording, timeLimit]);
+    }, [currentIndex, handleNextOrEvaluate, stopRecording, timeLimit]);
 
      const handleAudioEnd = useCallback(() => {
         if (practiceState === 'practice') {
@@ -276,7 +294,11 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
                 );
             
             case 'summary':
-                const avgScore = results.length > 0 ? Math.round(results.reduce((acc, res) => acc + (res.evaluation?.estimated_accuracy_percent || 0), 0) / results.length) : 0;
+                const successfulResults = results.filter(r => r.evaluation);
+                const avgScore = successfulResults.length > 0 
+                    ? Math.round(successfulResults.reduce((acc, res) => acc + (res.evaluation?.estimated_accuracy_percent || 0), 0) / successfulResults.length) 
+                    : 0;
+
                  return (
                     <div>
                         <div className="text-center border-b dark:border-slate-700 pb-6 mb-6">
