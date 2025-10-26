@@ -23,7 +23,7 @@ const blobToBase64 = (blob: Blob): Promise<string> => {
     });
 };
 
-type PracticeState = 'loading' | 'practice' | 'recording' | 'processing' | 'summary';
+type PracticeState = 'loading' | 'getting_mic' | 'practice' | 'recording' | 'processing' | 'summary';
 
 interface Result {
     sourceText: string;
@@ -48,31 +48,12 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
     const [practiceSentences, setPracticeSentences] = useState<string[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [results, setResults] = useState<Result[]>([]);
+    const [recordings, setRecordings] = useState<(Blob | null)[]>([]);
     
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const audioChunksRef = useRef<Blob[]>([]);
     const audioStreamRef = useRef<MediaStream | null>(null);
     const recordTimeoutRef = useRef<number | null>(null);
-
-    const loadSentences = useCallback(() => {
-        setPracticeState('loading');
-        const testData = getListeningTranslationTest(testId);
-        if (testData && testData.sentences.length > 0) {
-            const randomSentences = shuffleArray(testData.sentences).slice(0, 5);
-            setPracticeSentences(randomSentences);
-            setCurrentIndex(0);
-            setResults([]);
-            setError(null);
-            setPracticeState('practice');
-        } else {
-            setError("Could not load sentences for this test.");
-            setPracticeState('practice');
-        }
-    }, [testId]);
-
-    useEffect(() => {
-        loadSentences();
-    }, [loadSentences]);
 
     const cleanupMedia = useCallback(() => {
         if (recordTimeoutRef.current) clearTimeout(recordTimeoutRef.current);
@@ -85,55 +66,47 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
         }
     }, []);
 
-    useEffect(() => {
-        return () => cleanupMedia();
-    }, [cleanupMedia]);
-
-    useEffect(() => {
-        if (practiceState === 'summary' && results.length === practiceSentences.length && results.length > 0) {
-            const validResults = results.filter(r => r.evaluation?.estimated_accuracy_percent !== undefined);
-            if (validResults.length > 0 && currentUser) {
-                 const avgScore = Math.round(validResults.reduce((acc, res) => acc + (res.evaluation?.estimated_accuracy_percent || 0), 0) / validResults.length);
-                 addTestResult(currentUser.username, 'speaking', {
-                    id: `spoken-translation-test-${testId}-${Date.now()}`,
-                    title: `Listening & Translation Test ${testId}`,
-                    score: avgScore,
-                    total: 100,
-                    date: Date.now()
-                });
-            }
-        }
-    }, [practiceState, results, currentUser, testId, practiceSentences.length]);
-
-
-    const processSingleRecording = useCallback(async (recording: Blob | null) => {
-        setPracticeState('processing');
-        const sourceText = practiceSentences[currentIndex];
-        let transcribedText: string | null = null;
-        let evaluation: SpokenTranslationEvaluationResult | null = null;
-
-        if (recording) {
-            try {
-                const audioBase64 = await blobToBase64(recording);
-                transcribedText = await transcribeVietnameseAudio(audioBase64, recording.type);
-                if (transcribedText) {
-                    evaluation = await evaluateSpokenTranslation(sourceText, transcribedText);
-                }
-            } catch (e) {
-                console.error(`Error processing sentence ${currentIndex}:`, e);
-                // The result will be stored with null values for transcription/evaluation
-            }
-        }
-        
-        setResults(prev => [...prev, { sourceText, transcribedText, evaluation }]);
-
-        if (currentIndex < practiceSentences.length - 1) {
-            setCurrentIndex(prev => prev + 1);
-            setPracticeState('practice');
+    const loadSentences = useCallback(() => {
+        cleanupMedia();
+        setPracticeState('loading');
+        const testData = getListeningTranslationTest(testId);
+        if (testData && testData.sentences.length > 0) {
+            const randomSentences = shuffleArray(testData.sentences).slice(0, 5);
+            setPracticeSentences(randomSentences);
+            setCurrentIndex(0);
+            setResults([]);
+            setRecordings([]);
+            setError(null);
+            setPracticeState('getting_mic');
         } else {
-            setPracticeState('summary');
+            setError("Could not load sentences for this test.");
+            setPracticeState('practice');
         }
-    }, [currentIndex, practiceSentences]);
+    }, [testId, cleanupMedia]);
+
+    useEffect(() => {
+        loadSentences();
+        // Cleanup on unmount
+        return () => cleanupMedia();
+    }, []);
+
+    useEffect(() => {
+        const getMicrophone = async () => {
+            if (practiceState === 'getting_mic') {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    audioStreamRef.current = stream;
+                    setPracticeState('practice');
+                } catch (err) {
+                    console.error("Microphone access error:", err);
+                    setError("Microphone access is required. Please enable it in your browser and try again.");
+                    setPracticeState('practice'); // Go to practice to show the error
+                }
+            }
+        };
+        getMicrophone();
+    }, [practiceState]);
+
 
     const stopRecording = useCallback(() => {
         if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
@@ -145,40 +118,40 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
         }
     }, []);
 
-    const startRecording = useCallback(async () => {
-        try {
-            setError(null);
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            audioStreamRef.current = stream;
-
-            const mediaRecorder = new MediaRecorder(stream);
-            mediaRecorderRef.current = mediaRecorder;
-            audioChunksRef.current = [];
-
-            mediaRecorder.ondataavailable = (event) => {
-                if (event.data.size > 0) audioChunksRef.current.push(event.data);
-            };
-
-            mediaRecorder.onstop = () => {
-                const audioBlob = new Blob(audioChunksRef.current, { type: mediaRecorder.mimeType });
-                
-                stream.getTracks().forEach(track => track.stop());
-                audioStreamRef.current = null;
-                
-                processSingleRecording(audioBlob.size > 0 ? audioBlob : null);
-            };
-            
-            mediaRecorder.start();
-            setPracticeState('recording');
-
-            recordTimeoutRef.current = window.setTimeout(stopRecording, timeLimit * 1000);
-
-        } catch (err) {
-            console.error("Microphone access error:", err);
-            setError("Microphone access denied. Please enable microphone permissions and try again.");
+    const startRecording = useCallback(() => {
+        if (!audioStreamRef.current) {
+            setError("Microphone is not available. Please allow access and retry.");
             setPracticeState('practice');
+            return;
         }
-    }, [processSingleRecording, stopRecording, timeLimit]);
+        
+        const mediaRecorder = new MediaRecorder(audioStreamRef.current);
+        mediaRecorderRef.current = mediaRecorder;
+        audioChunksRef.current = [];
+
+        mediaRecorder.ondataavailable = (event) => {
+            if (event.data.size > 0) audioChunksRef.current.push(event.data);
+        };
+
+        mediaRecorder.onstop = () => {
+            const audioBlob = new Blob(audioChunksRef.current, { type: mediaRecorder.mimeType });
+            setRecordings(prev => [...prev, audioBlob.size > 0 ? audioBlob : null]);
+            
+            if (currentIndex < practiceSentences.length - 1) {
+                setCurrentIndex(prev => prev + 1);
+                setPracticeState('practice');
+            } else {
+                setPracticeState('processing');
+            }
+        };
+        
+        mediaRecorder.start();
+        setPracticeState('recording');
+
+        recordTimeoutRef.current = window.setTimeout(stopRecording, timeLimit * 1000);
+
+    }, [currentIndex, practiceSentences.length, stopRecording, timeLimit]);
+
 
     const handleAudioEnd = useCallback(() => {
         if (practiceState === 'practice') {
@@ -186,6 +159,51 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
         }
     }, [practiceState, startRecording]);
 
+    useEffect(() => {
+        const processAllRecordings = async () => {
+            if (practiceState === 'processing') {
+                const finalResults: Result[] = [];
+                for (let i = 0; i < practiceSentences.length; i++) {
+                    const sourceText = practiceSentences[i];
+                    const recording = recordings[i];
+                    let transcribedText: string | null = null;
+                    let evaluation: SpokenTranslationEvaluationResult | null = null;
+
+                    if (recording) {
+                        try {
+                            const audioBase64 = await blobToBase64(recording);
+                            transcribedText = await transcribeVietnameseAudio(audioBase64, recording.type);
+                            if (transcribedText) {
+                                evaluation = await evaluateSpokenTranslation(sourceText, transcribedText);
+                            }
+                        } catch (e) {
+                            console.error(`Error processing sentence ${i}:`, e);
+                        }
+                    }
+                    finalResults.push({ sourceText, transcribedText, evaluation });
+                }
+                
+                cleanupMedia();
+                setResults(finalResults);
+                
+                const validResults = finalResults.filter(r => r.evaluation?.estimated_accuracy_percent !== undefined);
+                if (validResults.length > 0 && currentUser) {
+                     const avgScore = Math.round(validResults.reduce((acc, res) => acc + (res.evaluation?.estimated_accuracy_percent || 0), 0) / validResults.length);
+                     addTestResult(currentUser.username, 'speaking', {
+                        id: `spoken-translation-test-${testId}-${Date.now()}`,
+                        title: `Listening & Translation Test ${testId}`,
+                        score: avgScore,
+                        total: 100,
+                        date: Date.now()
+                    });
+                }
+                
+                setPracticeState('summary');
+            }
+        };
+
+        processAllRecordings();
+    }, [practiceState, recordings, practiceSentences, currentUser, testId, cleanupMedia]);
     
     const getScoreColor = (score: number) => {
         if (score >= 85) return 'text-green-500';
@@ -216,18 +234,20 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
     const renderContent = () => {
         const currentSentence = practiceSentences[currentIndex];
 
-        if (practiceState === 'loading' || (!currentSentence && practiceState !== 'summary' && practiceState !== 'processing')) {
+        if (practiceState === 'loading' || practiceState === 'getting_mic' || (!currentSentence && practiceState !== 'summary' && practiceState !== 'processing')) {
              return (
-                <div className="text-center p-8">
+                <div className="text-center p-8 min-h-[300px] flex flex-col justify-center">
                     <LoadingIcon className="h-12 w-12 text-blue-600 mx-auto animate-spin" />
-                    <h3 className="mt-4 text-xl font-semibold">Loading Test...</h3>
+                    <h3 className="mt-4 text-xl font-semibold">
+                        {practiceState === 'getting_mic' ? 'Accessing microphone...' : 'Loading Test...'}
+                    </h3>
                 </div>
             );
         }
         
         if (error) {
             return (
-                 <div className="text-center p-8">
+                 <div className="text-center p-8 min-h-[300px] flex flex-col justify-center">
                     <p className="text-red-500 font-bold mb-4">{error}</p>
                     <button onClick={loadSentences} className="px-6 py-2 bg-blue-600 text-white rounded-lg">Try Again</button>
                 </div>
@@ -267,10 +287,10 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
                 );
             case 'processing':
                  return (
-                    <div className="text-center p-8 min-h-[200px] flex flex-col justify-center">
+                    <div className="text-center p-8 min-h-[300px] flex flex-col justify-center">
                         <LoadingIcon className="h-12 w-12 text-blue-600 mx-auto animate-spin" />
-                        <h3 className="mt-4 text-xl font-semibold">Processing your audio...</h3>
-                        <p className="mt-2 text-slate-500">Sentence {currentIndex + 1} of {practiceSentences.length}</p>
+                        <h3 className="mt-4 text-xl font-semibold">Hệ thống đang chấm điểm cho bạn...</h3>
+                        <p className="mt-2 text-slate-500">Bạn hãy đợi một chút nhé.</p>
                     </div>
                 );
             
@@ -311,7 +331,7 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
      return (
         <div className="container mx-auto px-4 py-8">
             <div className="max-w-3xl mx-auto">
-                 <button onClick={onBack} className="mb-6 inline-flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-semibold transition-colors disabled:opacity-50" disabled={practiceState === 'recording' || practiceState === 'processing'}>
+                 <button onClick={onBack} className="mb-6 inline-flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-semibold transition-colors disabled:opacity-50" disabled={practiceState !== 'summary' && practiceState !== 'practice' && practiceState !== 'loading'}>
                     <ArrowLeftIcon className="h-5 w-5 mr-2" />
                     Back to Setup
                 </button>
