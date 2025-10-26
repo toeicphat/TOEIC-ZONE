@@ -26,9 +26,7 @@ import {
 import { getRandomVocabularyWords } from './vocabularyLibrary';
 import { commonWords } from './pronunciationLibrary';
 
-const ai = new GoogleGenAI({
-  apiKey: import.meta.env.VITE_GOOGLE_API_KEY
-});
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
 
 // Interface for the structured response from the speaking evaluation AI
 export interface SpeakingEvaluationResult {
@@ -497,7 +495,7 @@ export const transcribeVietnameseAudio = async (audioBase64: string, mimeType: s
         const prompt = "Transcribe the following audio recording from Vietnamese into Vietnamese text. Provide only the transcription.";
         
         const response = await ai.models.generateContent({
-            model: "gemini-2.5-pro",
+            model: "gemini-2.5-flash",
             contents: {
                 parts: [
                     { text: prompt },
@@ -550,7 +548,7 @@ export const evaluateSpokenTranslation = async (originalText: string, translated
         `;
         
         const response = await ai.models.generateContent({
-            model: "gemini-2.5-pro",
+            model: "gemini-2.5-flash",
             contents: prompt,
             config: {
                 systemInstruction: systemInstruction,
@@ -1280,7 +1278,7 @@ export const evaluateWritingPart1 = async (tasks: WritingPart1Task[], userAnswer
         ).join('\n');
 
         const response = await ai.models.generateContent({
-            model: "gemini-2.5-pro",
+            model: "gemini-2.5-flash",
             contents: prompt,
             config: {
                 systemInstruction: systemInstruction,
@@ -1391,7 +1389,7 @@ export const evaluateWritingPart2 = async (tasks: WritingPart2Task, userAnswers:
         const prompt = `Evaluate these 2 emails:\nQ6 Prompt: "${tasks.question6.requestText}"\nUser Answer 6: "${userAnswers[0]}"\n\nQ7 Prompt: "${tasks.question7.requestText}"\nUser Answer 7: "${userAnswers[1]}"`;
 
         const response = await ai.models.generateContent({
-            model: "gemini-2.5-pro",
+            model: "gemini-2.5-flash",
             contents: prompt,
             config: {
                 systemInstruction: systemInstruction,
@@ -1461,7 +1459,7 @@ export const evaluateWritingPart3 = async (question: string, userAnswer: string)
         const prompt = `Evaluate this essay:\nPrompt: "${question}"\nUser's Essay: "${userAnswer}"`;
         
         const response = await ai.models.generateContent({
-            model: "gemini-2.5-pro",
+            model: "gemini-2.5-flash",
             contents: prompt,
             config: {
                 systemInstruction,
@@ -1511,7 +1509,7 @@ export const evaluateSingleWordPronunciation = async (word: string, phonetic: st
         const prompt = `Evaluate the pronunciation of the word "${word}" (IPA: ${phonetic}).`;
         
         const response = await ai.models.generateContent({
-            model: "gemini-2.5-pro",
+            model: "gemini-2.5-flash",
             contents: {
                 parts: [
                     { text: prompt },
