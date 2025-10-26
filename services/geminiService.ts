@@ -16,7 +16,7 @@ import {
     WritingPart3Task, 
     WritingPart3EvaluationResult, 
     DeterminerExercise,
-    TranslationEvaluationResult,
+    WrittenTranslationEvaluationResult,
     SpokenTranslationEvaluationResult,
     VocabItem,
     ContextMeaningSentence,
@@ -26,9 +26,7 @@ import {
 import { getRandomVocabularyWords } from './vocabularyLibrary';
 import { commonWords } from './pronunciationLibrary';
 
-const ai = new GoogleGenAI({
-  apiKey: import.meta.env.VITE_GOOGLE_API_KEY
-});
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
 
 // Interface for the structured response from the speaking evaluation AI
 export interface SpeakingEvaluationResult {
@@ -306,7 +304,7 @@ export const generateDeterminerExercise = async (): Promise<DeterminerExercise |
     }
 };
 
-const translationEvaluationSchema = {
+const writtenTranslationEvaluationSchema = {
     type: Type.OBJECT,
     properties: {
         score: { 
@@ -321,7 +319,7 @@ const translationEvaluationSchema = {
     required: ['score', 'feedback_vi']
 };
 
-export const evaluateTranslation = async (originalSentence: string, userTranslation: string): Promise<TranslationEvaluationResult | null> => {
+export const evaluateWrittenTranslation = async (originalSentence: string, userTranslation: string): Promise<WrittenTranslationEvaluationResult | null> => {
     try {
         const prompt = `
             You are an expert English to Vietnamese translator and teacher.
@@ -340,7 +338,7 @@ export const evaluateTranslation = async (originalSentence: string, userTranslat
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
-                responseSchema: translationEvaluationSchema,
+                responseSchema: writtenTranslationEvaluationSchema,
             },
         });
 
@@ -348,7 +346,7 @@ export const evaluateTranslation = async (originalSentence: string, userTranslat
         const data = JSON.parse(jsonStr);
 
         if (data && typeof data.score === 'number' && typeof data.feedback_vi === 'string') {
-            return data as TranslationEvaluationResult;
+            return data as WrittenTranslationEvaluationResult;
         }
         return null;
     } catch (error) {

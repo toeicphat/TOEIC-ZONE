@@ -1,5 +1,6 @@
 
 
+
 import React, { useState, useCallback, useEffect } from 'react';
 import PracticeHub from './components/PracticeHub';
 import DictationScreen from './components/DictationScreen';
@@ -12,6 +13,9 @@ import VocabularyScreen from './components/VocabularyScreen';
 import VocabularyPartScreen from './components/VocabularyPartScreen';
 import VocabularyTestScreen from './components/VocabularyTestScreen';
 import SpokenTranslationScreen from './components/SpokenTranslationScreen';
+import ListeningTranslationHomeScreen from './components/ListeningTranslationHomeScreen';
+import ListeningTranslationSetupScreen from './components/ListeningTranslationSetupScreen';
+import ListeningTranslationScreen from './components/ListeningTranslationScreen';
 import SpeakingScreen from './components/SpeakingScreen';
 import SpeakingPart1Screen from './components/SpeakingPart1Screen';
 import SpeakingPart2Screen from './components/SpeakingPart2Screen';
@@ -107,6 +111,10 @@ const App: React.FC = () => {
   // Vocabulary State
   const [selectedVocabularyPart, setSelectedVocabularyPart] = useState<VocabularyPart | null>(null);
   const [selectedVocabularyTest, setSelectedVocabularyTest] = useState<VocabularyTest | null>(null);
+  
+  // Listening & Translation State
+  const [selectedListeningTranslationTestId, setSelectedListeningTranslationTestId] = useState<number | null>(null);
+  const [selectedListeningTranslationTime, setSelectedListeningTranslationTime] = useState<number | null>(null);
 
   // Speaking State
   const [selectedSpeakingPart, setSelectedSpeakingPart] = useState<number | null>(null);
@@ -201,6 +209,8 @@ const App: React.FC = () => {
     setSelectedStudent(null);
     setSelectedDictationTestId(null);
     setSelectedDictationTestData(null);
+    setSelectedListeningTranslationTestId(null);
+    setSelectedListeningTranslationTime(null);
     setAppState(AppState.PracticeHub);
   }, []);
   
@@ -373,6 +383,30 @@ const App: React.FC = () => {
   const handleBackToVocabularyTest = useCallback(() => {
     setAppState(AppState.VocabularyTest);
   }, []);
+  
+    // Listening and Translation Navigation Handlers
+    const handleNavigateToListeningTranslation = useCallback(() => setAppState(AppState.LISTENING_TRANSLATION_HOME), []);
+
+    const handleNavigateToListeningTranslationSetup = useCallback((testId: number) => {
+        setSelectedListeningTranslationTestId(testId);
+        setAppState(AppState.LISTENING_TRANSLATION_SETUP);
+    }, []);
+
+    const handleStartListeningTranslationPractice = useCallback((timeLimit: number) => {
+        setSelectedListeningTranslationTime(timeLimit);
+        setAppState(AppState.LISTENING_TRANSLATION_PRACTICE);
+    }, []);
+    
+    const handleBackToListeningTranslationHome = useCallback(() => {
+        setSelectedListeningTranslationTestId(null);
+        setAppState(AppState.LISTENING_TRANSLATION_HOME);
+    }, []);
+
+    const handleBackToListeningTranslationSetup = useCallback(() => {
+        setSelectedListeningTranslationTime(null);
+        setAppState(AppState.LISTENING_TRANSLATION_SETUP);
+    }, []);
+
 
   // Speaking Navigation Handlers
     const handleSelectSpeakingPart = useCallback((part: number) => {
@@ -422,9 +456,15 @@ const App: React.FC = () => {
     const handleNavigateToGrammar = useCallback(() => setAppState(AppState.GrammarHome), []);
     const handleNavigateToVocabulary = useCallback(() => setAppState(AppState.VocabularyHome), []);
     const handleNavigateToSpeaking = useCallback(() => setAppState(AppState.SpeakingHome), []);
+    
 
     const renderContent = () => {
         if (!currentUser) return null;
+        
+        // FIX: Removed redundant `if` block and corrected PracticeHub props usage in the switch statement.
+        // The `onNavigateToPracticeTest` prop is obsolete and was causing errors. All navigation props
+        // are now correctly passed via the `practiceHubProps` object. This also resolves a
+        // potential TypeScript control-flow analysis issue.
 
         const practiceHubProps = {
             onNavigateToDictation: handleNavigateToDictation,
@@ -434,14 +474,19 @@ const App: React.FC = () => {
             onNavigateToSpeaking: handleNavigateToSpeaking,
             onNavigateToWritingPractice: handleNavigateToWritingPractice,
             onNavigateToPronunciation: handleNavigateToPronunciation,
+            onNavigateToListeningTranslation: handleNavigateToListeningTranslation,
         };
+
         switch (appState) {
+            // FIX: Removed invalid 'onNavigateToPracticeTest' prop.
             case AppState.PracticeHub:
                 return <PracticeHub {...practiceHubProps} />;
             case AppState.MiniTest:
+                // FIX: Removed invalid 'onNavigateToPracticeTest' prop.
                 if (!currentTest) return <PracticeHub {...practiceHubProps} />;
                 return <TestScreen testData={currentTest} userAnswers={currentUserAnswers} onSubmit={handleSubmitTest} />;
             case AppState.MiniTestResults:
+                // FIX: Removed invalid 'onNavigateToPracticeTest' prop.
                 if (!currentTest) return <PracticeHub {...practiceHubProps} />;
                 return <ResultsScreen testData={currentTest} userAnswers={currentUserAnswers} onGoHome={handleGoHome} />;
             case AppState.DictationPracticeHome:
@@ -490,6 +535,16 @@ const App: React.FC = () => {
                     currentVocabularyList={selectedVocabularyTest.words}
                     onBack={handleBackToVocabularyTest}
                 />;
+            case AppState.LISTENING_TRANSLATION_HOME:
+                 return <ListeningTranslationHomeScreen onSelectTest={handleNavigateToListeningTranslationSetup} />;
+            case AppState.LISTENING_TRANSLATION_SETUP:
+                if (selectedListeningTranslationTestId === null) return null;
+                return <ListeningTranslationSetupScreen onStartPractice={handleStartListeningTranslationPractice} onBack={handleBackToListeningTranslationHome} />;
+            case AppState.LISTENING_TRANSLATION_PRACTICE:
+                if (selectedListeningTranslationTime === null || selectedListeningTranslationTestId === null) {
+                    return <ListeningTranslationSetupScreen onStartPractice={handleStartListeningTranslationPractice} onBack={handleBackToListeningTranslationHome} />;
+                }
+                return <ListeningTranslationScreen onBack={handleBackToListeningTranslationSetup} timeLimit={selectedListeningTranslationTime} testId={selectedListeningTranslationTestId} currentUser={currentUser}/>;
             case AppState.SpeakingHome:
                 return <SpeakingScreen onSelectPart={handleSelectSpeakingPart} />;
             case AppState.SpeakingPart1:
@@ -549,6 +604,7 @@ const App: React.FC = () => {
                     onBack={handleGoHome}
                 />;
             default:
+                // FIX: Removed invalid 'onNavigateToPracticeTest' prop.
                 return <PracticeHub {...practiceHubProps} />;
         }
     };

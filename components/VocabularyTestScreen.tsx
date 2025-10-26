@@ -1,9 +1,12 @@
 
 
+
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { VocabularyTest, VocabItem, User, TranslationEvaluationResult, ContextMeaningSentence } from '../types';
+// FIX: Replaced the non-existent 'TranslationEvaluationResult' type with 'WrittenTranslationEvaluationResult' to match the type exported from 'types.ts' for written translation evaluations. This resolves the import error.
+import { VocabularyTest, VocabItem, User, WrittenTranslationEvaluationResult, ContextMeaningSentence } from '../types';
 import { updateWordSrsLevel } from '../services/vocabularyService';
-import { generateSentenceForTranslation, evaluateTranslation, generateContextSentences } from '../services/geminiService';
+// FIX: Replaced the non-existent 'evaluateTranslation' function with 'evaluateWrittenTranslation' to match the function exported from 'geminiService.ts' for evaluating written text. This resolves the import error.
+import { generateSentenceForTranslation, evaluateWrittenTranslation, generateContextSentences } from '../services/geminiService';
 import { BookOpenIcon, BrainIcon, ShuffleIcon, ArrowLeftIcon, ArrowRightIcon, CheckCircleIcon, XCircleIcon, GridIcon, PuzzleIcon, TypeIcon, LightBulbIcon, HeadphoneIcon, TargetIcon, LinkIcon, FlipIcon, SparklesIcon, LoadingIcon, RefreshIcon, QuestionMarkCircleIcon, TranslateIcon } from './icons';
 import AudioPlayer from './AudioPlayer';
 import { addTestResult } from '../services/progressService';
@@ -214,7 +217,8 @@ const VocabularyTestScreen: React.FC<VocabularyTestScreenProps> = ({ testData, o
     const [ltError, setLtError] = useState<string | null>(null);
     const [originalSentence, setOriginalSentence] = useState<string>('');
     const [userTranslation, setUserTranslation] = useState<string>('');
-    const [ltEvaluation, setLtEvaluation] = useState<TranslationEvaluationResult | null>(null);
+    // FIX: Changed type to 'WrittenTranslationEvaluationResult' to align with the return type of the evaluation function used for text-based translation.
+    const [ltEvaluation, setLtEvaluation] = useState<WrittenTranslationEvaluationResult | null>(null);
     const [showHint, setShowHint] = useState(true);
 
     const [contextQuestions, setContextQuestions] = useState<ContextQuestion[]>([]);
@@ -772,7 +776,8 @@ const VocabularyTestScreen: React.FC<VocabularyTestScreenProps> = ({ testData, o
         setLtState('evaluating');
         setLtError(null);
         try {
-            const result = await evaluateTranslation(originalSentence, userTranslation);
+            // FIX: Replaced 'evaluateTranslation' with 'evaluateWrittenTranslation' to match the available function for text-based translation evaluation.
+            const result = await evaluateWrittenTranslation(originalSentence, userTranslation);
             if (result) {
                 setLtEvaluation(result);
                 setLtState('result');
@@ -1494,7 +1499,7 @@ const VocabularyTestScreen: React.FC<VocabularyTestScreenProps> = ({ testData, o
                             <p className="text-lg font-semibold text-slate-700 dark:text-slate-300">Điểm của bạn</p>
                             <p className={`text-7xl font-bold my-2 ${getScoreColor(ltEvaluation.score)}`}>{ltEvaluation.score}%</p>
                         </div>
-                        <div className="bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg mb-6">
+                        <div className="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg mb-6">
                             <h4 className="font-bold text-slate-800 dark:text-slate-200">Nhận xét từ AI:</h4>
                             <p className="text-slate-600 dark:text-slate-300 mt-1 italic">{ltEvaluation.feedback_vi}</p>
                         </div>

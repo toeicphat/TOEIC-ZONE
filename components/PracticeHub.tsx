@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import { 
     TargetIcon, 
@@ -10,7 +11,8 @@ import {
     PuzzleIcon,
     MicrophoneIcon,
     TypeIcon,
-    SoundWaveIcon
+    SoundWaveIcon,
+    TranslateIcon
 } from './icons';
 
 
@@ -22,6 +24,7 @@ interface PracticeHubProps {
   onNavigateToSpeaking: () => void;
   onNavigateToWritingPractice: () => void;
   onNavigateToPronunciation: () => void;
+  onNavigateToListeningTranslation: () => void;
 }
 
 const PracticeCard: React.FC<{
@@ -55,7 +58,8 @@ const PracticeHub: React.FC<PracticeHubProps> = ({
     onNavigateToVocabulary, 
     onNavigateToSpeaking, 
     onNavigateToWritingPractice,
-    onNavigateToPronunciation
+    onNavigateToPronunciation,
+    onNavigateToListeningTranslation
 }) => {
     // The Google Drive audio player is now integrated directly.
     // States for manual input are no longer needed.
@@ -83,6 +87,14 @@ const PracticeHub: React.FC<PracticeHubProps> = ({
                   onClick={onNavigateToDictation}
                   icon={HeadphoneIcon}
                   colorClass="text-blue-500 dark:text-blue-400"
+              />
+              <PracticeCard 
+                  title="Phản xạ nghe dịch"
+                  description="Luyện nghe câu tiếng Anh và dịch sang tiếng Việt để AI đánh giá."
+                  onClick={onNavigateToListeningTranslation}
+                  icon={TranslateIcon}
+                  colorClass="text-sky-500 dark:text-sky-400"
+                  isNew={true}
               />
                <PracticeCard 
                   title="Phát âm (Thử nghiệm)"

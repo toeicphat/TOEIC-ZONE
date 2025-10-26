@@ -27,6 +27,9 @@ export enum AppState {
     VocabularyPartHome = 'VOCABULARY_PART_HOME',
     VocabularyTest = 'VOCABULARY_TEST',
     SPOKEN_TRANSLATION_PRACTICE = 'SPOKEN_TRANSLATION_PRACTICE',
+    LISTENING_TRANSLATION_HOME = 'LISTENING_TRANSLATION_HOME',
+    LISTENING_TRANSLATION_SETUP = 'LISTENING_TRANSLATION_SETUP',
+    LISTENING_TRANSLATION_PRACTICE = 'LISTENING_TRANSLATION_PRACTICE',
     SpeakingHome = 'SPEAKING_HOME',
     SpeakingPart1 = 'SPEAKING_PART_1',
     SpeakingPart2 = 'SPEAKING_PART_2',
@@ -106,7 +109,7 @@ export interface DictationPart {
 }
 
 // For Listening & Translation
-export interface TranslationEvaluationResult {
+export interface WrittenTranslationEvaluationResult {
     score: number;
     feedback_vi: string;
 }
@@ -114,6 +117,12 @@ export interface TranslationEvaluationResult {
 export interface SpokenTranslationEvaluationResult {
     estimated_accuracy_percent: number;
     feedback_vi: string;
+}
+
+export interface ListeningTranslationTest {
+    id: number;
+    title: string;
+    sentences: string[];
 }
 
 

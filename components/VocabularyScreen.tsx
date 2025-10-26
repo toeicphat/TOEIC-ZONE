@@ -5,11 +5,13 @@ import { listeningPart1VocabularyData } from '../services/vocabulary/listeningPa
 import { listeningComprehensiveVocabularyData } from '../services/vocabulary/listeningComprehensiveVocabulary';
 import { readingPart7VocabularyData } from '../services/vocabulary/readingPart7Vocabulary';
 import { readingComprehensiveVocabularyData } from '../services/vocabulary/readingComprehensiveVocabulary';
+import { readingPart7IntenseVocabularyData } from '../services/vocabulary/readingPart7intense';
 
 const vocabularyData: VocabularyPart[] = [
     listeningPart1VocabularyData,
     listeningComprehensiveVocabularyData,
     readingPart7VocabularyData,
+    readingPart7IntenseVocabularyData,
     readingComprehensiveVocabularyData,
 ];
 

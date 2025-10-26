@@ -4,11 +4,13 @@ import { PlayIcon, PauseIcon, VolumeUpIcon, VolumeOffIcon } from './icons';
 interface AudioPlayerProps {
     audioScript?: string;
     audioSrc?: string;
+    autoPlay?: boolean;
+    onPlaybackEnd?: () => void;
 }
 
 const playbackRates = [0.5, 1.0, 1.25, 1.5, 2.0];
 
-const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioScript, audioSrc }) => {
+const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioScript, audioSrc, autoPlay = false, onPlaybackEnd }) => {
     // Check if it's a Google Drive link first.
     const googleDriveInfo = useMemo(() => {
         if (!audioSrc) return null;
@@ -64,6 +66,9 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioScript, audioSrc }) => {
     const isPlayingRef = useRef(isPlaying);
     isPlayingRef.current = isPlaying;
     
+    const onPlaybackEndRef = useRef(onPlaybackEnd);
+    onPlaybackEndRef.current = onPlaybackEnd;
+
     const finalAudioSrc = audioSrc; 
 
     // Effect for loading system voices and settings for TTS
@@ -108,10 +113,19 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioScript, audioSrc }) => {
         }
         
         u.rate = playbackRate;
-        u.onend = () => setIsPlaying(false);
+        u.onend = () => {
+            setIsPlaying(false);
+            onPlaybackEndRef.current?.();
+        };
         utteranceRef.current = u;
 
-        if (isPlayingRef.current) {
+        if (autoPlay) {
+             setTimeout(() => {
+                synth.cancel();
+                synth.speak(u);
+                setIsPlaying(true);
+            }, 100);
+        } else if (isPlayingRef.current) {
             synth.cancel();
             synth.speak(u);
         }
@@ -119,7 +133,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioScript, audioSrc }) => {
         return () => {
             if (synth.speaking) synth.cancel();
         };
-    }, [audioScript, selectedVoiceURI, voices, playbackRate]);
+    }, [audioScript, selectedVoiceURI, voices, playbackRate, autoPlay]);
     
     // Effect to update audio element properties when state changes
     useEffect(() => {
@@ -137,7 +151,10 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioScript, audioSrc }) => {
         setHasError(false);
         const onPlay = () => setIsPlaying(true);
         const onPause = () => setIsPlaying(false);
-        const onEnded = () => setIsPlaying(false);
+        const onEnded = () => {
+            setIsPlaying(false);
+            onPlaybackEndRef.current?.();
+        };
         const onError = () => {
             console.error("Error loading audio source:", audio.src, "Falling back to Text-to-Speech if available.");
             setIsPlaying(false);
@@ -152,9 +169,14 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioScript, audioSrc }) => {
         audio.addEventListener('error', onError);
         audio.addEventListener('timeupdate', onTimeUpdate);
         audio.addEventListener('loadedmetadata', onLoadedMetadata);
+        
+        if(autoPlay) {
+            audio.play().catch(console.error);
+        } else {
+            setIsPlaying(false);
+            if (!audio.paused) audio.pause();
+        }
 
-        setIsPlaying(false);
-        if (!audio.paused) audio.pause();
         audio.currentTime = 0;
         setCurrentTime(0);
         setDuration(0);
@@ -167,7 +189,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioScript, audioSrc }) => {
             audio.removeEventListener('timeupdate', onTimeUpdate);
             audio.removeEventListener('loadedmetadata', onLoadedMetadata);
         };
-    }, [finalAudioSrc]);
+    }, [finalAudioSrc, autoPlay]);
     
     // Global cleanup for unmount
     useEffect(() => {
