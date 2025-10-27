@@ -17,8 +17,8 @@ const ListeningTranslationHomeScreen: React.FC<ListeningTranslationHomeScreenPro
             <div className="max-w-6xl mx-auto">
                 <div className="text-center mb-12">
                     <h2 className="text-4xl font-extrabold text-slate-900 dark:text-slate-100 sm:text-5xl">Phản xạ Nghe-Dịch</h2>
-                    <p className="mt-4 text-lg text-slate-600 dark:text-slate-400">
-                        Choose a test to begin your listening & translation practice.
+                    <p className="mt-4 text-lg text-red-600 dark:text-slate-400">
+                        Lưu ý: Trước khi luyện tập chế độ này, bạn cần học kĩ TẤT CẢ từ vựng của Part 2 để luyện tập phản ứng nhanh.
                     </p>
                 </div>
                 

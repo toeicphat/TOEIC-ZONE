@@ -53,11 +53,16 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const audioChunksRef = useRef<Blob[]>([]);
     const recordTimeoutRef = useRef<number | null>(null);
+    const audioStreamRef = useRef<MediaStream | null>(null);
 
     const cleanupOnUnmount = useCallback(() => {
         if (recordTimeoutRef.current) clearTimeout(recordTimeoutRef.current);
         if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
             mediaRecorderRef.current.stop();
+        }
+         if (audioStreamRef.current) {
+            audioStreamRef.current.getTracks().forEach(track => track.stop());
+            audioStreamRef.current = null;
         }
     }, []);
 
@@ -66,7 +71,7 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
         setPracticeState('loading');
         const testData = getListeningTranslationTest(testId);
         if (testData && testData.sentences.length > 0) {
-            const randomSentences = shuffleArray(testData.sentences).slice(0, 5);
+            const randomSentences = shuffleArray(testData.sentences).slice(0, 4);
             setPracticeSentences(randomSentences);
             setCurrentIndex(0);
             setResults([]);
@@ -92,35 +97,42 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
             clearTimeout(recordTimeoutRef.current);
             recordTimeoutRef.current = null;
         }
+        if (audioStreamRef.current) {
+            audioStreamRef.current.getTracks().forEach(track => track.stop());
+            audioStreamRef.current = null;
+        }
     }, []);
 
-    const startRecording = useCallback((stream: MediaStream) => {
-        const mediaRecorder = new MediaRecorder(stream);
-        mediaRecorderRef.current = mediaRecorder;
-        audioChunksRef.current = [];
+    const startRecording = useCallback(async () => {
+        try {
+            audioStreamRef.current = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const stream = audioStreamRef.current;
+            const mediaRecorder = new MediaRecorder(stream);
+            mediaRecorderRef.current = mediaRecorder;
+            audioChunksRef.current = [];
 
-        mediaRecorder.ondataavailable = (event) => {
-            if (event.data.size > 0) audioChunksRef.current.push(event.data);
-        };
+            mediaRecorder.ondataavailable = (event) => {
+                if (event.data.size > 0) audioChunksRef.current.push(event.data);
+            };
 
-        mediaRecorder.onstop = () => {
-            // Immediately stop the tracks to release the microphone after each recording.
-            stream.getTracks().forEach(track => track.stop());
+            mediaRecorder.onstop = () => {
+                const audioBlob = new Blob(audioChunksRef.current, { type: mediaRecorder.mimeType });
+                setRecordings(prev => [...prev, audioBlob.size > 0 ? audioBlob : null]);
+            };
+            
+            mediaRecorder.start();
+            setPracticeState('recording');
 
-            const audioBlob = new Blob(audioChunksRef.current, { type: mediaRecorder.mimeType });
-            setRecordings(prev => [...prev, audioBlob.size > 0 ? audioBlob : null]);
-        };
-        
-        mediaRecorder.start();
-        setPracticeState('recording');
+            recordTimeoutRef.current = window.setTimeout(stopRecording, timeLimit * 1000);
 
-        recordTimeoutRef.current = window.setTimeout(stopRecording, timeLimit * 1000);
-
+        } catch (err) {
+             console.error("Microphone access error on demand:", err);
+             setError("Microphone access is required. Please enable it in your browser and try again.");
+             setRecordings(prev => [...prev, null]);
+        }
     }, [stopRecording, timeLimit]);
 
-    // Effect to advance to the next state after a recording is saved.
     useEffect(() => {
-        // This check ensures we only transition state after a new recording has been added.
         if (recordings.length > 0 && recordings.length === currentIndex + 1) {
              if (currentIndex < practiceSentences.length - 1) {
                 setCurrentIndex(prev => prev + 1);
@@ -131,18 +143,9 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
         }
     }, [recordings, currentIndex, practiceSentences.length]);
 
-    const handleAudioEnd = useCallback(async () => {
+    const handleAudioEnd = useCallback(() => {
         if (practiceState === 'practice') {
-            try {
-                // Request a fresh media stream for each recording.
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                startRecording(stream);
-            } catch (err) {
-                 console.error("Microphone access error on demand:", err);
-                 setError("Microphone access is required. Please enable it in your browser and try again.");
-                 // Record a failure (null) and move to the next question automatically.
-                 setRecordings(prev => [...prev, null]);
-            }
+            startRecording();
         }
     }, [practiceState, startRecording]);
 
@@ -150,6 +153,8 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
         const processAllRecordings = async () => {
             if (practiceState === 'processing' && recordings.length === practiceSentences.length) {
                 const finalResults: Result[] = [];
+                const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
                 for (let i = 0; i < practiceSentences.length; i++) {
                     const sourceText = practiceSentences[i];
                     const recording = recordings[i];
@@ -160,18 +165,27 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
                         try {
                             const audioBase64 = await blobToBase64(recording);
                             const transcription = await transcribeVietnameseAudio(audioBase64, recording.type);
-                             if (transcription) {
+                            
+                            if (transcription) {
                                 transcribedText = transcription;
+                                await delay(1000); // Delay between transcription and evaluation
                                 evaluation = await evaluateSpokenTranslation(sourceText, transcribedText);
                             } else {
                                 transcribedText = "Transcription failed.";
                             }
-                        } catch (e) {
-                            console.error(`Error processing sentence ${i}:`, e);
-                            transcribedText = "Error during processing.";
+                        } catch (e: any) {
+                            console.error(`Error processing sentence ${i}:`, e.message);
+                            if (e.message.includes('transcription')) {
+                                transcribedText = "Error: Failed to get transcription from API.";
+                            } else {
+                                 transcribedText = "Error during processing.";
+                            }
                         }
                     }
                     finalResults.push({ sourceText, transcribedText, evaluation });
+                    if (i < practiceSentences.length - 1) {
+                        await delay(1000); // Delay between processing each sentence
+                    }
                 }
                 
                 setResults(finalResults);

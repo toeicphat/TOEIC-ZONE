@@ -26,9 +26,7 @@ import {
 import { getRandomVocabularyWords } from './vocabularyLibrary';
 import { commonWords } from './pronunciationLibrary';
 
-const ai = new GoogleGenAI({
-  apiKey: import.meta.env.VITE_GOOGLE_API_KEY
-});
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
 
 // Interface for the structured response from the speaking evaluation AI
 export interface SpeakingEvaluationResult {
@@ -506,8 +504,12 @@ export const transcribeVietnameseAudio = async (audioBase64: string, mimeType: s
             },
         });
         
-        const transcription = response.text.trim();
-        return transcription || null;
+        if (response && response.text) {
+            const transcription = response.text.trim();
+            return transcription || null;
+        }
+        console.error("Error transcribing audio: API response did not contain text.");
+        return null;
     } catch (error) {
         console.error("Error transcribing audio:", error);
         throw new Error("Failed to get transcription from API.");
