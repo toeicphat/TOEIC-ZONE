@@ -26,9 +26,7 @@ import {
 import { getRandomVocabularyWords } from './vocabularyLibrary';
 import { commonWords } from './pronunciationLibrary';
 
-const ai = new GoogleGenAI({
-  apiKey: import.meta.env.VITE_GOOGLE_API_KEY
-});
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
 
 // Interface for the structured response from the speaking evaluation AI
 export interface SpeakingEvaluationResult {
@@ -506,9 +504,9 @@ export const transcribeVietnameseAudio = async (audioBase64: string, mimeType: s
             },
         });
         
-        if (response && typeof response.text === 'string') {
+        if (response && response.text) {
             const transcription = response.text.trim();
-            return transcription;
+            return transcription || null;
         }
         console.error("Error transcribing audio: API response did not contain text.");
         return null;
@@ -525,37 +523,32 @@ const spokenTranslationEvaluationSchema = {
             type: Type.NUMBER,
             description: "A numerical estimation (0-100) of how well the user's Vietnamese translation conveyed the meaning and intent of the original English text. This is not a formal score, but an estimate of semantic accuracy."
         },
-        // FIX: Add 'feedback_vi' to schema to provide feedback on spoken translations.
-        feedback_vi: { 
+        feedback_vi: {
             type: Type.STRING,
-            description: "Concise feedback in Vietnamese explaining what is good about the translation and what could be improved. Focus on semantic accuracy and natural phrasing, not grammar, as it is a transcription of speech."
+            description: "A short, concise feedback summary written in Vietnamese. It should explain the accuracy of the interpretation, highlighting strengths and weaknesses. For example: 'Bạn đã truyền tải tốt ý chính, nhưng bỏ lỡ chi tiết về thời gian,' or 'Dịch rất sát nghĩa!'."
         }
     },
-    // FIX: Add 'feedback_vi' to required fields.
     required: ['estimated_accuracy_percent', 'feedback_vi']
 };
 
 export const evaluateSpokenTranslation = async (originalText: string, translatedText: string): Promise<SpokenTranslationEvaluationResult | null> => {
      try {
-        // FIX: Updated system instruction to request feedback in Vietnamese.
         const systemInstruction = `
-            You are an expert AI evaluator for English to Vietnamese interpretation exercises. Your task is to compare an original English text with a user's spoken translation (provided as transcribed text) and provide an estimated accuracy percentage and concise feedback.
+            You are an expert AI evaluator for English to Vietnamese interpretation exercises. Your task is to compare an original English text with a user's spoken translation (provided as transcribed text) and evaluate how well the user conveyed the original meaning and intent.
             
             Do NOT evaluate based on a literal, word-for-word translation. Focus on semantic equivalence.
-            - High accuracy (90-100%) means the core message, key details, and tone are correctly conveyed.
-            - Medium accuracy (60-89%) means the core message is conveyed but some details are missed or misinterpreted.
-            - Low accuracy (0-59%) means key information was missed or misinterpreted.
+            - High accuracy means the core message, key details, and tone are correctly conveyed.
+            - Lower accuracy means key information was missed, misinterpreted, or significant parts were omitted.
             
-            Your response MUST be a JSON object. Provide feedback in Vietnamese, focusing on semantic accuracy and natural phrasing. Do not comment on grammar, as the input is a transcription of speech.
+            Your response MUST be a JSON object that adheres to the provided schema. Do not add any extra text or explanations.
         `;
 
-        // FIX: Updated prompt to request feedback along with the score.
         const prompt = `
             Original English Text: "${originalText}"
             
             User's Transcribed Vietnamese Translation: "${translatedText}"
             
-            Please evaluate the user's translation and provide the JSON output with the estimated accuracy percentage and feedback in Vietnamese.
+            Please evaluate the user's translation and provide the JSON output.
         `;
         
         const response = await ai.models.generateContent({
@@ -571,7 +564,6 @@ export const evaluateSpokenTranslation = async (originalText: string, translated
         const jsonStr = response.text.trim();
         const data = JSON.parse(jsonStr);
 
-        // FIX: Add check for 'feedback_vi' to ensure the response is valid.
         if (data && typeof data.estimated_accuracy_percent === 'number' && typeof data.feedback_vi === 'string') {
             return data as SpokenTranslationEvaluationResult;
         }

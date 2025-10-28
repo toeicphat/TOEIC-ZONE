@@ -166,7 +166,7 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
                             const audioBase64 = await blobToBase64(recording);
                             const transcription = await transcribeVietnameseAudio(audioBase64, recording.type);
                             
-                            if (transcription !== null) {
+                            if (transcription) {
                                 transcribedText = transcription;
                                 await delay(1000); // Delay between transcription and evaluation
                                 evaluation = await evaluateSpokenTranslation(sourceText, transcribedText);
@@ -222,11 +222,12 @@ const ListeningTranslationScreen: React.FC<ListeningTranslationScreenProps> = ({
             <p className="mb-2"><span className='font-bold'>Original:</span> {result.sourceText}</p>
             <p className="mb-3"><span className='font-bold'>Your translation:</span> <span className="italic">{result.transcribedText}</span></p>
             {result.evaluation ? (
-                <div className='flex items-center justify-center bg-slate-100 dark:bg-slate-700 p-3 rounded-md'>
+                <div className='flex items-center gap-4 bg-slate-100 dark:bg-slate-700 p-3 rounded-md'>
                     <div className='text-center'>
                          <p className={`text-3xl font-bold ${getScoreColor(result.evaluation.estimated_accuracy_percent)}`}>{result.evaluation.estimated_accuracy_percent}%</p>
                          <p className='text-xs text-slate-500 dark:text-slate-400'>Accuracy</p>
                     </div>
+                    <p className='text-sm text-slate-600 dark:text-slate-300 border-l-2 border-slate-300 dark:border-slate-600 pl-4'>{result.evaluation.feedback_vi}</p>
                 </div>
             ) : (
                 <p className="text-sm text-red-500">Evaluation was not available for this sentence.</p>

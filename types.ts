@@ -116,7 +116,6 @@ export interface WrittenTranslationEvaluationResult {
 
 export interface SpokenTranslationEvaluationResult {
     estimated_accuracy_percent: number;
-    // FIX: Added missing 'feedback_vi' property to align with UI expectations.
     feedback_vi: string;
 }
 

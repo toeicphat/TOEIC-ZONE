@@ -88,7 +88,33 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess, users, isLogg
             </button>
           </div>
         </form>
+        <div className="text-center">
+            <p className="font-bold text-red-600 relative bling-bling py-2">
+                Nếu chưa có tài khoản, xin vui lòng liên hệ với thầy Phát để được hỗ trợ
+            </p>
+        </div>
       </div>
+       <style>{`
+          @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+          }
+          .bling-bling {
+            position: relative;
+            overflow: hidden;
+            -webkit-mask-image: -webkit-radial-gradient(white, black);
+          }
+          .bling-bling::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(100deg, rgba(255,255,255,0) 20%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0) 80%);
+            animation: shimmer 2.5s infinite;
+          }
+      `}</style>
     </div>
   );
 };
