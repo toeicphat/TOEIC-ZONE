@@ -66,7 +66,6 @@ const test1_186_200_words: VocabItem[] = [
     { word: "must", definition: "điều bắt buộc, sự cần thiết", example: "" },
     { word: "taste", definition: "vị, sự nếm; khiếu thẩm mỹ", example: "" },
     { word: "establishment", definition: "cơ sở, sự thành lập", example: "" },
-    { word: "dining", definition: "Ăn uống, dùng bữa", example: "" },
     { word: "down", definition: "Xuống, phía dưới, dọc theo", example: "" },
     { word: "waterfront", definition: "Bờ sông, bờ hồ, bờ biển (khu vực ven nước)", example: "" },
     { word: "return", definition: "Trở về, quay lại", example: "" },
@@ -321,6 +320,7 @@ const test3_186_200_words: VocabItem[] = [
     { word: "point out", definition: "Chỉ ra, lưu ý", example: "" },
     { word: "overnight", definition: "Qua đêm, trong một đêm; nhanh chóng", example: "" },
 ];
+
 
 export const readingPart7IntenseVocabularyData: VocabularyPart = {
     id: 9,

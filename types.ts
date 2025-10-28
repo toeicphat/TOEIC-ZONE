@@ -116,8 +116,7 @@ export interface WrittenTranslationEvaluationResult {
 
 export interface SpokenTranslationEvaluationResult {
     estimated_accuracy_percent: number;
-    // FIX: Add feedback_vi property to support providing feedback for spoken translations.
-    // This resolves a type error in `SpokenTranslationScreen.tsx` where this property was being accessed.
+    // FIX: Added missing 'feedback_vi' property to align with UI expectations.
     feedback_vi: string;
 }
 
