@@ -1,4 +1,5 @@
 import { ListeningTranslationTest } from '../types';
+import { allListeningTranslation2022Tests } from './listeningTranslation2022Library';
 
 const test1Sentences = [
      "How old is this building",
@@ -22,9 +23,9 @@ const test1Sentences = [
     "From three o'clock until four.",
     "Because a light needed to be fixed.",
     "Did management make a hiring decision yet",
-    "Yes, an offer was made this morning.",
-    "I decided to take the train.",
-    "It's a decision-making role.",
+    "Put it on the highest shelf.",
+    "The personnel department.",
+    "Yes, they chose Jacob Borgman",
     "Do you want to eat here in our cafeteria or go out",
     "He went there yesterday.",
     "Well, maybe a sandwich.",
@@ -78,9 +79,9 @@ const test1Sentences = [
     "No, I didn't check out the sale.",
     "I needed some for a large bouquet.",
     "This film has been nominated for several awards.",
-    "I'll close the door.",
-    "The director must be very proud.",
-    "It's several hours long.",
+    "Why don’t we go see it?",
+    "After the announcement.",
+    "He made a great speech", 
     "Who's interested in starting a car pool program",
     "Thanks, but I can't swim.",
     "Clara's already organizing one.",
@@ -740,7 +741,7 @@ const test8Sentences = [
     "On my desk.",
     "I got this one as a gift.",
     "After my client meeting.",
-    "We're not going to be able to fit everyone in this space.",
+    "We're not going to be able to fit everyone in this space",
     "This letter needs more postage.",
     "An incorrect serial code.",
     "Waseem is the software administrator.",
@@ -1012,20 +1013,22 @@ const test10Sentences = [
     "It's been running perfectly since I bought it."
 ];
 
-
-export const allListeningTranslationTests: ListeningTranslationTest[] = [
-    { id: 1, title: 'Test 1', sentences: test1Sentences },
-    { id: 2, title: 'Test 2', sentences: test2Sentences },
-    { id: 3, title: 'Test 3', sentences: test3Sentences },
-    { id: 4, title: 'Test 4', sentences: test4Sentences },
-    { id: 5, title: 'Test 5', sentences: test5Sentences },
-    { id: 6, title: 'Test 6', sentences: test6Sentences },
-    { id: 7, title: 'Test 7', sentences: test7Sentences },
-    { id: 8, title: 'Test 8', sentences: test8Sentences },
-    { id: 9, title: 'Test 9', sentences: test9Sentences },
-    { id: 10, title: 'Test 10', sentences: test10Sentences },
+export const allListeningTranslationOriginalTests: ListeningTranslationTest[] = [
+    { id: 1, title: 'Test 1', description: 'Practice with sentences from ETS Part 2.', sentences: test1Sentences },
+    { id: 2, title: 'Test 2', description: 'Practice with sentences from ETS Part 2.', sentences: test2Sentences },
+    { id: 3, title: 'Test 3', description: 'Practice with sentences from ETS Part 2.', sentences: test3Sentences },
+    { id: 4, title: 'Test 4', description: 'Practice with sentences from ETS Part 2.', sentences: test4Sentences },
+    { id: 5, title: 'Test 5', description: 'Practice with sentences from ETS Part 2.', sentences: test5Sentences },
+    { id: 6, title: 'Test 6', description: 'Practice with sentences from ETS Part 2.', sentences: test6Sentences },
+    { id: 7, title: 'Test 7', description: 'Practice with sentences from ETS Part 2.', sentences: test7Sentences },
+    { id: 8, title: 'Test 8', description: 'Practice with sentences from ETS Part 2.', sentences: test8Sentences },
+    { id: 9, title: 'Test 9', description: 'Practice with sentences from ETS Part 2.', sentences: test9Sentences },
+    { id: 10, title: 'Test 10', description: 'Practice with sentences from ETS Part 2.', sentences: test10Sentences },
 ];
 
+const allTests = [...allListeningTranslationOriginalTests, ...allListeningTranslation2022Tests];
+
 export const getListeningTranslationTest = (testId: number): ListeningTranslationTest | undefined => {
-    return allListeningTranslationTests.find(t => t.id === testId);
+    return allTests.find(t => t.id === testId);
 }
+export { allListeningTranslation2022Tests };

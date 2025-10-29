@@ -88,6 +88,7 @@ const App: React.FC = () => {
     { username: 'minhtholeabc@gmail.com', password: 'thidautoeic' },
     { username: 'hav8756@gmail.com', password: 'thidautoeic' },
     { username: 'lequocthach91@gmail.com', password: 'thidautoeic' },
+    { username: 'vodieu937@gmail.com', password: 'thidautoeic' },
   ]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [appState, setAppState] = useState<AppState>(AppState.PracticeHub);
@@ -113,6 +114,7 @@ const App: React.FC = () => {
   // Listening & Translation State
   const [selectedListeningTranslationTestId, setSelectedListeningTranslationTestId] = useState<number | null>(null);
   const [selectedListeningTranslationTime, setSelectedListeningTranslationTime] = useState<number | null>(null);
+  const [selectedListeningTranslationSentenceCount, setSelectedListeningTranslationSentenceCount] = useState<number | null>(null);
 
   // Speaking State
   const [selectedSpeakingPart, setSelectedSpeakingPart] = useState<number | null>(null);
@@ -209,6 +211,7 @@ const App: React.FC = () => {
     setSelectedDictationTestData(null);
     setSelectedListeningTranslationTestId(null);
     setSelectedListeningTranslationTime(null);
+    setSelectedListeningTranslationSentenceCount(null);
     setAppState(AppState.PracticeHub);
   }, []);
   
@@ -390,7 +393,8 @@ const App: React.FC = () => {
         setAppState(AppState.LISTENING_TRANSLATION_SETUP);
     }, []);
 
-    const handleStartListeningTranslationPractice = useCallback((timeLimit: number) => {
+    const handleStartListeningTranslationPractice = useCallback((sentenceCount: number, timeLimit: number) => {
+        setSelectedListeningTranslationSentenceCount(sentenceCount);
         setSelectedListeningTranslationTime(timeLimit);
         setAppState(AppState.LISTENING_TRANSLATION_PRACTICE);
     }, []);
@@ -402,6 +406,7 @@ const App: React.FC = () => {
 
     const handleBackToListeningTranslationSetup = useCallback(() => {
         setSelectedListeningTranslationTime(null);
+        setSelectedListeningTranslationSentenceCount(null);
         setAppState(AppState.LISTENING_TRANSLATION_SETUP);
     }, []);
 
@@ -537,12 +542,18 @@ const App: React.FC = () => {
                  return <ListeningTranslationHomeScreen onSelectTest={handleNavigateToListeningTranslationSetup} />;
             case AppState.LISTENING_TRANSLATION_SETUP:
                 if (selectedListeningTranslationTestId === null) return null;
-                return <ListeningTranslationSetupScreen onStartPractice={handleStartListeningTranslationPractice} onBack={handleBackToListeningTranslationHome} />;
+                return <ListeningTranslationSetupScreen testId={selectedListeningTranslationTestId} onStartPractice={handleStartListeningTranslationPractice} onBack={handleBackToListeningTranslationHome} />;
             case AppState.LISTENING_TRANSLATION_PRACTICE:
-                if (selectedListeningTranslationTime === null || selectedListeningTranslationTestId === null) {
-                    return <ListeningTranslationSetupScreen onStartPractice={handleStartListeningTranslationPractice} onBack={handleBackToListeningTranslationHome} />;
+                if (selectedListeningTranslationTime === null || selectedListeningTranslationTestId === null || selectedListeningTranslationSentenceCount === null) {
+                    return <ListeningTranslationSetupScreen testId={selectedListeningTranslationTestId!} onStartPractice={handleStartListeningTranslationPractice} onBack={handleBackToListeningTranslationHome} />;
                 }
-                return <ListeningTranslationScreen onBack={handleBackToListeningTranslationSetup} timeLimit={selectedListeningTranslationTime} testId={selectedListeningTranslationTestId} currentUser={currentUser}/>;
+                return <ListeningTranslationScreen 
+                            onBack={handleBackToListeningTranslationSetup} 
+                            timeLimit={selectedListeningTranslationTime} 
+                            testId={selectedListeningTranslationTestId} 
+                            sentenceCount={selectedListeningTranslationSentenceCount}
+                            currentUser={currentUser}
+                        />;
             case AppState.SpeakingHome:
                 return <SpeakingScreen onSelectPart={handleSelectSpeakingPart} />;
             case AppState.SpeakingPart1:

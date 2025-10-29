@@ -119,9 +119,12 @@ export interface SpokenTranslationEvaluationResult {
     feedback_vi: string;
 }
 
+// FIX: Added missing 'description' property to the ListeningTranslationTest interface.
+// This resolves type errors in multiple files where this property was being used or defined.
 export interface ListeningTranslationTest {
     id: number;
     title: string;
+    description: string;
     sentences: string[];
 }
 

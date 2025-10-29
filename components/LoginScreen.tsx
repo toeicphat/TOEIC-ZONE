@@ -92,6 +92,14 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess, users, isLogg
             <p className="font-bold text-red-600 relative bling-bling py-2">
                 Nếu chưa có tài khoản, xin vui lòng liên hệ với thầy Phát để được hỗ trợ
             </p>
+            <a
+                href="https://www.facebook.com/phattruong.english"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block mt-2 font-bold text-blue-600 underline hover:text-blue-800 dark:hover:text-blue-400 transition-colors"
+            >
+                NHẮN TIN THẦY PHÁT
+            </a>
         </div>
       </div>
        <style>{`
