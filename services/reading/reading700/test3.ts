@@ -359,7 +359,9 @@ University President`,
             id: 'passage-7-703-11',
             text: `**Villa Romano**
 The historical Villa Romano is the perfect setting for an elegant wedding offering comfort, tranquility, relaxation, luxury, and impeccable service. The large gardens and the new swimming pool also make a nice setting for cocktails, gala evenings, and buffets. We can cater for up to 100 people. Your closest family and guests can sleep in 12 elegant rooms that can be connected if desired. There is a beautiful chapel inside the Villa for your private ceremony. For reservation information, contact our Event Coordinator, Veronica Napoli at napoli@villaromano.com or call (713)545-2010.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** Vanessa Hamilton <hamilton12@worldmail.com>
 **From:** Veronica Napoli <napoli@villaromano.com>
 **Date:** May 12
@@ -385,7 +387,9 @@ Veronica Napoli, Event Coordinator, Villa Romano`,
         {
             id: 'passage-7-703-12',
             text: `On April 1st, Value Plus Airlines opened its doors to travelers looking to purchase low cost tickets but not sacrifice service and reliability. The airline's first flights are scheduled to begin on May 15th and will fly between New York and Los Angeles. In July, Value Plus will add service from New York to Dallas and to Seattle. Tickets can be purchased by phone or on the company's web site. However, to keep costs low, they are not available through travel agencies. Unlike most other airlines, Value Plus allows travelers to check two pieces of luggage at no extra charge. It also advertises no change fees to reschedule your flight for a different date. Even though it is a budget airline, it still offers free non-alcoholic drinks and snacks. According to Value Plus representatives, it will offer low priced meal options beginning in June. In addition, it claims to offer fast automated check-in procedures at the airport.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** George Bryant <georgebryant@valueplusair.com>
 **From:** Sheila Primrose <sprimrose@choiceproducts.com>
 **Date:** May 19th
@@ -414,10 +418,14 @@ Purchaser: Anderson & Cooper
 Contractor: Quickfix Technicians Ltd.
 Equipment: Prestige Laser Printer, Model: NM 6786
 Starting Date of Services: September 12
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Congratulations! You've got the most reliable maintenance service.**
 We will perform regular inspections and maintenance duties for Anderson & Cooper Legal Associates on their Prestige Laser Printers, NM 6786. The inspection and maintenance will be performed at the purchaser's workplace and will be provided three times annually until the termination of the contract. Trained technicians will clean the printers and perform a thorough diagnostics test to check the efficiency of the operating system. If a problem is detected, recommendation for repair will be submitted. Defective parts will be replaced once the purchaser submits a signed copy of the technician's written recommendation. Services provided will not cover damages caused by neglect or improper handling.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** Sarah Ferguson, Quickfix Technicians Ltd.
 **From:** William Blundel, Anderson & Cooper legal Associates
 **Date:** August 20
@@ -446,7 +454,9 @@ Welcome to Seneca Medical Sales! We are excited to have someone with your experi
 I have attached a tentative schedule for the orientation program. Note that one of the activities requires participants to work in a team, and that you have been assigned to Team D. In the next few days, you will receive more information about this and other activities.
 I am looking forward to seeing you again. Should you have any questions, feel free to email me or call me at 555-3010, ext 104.
 Sincerely, Nicholas Gentry, Employment Representative, Human Resources
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Orientation Schedule**
 | Time | Monday Oct 15 | Tuesday Oct 16 | Wednesday Oct 17 | Thursday Oct 18 |
 | :--- | :--- | :--- | :--- | :--- |
@@ -455,7 +465,9 @@ Sincerely, Nicholas Gentry, Employment Representative, Human Resources
 | 10:45-12:00 | Intro to Healthcare Sales | Building Client Rapport | Closing a Sale | Online Tutorial Session |
 | 13:00-14:45 | Sales Presentation Skills | Team A's presentation | Consultative Selling | Team Meeting (A&C) |
 | 15:00-16:45 | Team Meeting (A&B) / Product line-up (C&D) | Team B's presentation | Team C's presentation | Team D's presentation |
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Date:** Oct. 10
 Dear Mr. Gentry,
 I don't know whether you were informed that I am not going to participate in orientation program on October 18. Last night, I got a message from the branch in Washington that I have to assist an opening ceremony of a new business at that time. Therefore, I can not give a group presentation on the last day of the orientation. I need to be assigned to another team to do this course. I'm very sorry to inform you of this schedule conflict. I look forward to your response as soon as possible.
@@ -478,7 +490,9 @@ Alexis Marsh`,
 Hi Ricardo! I just saw on the CIP website that you recently won the company's Most Outstanding Employee Award for this year. Congratulations! It's definitely well deserved and indicates how much you are appreciated at CIP.
 Things have been going pretty well for us since I left CIP and moved to El Paso. My husband really loves his new job so far, and we found a really cute house to rent. I'm currently working at a local engineering firm called Affinion. The office is only a five-minute drive from our home, but I'm not fully satisfied with it since it's neither exciting nor financially rewarding.
 Therefore, I've been searching for a job opportunity that better suits my interests. I recently interviewed for a promising position with a commercial real estate company. They seem quite interested in me and have asked for a professional reference. I was wondering if you would be willing to fill out the attached form and return it to them. I can't think of anyone better to evaluate my qualifications, skills, and character. I really appreciate your help. Please tell everyone at the office my best.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Ellis Holdings - Professional Reference Form**
 Applicant's Name: Marcella A. Wilberger
 THE REMAINDER OF THIS FORM TO BE COMPLETED BY RESPONDENT
@@ -488,7 +502,9 @@ How long have you known the applicant and in what capacity? I was her supervisor
 How would you rate the quality of this applicant's work? Marcella was a key member of our accounting team here at CIP. She always completed her work thoroughly and efficiently and was well liked by her co-workers. She's a talented accountant and very dependable.
 Are you aware of any potential problems with the applicant? None. I absolutely give my full endorsement of her.
 May we contact you for further information: Yes, (869) 410-8700 ext. 3
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Ricardo Rubio (11:30 A.M.)**: Hello, Marcella. I have just submitted your reference form you requested to Ellis Holdings.
 **Marcella Wilberger (11:31 A.M.)**: Thank you so much, dear. Is it possible to fax a copy of the document to me?
 **Ricardo Rubio (11:36 A.M.)**: Oh, my gosh. I am on my way to the meeting with clients. Do you need to look over it, right now? I should have forwarded it to you first. I'm sorry.

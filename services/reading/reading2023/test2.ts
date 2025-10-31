@@ -293,7 +293,9 @@ The law firm of Thompson and Groves is seeking a dedicated assistant to join our
 This assistant will work on a wide range of legal services, such as: investigating evidence related to cases being prepared for court; preparing exhibits, charts, and diagrams to display information; and communicating with clients and keeping files updated.
 The best candidate for this position is self-directed, responsible, and capable of juggling many projects at once; and has strong communication, organization, and computer skills.
 To apply, e-mail your résumé to Julia Powell (in human resources), julia.powell@thompsonandgroves.com, by May 25. Interviews will be conducted at the beginning of June, and our selection will be made in early July.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 To: julia.powell@thompsonandgroves.com
 From: jonas_ivanov@sidmail.com
 Date: July 12
@@ -321,7 +323,9 @@ Date: 11 April
 Subject: Daily Passes
 As discussed in April's staff meeting, we are considering raising the cost of daily passes from €5 to €9. The exact increase will be decided in our May meeting. This change is expected to bring in an extra €5,000 over the next year, which we will use toward the cost of replacing our outdoor running track. With the increased revenue from the fee change, we will be close to the €7,000 needed for the improvement.
 I realize that the outdoor running season is short, and I know that in our meeting, some staff members wanted to consider other uses for the money. The possibilities of using the funds for a remodeled reception area, a new floor for the dance studio, or more flat-screen televisions throughout the centre were raised. However, the board of directors thought it would be wiser to focus on the improvement most frequently requested by our members. The upgrades suggested by the staff fall into the €1,000-€2,000 range, and we hope to be able to consider them in the coming years.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **NOTICE**
 Kildare Recreation Centre Visitors
 Effective 1 June, the cost of a daily pass for nonmembers will be €8. This modest increase will allow us to provide visitors with a much better outdoor running track. The cost of monthly and annual memberships has not changed. Please visit the registration office during regular business hours to discuss membership-related issues.`,
@@ -344,7 +348,9 @@ Subject: Job tip
 Hello, Juan,
 It was nice to see you again at the Tech Writers' Conference in Mexico City. You mentioned that your cousin Carlos Cruz wants to find a product design job here in Dallas. Well, the company I work for, AMTR Corporation, is about to post a job for a junior industrial designer, which might interest him. So far, the company has announced the opening only to current employees, but next week it will appear on the company Web site. The salary is good, and there may not be any qualified candidates in-house. Please let him know about this opportunity.
 Heide Markas
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Job Posting on https://www.amtrcorp.com**
 **Current Opportunities**
 Junior Industrial Designer: This is a full-time position developing and improving the full range of products manufactured by AMTR Corporation in Dallas, Texas.
@@ -358,7 +364,9 @@ Junior Industrial Designer: This is a full-time position developing and improvin
 - Proven analytical and problem-solving skills
 - Experience in creating sketches, storyboards, models, and prototypes
 - Bachelor's or master's degree in industrial design
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **E-mail 2**
 To: Carlos Cruz <ccruz@bmail.com>
 From: Pamela Wang <wangp@amtrcorp.com>
@@ -391,7 +399,9 @@ AMTR Corporation`,
 | Cedarwood | (#203) |
 | Hickory Nut | (#209) |
 | Brick Red | (#505) |
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 Joanne Westley
 8021 Daffodil Lane
 Herndon, Virginia 22090
@@ -401,7 +411,9 @@ This is to confirm our agreement to replace your roof in Herndon, Virginia, on A
 Our crew will arrive at 8:30 A.M. We have received your deposit and signed contract. The remainder of the charge is due upon completion of the job. Please contact us if you have any questions.
 Martin Sage
 Customer Service Representative, Shingle Town Roofing
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Shingle Town Roofing: Installation Schedule for August 1-7**
 Note to installation crew: Be sure to confirm the job location and the required materials.
 | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
@@ -429,13 +441,17 @@ Here are just a few of the tasks our software can do.
 - Promote your hotel on top booking Web sites
 - Manage property maintenance
 Contact us today to begin using the trial version of our software completely free for three months. More information about the pricing and features of the Premier software version can be found on the Services page of our Web site.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **https://carinasolutions.com/reviews**
 My trial version of the Carina Solutions hotel management software expires tomorrow, and I have to decide whether to purchase the Premier version or search for something better. I have two main concerns.
 1. The reservations module does not allow you to keep information about repeat guests on file. This forces staff to reenter repeat customers' information manually, which wastes time.
 2. The software offers full functionality only when accessed on a desktop computer, which is unfortunate because I do almost everything on my mobile phone. The interface should be the same no matter what device you use.
 —Submitted by Susan Yan
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **https://carinasolutions.com/reviews_response**
 Dear Ms. Yan,
 Good news! We have updated some features of Carina Solutions since you began your trial subscription. There is now an automatic rebooking feature that you can use to register repeat guests, cutting down on manual data entry.

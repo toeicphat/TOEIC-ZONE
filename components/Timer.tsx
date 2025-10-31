@@ -26,15 +26,6 @@ const Timer: React.FC<TimerProps> = ({
   onTimeUpdateRef.current = onTimeUpdate;
 
   useEffect(() => {
-    if (!isStopwatch) {
-        setTime(initialTime);
-    } else {
-        setTime(0); // Reset stopwatch if mode changes
-    }
-  }, [initialTime, isStopwatch]);
-
-
-  useEffect(() => {
     if (isRunning) {
       intervalRef.current = window.setInterval(() => {
         if (isStopwatch) {

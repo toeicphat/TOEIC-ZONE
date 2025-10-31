@@ -281,7 +281,9 @@ I was wondering if you have heard from Sujata Reddy. She was enrolled in the pai
 She said she hasn't received her refund yet. Did she contact you?
 Best,
 Marybeth Wright
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **E-mail 2**
 To: Marybeth Wright
 From: Bridget Morandi
@@ -309,7 +311,9 @@ The only similar business in the vicinity is the Donut Station on the Kupperman 
 The bakery will occupy Canton Avenue's smallest vacant lot. Approval for the project followed a public hearing where area residents voiced mixed opinions.
 Gina Holton, who lives on Paxton Road, said she liked the idea of having a new bakery in her neighborhood but worries about traffic congestion on Ridley Street. As evidence, she presented pictures of heavy vehicle traffic there. Wofford Drive resident Steven Lu said he would enjoy having a convenient place to grab a quick snack.
 Cresson's Bakery is slated to welcome its first customers in early March.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 Dear Editor,
 As a lifelong resident of Orevale City, I appreciate your coverage of Cresson's Bakery. Unfortunately, the October 14 article contained some inaccurate information. The photos that I shared during the public hearing captured images of traffic congestion in front of my house. Also, as a member of the city's Historic Preservation Committee, I was primarily concerned about the bakery's architecture. The initial building design for Cresson's Bakery was contemporary. I am pleased to report that the chain has agreed to modify the exterior so that it blends in better with the older structures surrounding it.
 Sincerely,
@@ -334,12 +338,16 @@ As you may know, Raxconnect has been expanding its services in the Glasgow area 
 Raxconnect would like to place a small Internet connection hub on your property at 29 Lefroy Street. Because of its central location on the street, your front yard would make an optimal connection point. Please call us at 0141 496 0001 by 10 April to let us know whether we may proceed. Thank you.
 Sincerely,
 Brandy Mortimer, Utilities Adviser
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Raxconnect Expands Service**
 GLASGOW (14 March)—After unexpected delays in West End, Raxconnect has finally completed the latest phase of its project to install fibre-optic cable throughout the city. Residents and businesses in Southside are now enjoying faster Internet service.
 For the next phase of the project, in Finnieston, Raxconnect has identified key locations for connection hubs and is currently reaching out to residents and homeowners so that work can begin as soon as possible.
 The moves follow an announcement made earlier this year that Raxconnect had invested £350 million to expand its network. Local officials hope that the project brings new business and spending to their neighbourhoods.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Notice of Temporary Road Closure**
 Please be aware that construction at 29 Lefroy Street will result in the closure of the entire street. The closure will last from Monday, 31 May, until Tuesday, 8 June. During that period, automobile access will be limited to residents who live on Lefroy Street.`,
             questions: [
@@ -357,7 +365,9 @@ Please be aware that construction at 29 Lefroy Street will result in the closure
 **Contact:** Kevin Oessenich, kevin.o@albertandannies.com.au
 GOOLWA (2 November)—Yesterday, Albert and Annie's, a leading maker of gourmet frozen desserts, unveiled several new treats: Triple Time Chocolate ice cream, a waltz of light and dark chocolate with a chocolate crumb swirl; Toffee Spree, a vanilla and toffee ice cream with sweet biscuit infusions; and a raspberry sorbet, featuring bits of real fruit. The new products are expected to be in Australian stores by mid-November.
 The company was founded 25 years ago by Albert and Annie Grundon, president and CEO, respectively. Earlier this year, they announced the opening of a South African division. South African retailers will get access to a number of Albert and Annie's products in mid-December.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** Kevin Oessenich <kevin.o@albertandannies.com.au>
 **From:** Skye Botha <sbotha@westerncapeeats.co.za>
 **Date:** 3 November
@@ -367,7 +377,9 @@ I am a reporter for Western Cape Eats, a news site for food lovers in the Cape T
 The interview can be conducted by phone or video chat. I look forward to your reply.
 Sincerely,
 Skye Botha
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **https://www.westerncapeeats.co.za/reviews**
 **Jim Sato, 31 December**
 Your article informing me about Albert and Annie's, an ice-cream company that just came to South Africa, gave me one more reason to attend the annual Wooden Sailboat Festival. I got to sample some sensational ice creams at Albert and Annie's booth. The booth offered three amazing flavours: Coffee Truffle, Fudge Mint, and Chocolate Pretzel Delight. In your article, Mr. Oessenich stated that these would be the first flavours to be rolled out to grocery outlets in South Africa and that more will become available over time. I can't wait!`,
@@ -386,13 +398,17 @@ Your article informing me about Albert and Annie's, an ice-cream company that ju
 **Getting Grants**
 Posted on August 18 by Ben Fineman
 Grant writing is the art of completing applications for financial aid offered by government agencies, schools, corporations, or other entities. There is huge competition for grants and no room for mediocrity in grant writing. To improve your grant-writing skills, consider taking an online course taught by Kristina Gilliam of Meadow Park University. Her Writing Great Grants course is divided into four 90-minute interactive sessions. It is designed for people with some basic knowledge of grant writing. These Monday evening classes run from November 15 to December 6. For details and registration, visit www.kristinagilliam.ca/course. Use the promo code NPBURST at checkout to get 15 percent off the $350 tuition. This code expires on September 30. On October 1, only full-price registration will be available until the final registration day, November 1.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **www.kristinagilliam.ca/feedback**
 Thank you for participating in my Writing Great Grants course. Please take a moment to tell me about your experience by filling out the form below.
 **Name:** Natalie Ballard
 **Location:** Winnipeg
 **Comment:** Relatively short compared to other writing courses I've taken, Writing Great Grants provided a decent overview. I was impressed to learn that the instructor helped companies get millions of dollars in grants during her career, and I'm glad to now have her as a resource if I ever get hired as a grant writer. Fortunately, I used Ben's Nonprofit Burst's promo code when I registered. Otherwise, I'd have considered the tuition too high. The Web site gave me the impression that Ms. Gilliam would include more specifics about the actual writing process than she did.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **www.kristinagilliam.ca/feedback**
 Thank you for participating in my Writing Great Grants course. Please take a moment to tell me about your experience by filling out the form below.
 **Name:** Paul Voigt

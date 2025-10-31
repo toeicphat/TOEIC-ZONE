@@ -308,7 +308,9 @@ Call 555-0813 for details or visit our web site, www.treasuremovers.com. Consult
 Dear Albert,
 I'm attaching some sample pages from the upcoming summer catalog. I would like you to look them over. I think we probably have to redo the pages featuring the swimwear. The swimwear pictures look out of focus a little bit. We have to hurry on this, especially if we have to have the pictures retaken. I have to send the entire document to Donaustrica Printing by April 1 so that the catalogs can be mailed to customers on May 10.
 Mary
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** Mary Ammon <maryd@allfashion.com>
 **From:** Albert Waters <albertco@allfashion.com>
 **Date:** March 5
@@ -342,7 +344,9 @@ Noon - Lunch Buffet
 2:00 P.M. --- "The latest innovations in Medical Technology" Dr. Farhad Lalji
 3:00 P.M. --- "Inventors and Venture Capitalists Networking Session" All Participants
 4:00 P.M. --- "Closing Presentation" Cindy Damon
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** Frank Seabrook <seabrook777@face2face.com>
 **From:** Deborah Stanley <debbie123@securatech.org>
 **Date:** October 7
@@ -366,7 +370,9 @@ Deborah Stanley, Senior Vice President, Securatech`,
 Our records indicate that this invoice is over thirty days past due and is now subject to a 15% late payment fee. Enclosed is a copy of the original invoice with the fee included.
 **Disclaimer:** All sales are final and no returns will be accepted. The total amount of the bill is due within 30 days of receipt. A 15% surcharge will be added to all bills over 30 days late.
 Address all questions/disputes to: Ethan Masterson - Director of Accounting
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **INVOICE**
 | Item | Quantity | Price | Total |
 |---|---|---|---|
@@ -377,7 +383,9 @@ Address all questions/disputes to: Ethan Masterson - Director of Accounting
 | Tax | | | $936 |
 | 15% Surcharge | | | $2,480 |
 | **Total Payment Due:** | | | **$19,016** |
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **October 15th**
 Dear Mr. Masterson,
 I am disappointed that you have chosen to pursue this billing. I realize, as you pointed out in our conversation two weeks ago, that you believe you have the right to charge me because of your notice on your invoice. But this order, and my being overcharged, is the result of a typing error, and is not a typical return. It is clear that I intended to purchase only one Model 2000ce, as evidenced by my order of only 1 monitor, printer and accessory kit. Since the order was completed by phone, I unfortunately do not have printed documentation to support my claim. I do, however, have the confirmation number given to me over the phone by the person who took the order. That confirmation number is XL123-33A. I'm sure if you check your records you'll see that I am correct.
@@ -403,13 +411,17 @@ Reservation Code: TIG 4873 | Gender: MS, First Name: DIANE, Last Name: STEPHENS
 - **VA 715:** Santiago, Chile to La Paz, Bolivia - Oct 24, 4:00 p.m. -> 7:15 p.m. (COACH)
 - *Flight Connecting: layover 55 minutes*
 - **VA 895:** La Paz, Bolivia to Lima, Peru - Oct 24, 8:10 p.m. -> 9:30 p.m. (COACH)
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Viaja Airlines E-Ticket Reservation**
 Dear. Diane,
 Enclosed is the itinerary that confirms your e-ticket reservation. Please print this document and present it at the check-in counter along with your passport. There will be a $50 processing fee for changes to this itinerary that are initiated by the passenger.
 **Notice:** On January 1 of this year, Viaja Air implemented a $40 fee per bag for passengers checking more than one piece of luggage. The weight limit of each additional bag is 20 Kilograms. Passengers will be charged $15 per kilogram in excess of this limit.
 We, Viaja Airlines is always at your superative service!
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** Diane Stephens <dstephens@centrix.com>
 **From:** Josefina Sanchez <jsanchez@flyviaja.com>
 **Date:** September 20
@@ -441,7 +453,9 @@ If you believe your potential, you may check the attached information including 
 - Excellent written and verbal communication skills required
 - Computer literacy
 For immediate consideration, please send your resume, as an e-mail attachment, and include a cover letter.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** info@maden.net
 **From:** julies@nsl.com
 **Subject:** Summer Intern Position

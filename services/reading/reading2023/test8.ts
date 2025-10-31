@@ -287,7 +287,9 @@ The books I wish to return are still in their original packaging. I can have the
 
 Sincerely,
 Ella Feehan, Food Services Director, Rossfield Hotels Ltd.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Parleganis Publishing Returns and Exchanges Policy**
 We accept products under the following conditions.
 • Unmarked, unused materials may be returned or exchanged within 90 days of purchase.
@@ -311,7 +313,9 @@ We accept products under the following conditions.
 ★★★★☆
 There is a new pizza restaurant in town called Maple Pizza House. Not to my surprise, it offers a number of signature pizzas with maple flavoring, including dessert pizzas. While I personally did not like the maple-flavored pizza at all, the rest of my party enjoyed a large maple-ham pizza as a main course. The others in my group also devoured the maple-walnut dessert pizza, which, to me, tasted like an overly sweet, sticky pie.
 Fortunately for me, the menu includes some pizzas that do not have maple flavoring. I ordered a traditional cheese pizza. It was served piping hot and was delicious. Because there were tasty menu options that pleased everyone, I rate the Maple Pizza House 4 stars out of 5, and I would recommend visiting.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Maple Pizza House**
 83 Fox Lane, Bobbingworth, CM2 9B | 077 5014 0314 | We now accept credit cards.
 | Signature Maple Pizzas (with red sauce) | Personal | Large |
@@ -341,7 +345,9 @@ https://www.northamcarparts.co.uk/home
 **We Have the Parts You Need**
 Northam Car Parts is a leading seller of rare and hard-to-find car parts. We have a huge selection of car transmissions, body and frame parts, and steering-repair kits, just to name a few. Check out our online catalogue page for a detailed list of parts currently available in our warehouse. We specialise in vintage European cars, but we have plenty of parts for American-made and Japanese-made vehicles. If you do not see what you need in our catalogue, please fill out a contact form—we can help you find the part you need! Please note that our response time is now two to four business days because of a rise in the number of requests we receive.
 Parts can be delivered to any address within the United Kingdom, France, Belgium, or Spain.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Northam Car Parts Contact Form**
 **Name:** Gerald Aldegunde | **Manufacturer:** Exceller
 **E-mail:** carmanga55@saffronmail.de | **Model:** Dragonfire
@@ -350,7 +356,9 @@ Parts can be delivered to any address within the United Kingdom, France, Belgium
 **Date:** 6 August | **Drive:** 2WD
 **Message:**
 I've been looking for a part for a transmission in a 1988 Exceller Dragonfire I purchased last year. I have been unable to find this part, so a friend who found a new steering wheel through your company recommended that I contact you. I was wondering how much you would charge for locating a vintage British car part like this. Also, I noticed that Germany is not listed on your Web site as a shipping destination. Do you ever ship to areas other than the countries that are currently listed there? Thanks for your help! Working on this car has been a great experience, but I'm eager to get this thing on the road!
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **E-mail**
 To: Gerald Aldegunde <carmanga55@saffronmail.de>
 From: Bethany Turnhout <bturnhout@northamcarparts.co.uk>
@@ -380,7 +388,9 @@ This commitment was recently cited in a speech by Yamina Badawi, Singapore's min
 RHC completed its first conversion project four years ago—the Kallang Overlook apartment complex. Since then, RHC has completed five more projects: Asten Estates, Tampines Tower, Lakeside Manor, Yishun Terrace, and now Bay Commons.
 "Bay Commons represents a departure from our previous projects," Ms. Wong noted. "This housing complex is designed primarily for students at the nearby Changi Technological Institute."
 Units at Bay Commons are now available for rent or purchase, she added.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 https://www.rayderholdingscorporation.com.sg/current-listings
 **Current Listings**
 Rayder Holdings Corporation turns vacant commercial properties into pleasant residential buildings. Below are our current offerings in alphabetical order.
@@ -390,7 +400,9 @@ Rayder Holdings Corporation turns vacant commercial properties into pleasant res
 **Lakeside Manor:** 28-unit building with indoor pool, outdoor tennis and basketball courts, playground, and on-site cafeteria
 **Tampines Tower:** 36-unit apartment complex with pool and fitness room
 **Yishun Terrace:** 55-unit apartment complex with outdoor sports facilities (tennis, basketball, football), indoor swimming pool, catch-and-release fishing pond, and picnic area
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Today 9:53 A.M.**
 Hello, Mr. Goh. A fellow resident found your wallet on the cafeteria counter and dropped it off here at the RHC leasing office. Please stop by to pick it up. We are open until 6:00 P.M. For after-hours service, call 0904 6802, and someone will assist you.
 Alicia Rajani, Office Manager`,
@@ -410,12 +422,16 @@ https://www.camsfurniture.ca/about_us
 Cam's Furniture has been a fixture in Ottawa for more than 50 years. With our focus on exceptional customer service, we guarantee that your time in our store will be both pleasant and worthwhile!
 Our daily business operations are overseen by George Meara, the eldest son of founder Cam Meara. George is joined by his sister, Elise Meara, and an enthusiastic team of sales associates who will help you choose the best furniture for your needs. Our enormous showroom features a broad selection of high-quality furniture arranged in different types of residential rooms and office spaces. And, along with all the top brands of furniture, we are proud to carry unique and environmentally friendly items sourced from the Green Directions Trade Fair. Our head buyer, Debbie Sarno, attends this event annually to choose fantastic new products for our store.
 We offer complimentary delivery and setup for all customers whose home or business is within the boundaries of the city of Ottawa.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Linda Fei (1:57 P.M.)**
 Toby, I'm at Cam's Furniture. The items you chose for our reception area look great! The salesperson told me the bill is going to be a little more than expected because there will be a charge for delivery and setup. The crew can come out to our office on Friday, so we'll definitely be able to have everything in place before our clients arrive on Monday.
 **Toby Pesenti (1:59 P.M.)**
 Great! The slightly higher cost shouldn't be a problem. We have enough in our budget.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Online Reviews**
 Customer review posted by Linda Fei on 23 July at 5:32 P.M.
 The staff at Cam's Furniture is extraordinarily helpful and professional. I was pleased that we could get eco-friendly pieces for our company's reception area. The furniture is beautiful—we've been receiving many compliments. Cam's delivery team spent extra time at our new office space to make sure that the furniture was arranged in exactly the right way. We look forward to shopping at Cam's again!`,

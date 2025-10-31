@@ -342,7 +342,9 @@ Sponsored by the League of New Zealand Builders (LNZB)
 **DUE DATE:** All submissions are due by 15 December.
 **JUDGING PROCESS:** The application and vetting process includes several steps. After screening the candidates, judges will choose semifinalists. Then a special panel will choose this year's recipient.
 **FOR MORE INFORMATION:** Visit www.leagueofnewzealandbuilders.org.nz to learn more about the LNZB and past winners.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Rahotu Wins LNZB Prize**
 (17 March)—The LNZB yesterday announced that Maia Rahotu won this year's Sustainability Competition. Ms. Rahotu, whose work on building designs throughout New Zealand goes back many years, won the award for her design of the Rowan Community Centre. The centre utilized renewable and recycled materials throughout its construction. In April, Ms. Rahotu will be formally presented with the award during the ceremony at the centre; details will be announced soon. "It was a tough decision this year," said LNZB's director, Thomas Young. "All applicants chose materials that minimize environmental impact. But we were able to narrow the candidates to three top choices, each of whom was interviewed by our panel of experts."
 Building components in the Rowan project were thoughtfully selected by Ms. Rahotu to minimize environmental impact, Young added. "However, what is exceptional about Ms. Rahotu's design is how well it harvests solar energy." According to experts at LNZB, her solar design generates a high surplus of electricity beyond the building's requirements.`,
@@ -364,7 +366,9 @@ Refrain from using bleach or cleaners with chlorine, which the board can absorb.
 To store your product, hang it upright from the leather strap on a wall or shelf. Do not store it in direct sunlight, since this will cause the vibrant colors of the board to fade. Periodically, polish the board with a light coat of olive oil to help the board's colors stay bright.
 Like all Lazon products, our cutting boards are handmade. With minimal upkeep, you can keep your product looking like new.
 If you have any problems with your board, please e-mail us at support@lazonproducts.com. Our policy is to replace at no cost any defective parts or products within three months of purchase. At Lazon Products, quality is our top priority!
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 From: Jonas E. Iversen <jonaseiversen@daylightcommerce.com>
 To: support@lazonproducts.com
 Date: August 2, 4:58 P.M.
@@ -389,7 +393,9 @@ https://www.flutteringwings.com.mx
 Located just minutes from the entrance to the Tall Trees Monarch Butterfly Sanctuary, Fluttering Wings Resort is Mexico's finest eco-friendly destination. Open year-round, our facilities include a full-service restaurant, a relaxing swimming pool, and a rooftop deck with an amazing view.
 Butterfly season is from mid-November to early March, and millions of monarch butterflies pass the winter at the Tall Trees sanctuary. Visitors can hike up the mountain on foot, but most prefer to participate in our guided horseback tours. Our expert guides, who escort visitors up the mountain, are all local villagers. They continuously scout the sanctuary for the best viewing locations.
 At all times of the year, we offer hiking trails, bird-watching, and horseback riding. Electric vehicle tours of the villages and farms outside the sanctuary are also available.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **E-mail**
 To: Carmen Sanchez <c.sanchez@flutteringwings.com.mx>
 From: James Norville <jnorville@itiaworld.org>
@@ -399,7 +405,9 @@ Congratulations, Carmen Sanchez!
 Fluttering Wings Resort has been named a recipient of an International Travel Industry Association Guardian Award. The ITIA Guardian Award includes a $5,000 cash award and one year of free support from our advisory team. ITIA experts can advise Fluttering Wings on ways to operate your business more efficiently and to use the Web to promote your services to potential visitors. A member of our advisory team, Rosa Del Vio, would like to present the award to you and visit your resort in July or August. She will be in touch with you before the end of the month.
 Sincerely,
 James Norville, Executive Director, International Travel Industry Association
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Fluttering Wings Resort - INVOICE**
 Name: Julio and Lisa Bardom
 Prepayment received on: February 1
@@ -430,7 +438,9 @@ innovationsinhorticulture.org.uk
 - Piet Bax, Netherlands
 - Emil Savov, Bulgaria
 For more information and to register, visit the Innovations in Horticulture and Agriculture Web site. Student discounts available with ID. A limited number of hotel rooms are available at the conference site. There is a complimentary bus service for attendees staying at nearby hotels.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **E-Mail Message**
 To: Piet Bax <pbax@mailcrate.com>
 From: Jacob Brewster <jbrewster@sootenfarms.co.uk>
@@ -440,7 +450,9 @@ Dear Mr. Bax:
 It was wonderful meeting you in London last month. Thank you for taking the time to talk to me after your speech and for agreeing to the video meeting on 5 January. I'm going to ask my project manager, Ms. Woo-Jin Ko, to join us. Among other things, Ms. Ko has some questions about lighting for my greenhouses. I think she has some questions about the products offered by the Brillante Luxlight company. I understand you helped design some of their products, so perhaps you can offer some advice. I know we'll both have many other questions, so I do appreciate this opportunity. I also hope I will be able to visit sometime in the spring and get an in-person look at your greenhouses.
 Sincerely,
 Jacob Brewster
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **E-Mail Message**
 To: Jacob Brewster <jbrewster@sootenfarms.co.uk>
 From: Juana Galvez <jgalvez@brillanteluxlight.com.mx>
@@ -466,12 +478,16 @@ Orange Light Gym is coming to Singapore! Join us as we open our newest and best 
 - Singapore bodybuilding legend Ronny Cho appearing on 5 April
 - World-famous trainer Lina Sitaman appearing on 6 April
 ORANGE LIGHT GYM • 1140 Orchard Road • Singapore
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Orange Light Gym Marina South - 183 Reviews**
 2 October
 Max Halle ★★★★☆
 I have been a regular Orange Light Gym member for ten years and generally like their service. I live in Dubai but travel to Singapore for work regularly, so it's great to belong to a gym with locations in both countries! The Marina South gym in Singapore is very clean and well designed, but there are two areas that need improvement. There are not enough machines, especially compared to the much larger Orchard Road location. Also, I have visited the gym about ten times and on nearly half of those occasions, the pool was not available for use. I will still use this gym because of the global membership, but I hope they address the cause of the pool closures.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **E-mail**
 To: Sam Adawi
 From: Ani Wayanti

@@ -312,7 +312,9 @@ The Giller Prize is awarded to authors who have produced outstanding artistic an
             id: 'passage-7-707-11',
             text: `**Greece Reporter - May 20**
 Last Thursday was a landmark occasion for university students in Europe who are interested in finding a job in Greece. The first ever Career Fair was held in Athens. Over 60 companies sent representatives to the fair to offer talented students computer and information technology research positions in their firms. The fair started at 8 A.M. and closed at 4 P.M. About 350 students attended and many were given interviews on the spot. The coordinator of the fair says it was a great success and expects over 150 students to get jobs. He says the second job fair will be held in Volos on June 24.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Pockel Laboratories - June 19**
 Mr. Steven Wallace
 Dear Mr. Wallace, After speaking with you last month at the Career Fair in Athens, I am pleased to offer you a position as an information technology researcher with Pockel Laboratories' Athens office. The position will allow you to have a competitive salary, health insurance (including dental cover), three weeks of paid vacation each year, and seven days a year of paid sick leave.
@@ -338,7 +340,9 @@ Come and see why Canada has voted Wired Inc. their favorite computer and electro
 - Excellent customer service. Trained professionals are employed at our stores and in our call center.
 - Shipping & Delivery service within Canada (All purchases will arrive at your home in 5 days or less).
 To locate the Wired Inc. retail outlet nearest to you, please visit our website at www.wiredinc.ca.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **November 3**
 Dear Mr. Carter, Director of Shipping & Receiving, Wired Inc.,
 I have purchased computers and electronics equipment from Wired Inc. for over ten years now, and I have always recommended your store to friends and colleagues. Unfortunately, my most recent experience at one of your retail outlets was disappointing, especially in the wake of your latest internet advertising campaign.
@@ -358,7 +362,9 @@ Sincerely, Bruce Martin`,
             text: `**Duke's Lawn Service - Spring Special Offer**
 Tel: 404-861-2060 | E-mail: duke@dukeslawnservice.com
 Spring has arrived, which means it's time to start scheduling your lawn service again. Duke's Lawn Service is delighted to offer special discounted rates for previous customers in the months of April and May. Also, we have recently employed specialists and the state-of-the art machinery for more perfect and reliable service. We are totally confident of our quality service. Attached is our lawn mowing pricing chart with this e-mail so you can see the great deal that we're offering.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Duke's Lawn Service Spring Special Offer**
 | Size of Yard | Regular Price | Sale Price |
 | :--- | :--- | :--- |
@@ -368,7 +374,9 @@ Spring has arrived, which means it's time to start scheduling your lawn service 
 | 1 1/2 acres | $200 | $170 |
 | 2 acres | $250 | $210 |
 **Bonus Offer:** If you call to schedule lawn mowing before March 30th, you'll receive a coupon worth 15 percent off of future lawn mowing during the months of June and July.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** Pamela Sharpley <psharpley@tnet.com>
 **From:** Duke Dodson <duke@dukeslawnservice.com>
 **Date:** March 28
@@ -393,13 +401,17 @@ Duke Dodson, Owner, Duke's Lawn Service`,
 **Subject:** DVDs
 Dear Mr. Lloyd,
 Based on your purchase history, we have selected four new titles that we think you would enjoy. Please find a list attached to this message. Please note that in-stock titles are shipped on the day they are ordered and are usually delivered in five business days. Soon-to-be-released movies can be ordered by emailing me. These items are available at a ten percent discount and are shipped to you as they become available.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **New DVDs**
 - **Destination Nova:** Starring: Josh Gifford, Price: $15.50, Availability: In stock
 - **The Rodwell Saga, Part 3:** Starring: Jonathan Bird, Price: $19.99, Availability: In stock
 - **Bob Spindlers Complexity:** Starring: Rachael Jenner, Price: $25.99, Availability: To be released in December. Preorder now.
 - **The Power, The Glory, and The Despair:** Starring: George Lebest, Price: $23.50, Availability: In stock
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** Alisia Jarvis <Ajarvis@superflix.com>
 **From:** Simon Lloyd <slloyd@KYCbanco.com>
 **Date:** November 16
@@ -419,11 +431,15 @@ Thank you for the information. I have been waiting for Serrano' film and really 
 **Date:** September 2 14:23:05
 **Subject:** Upcoming trip to Los Angeles
 Included is the information you requested regarding schedules for trains departing Sacramento for Los Angeles on September 12, and returning to Sacramento on September 15. You have a choice of each way of an express train or a regular train. The express train is about 2 hours faster. Let me know your preference and I will make the arrangement for you. Do you still want to book a ticket for Gideon Brown? I know you will attend the entire convention, but I am not sure he will. Please let me know about his schedule ASAP.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Sacramento Train Station Schedule**
 - **September 12:** Depart Sacramento -> Arrive Los Angeles (Trains: 36(Express) 1:14 PM -> 6:24 PM | 17(Regular) 2:20 PM -> 9:20 PM | 39(Express) 2:44 PM -> 7:54 PM | 28(Regular) 2:58 PM -> 9:58 PM)
 - **September 15:** Depart Los Angeles -> Arrive Sacramento (Trains: 71(Express) 1:30 PM -> 6:40 PM | 33(Regular) 3:00 PM -> 10:00 PM | 84(Express) 3:10 PM -> 8:20 PM | 27(Regular) 3:30 PM -> 10:30 PM)
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** Gabriella Quin <oquin@cylion.com>
 **From:** Tracy Adams <jadams@cylion.com>
 **Date:** September 2 15:31:32

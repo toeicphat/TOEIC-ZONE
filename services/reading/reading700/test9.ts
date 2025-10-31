@@ -306,7 +306,9 @@ The first Fantastic Fashion store opened in Chicago last year and a second store
 Nestled in a picturesque community, CVR Conference Center is a unique 8,000 square foot facility ideal for all types of events from business meetings to social gatherings. Whether you need a room for a business meeting, seminar, wedding or banquet, CVR Conference Center can accommodate all group sizes. CVR Conference Center will be glad to assist with a list of recommended caterers who are well recognized for their creativity, nutritional value and presentation. We have a dedicated team of staff available to assist you in planning your next event.
 Reservations for our facilities are recommended to be made well in advance. Please send an email to our reservations manager, Enrique Gonzales, with the following information: Your name, company name (if applicable), and your contact information, The type of event, The desired date and time of your event, The approximate number of attendees, The best way and time to contact you.
 Discounts are available for educational, governmental and non-profit organizations. For more information, please visit our website at www.cvrconferencecenter.com.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **From:** William Peterson <wpetterson@Misawa.com>
 **To:** George Lauer <George.Lauer@cvrconferencecenter.com>
 **Re:** Facility rental
@@ -328,7 +330,9 @@ Sincerely, William Peterson, Human Resources Manager, Misawa Technical Services`
         {
             id: 'passage-7-709-12',
             text: `**Sydney, Australia (February 2) –** The International Convention of Architecture (ICA) held its annual conference and an awards banquet in Sydney at The First Plaza Hotel. ICA, a global organization whose membership includes many critically acclaimed architects, recently announced its 10th annual architectural awards. This year, the focus of the awards was aimed at the environment since ICA added 2 new awards: the Green Building Award and the Cooper Environmental Design Award, named after renowned architect and pioneer Mr. Andrew Cooper, who dedicated his career to conserving nature with his designs and was the former President of the Green Project Council. A panel, composed of members that are recognized professionals in their own fields of architecture, business, education, publishing, and culture, deliberated the nominations and the winners were announced at the awards banquet. Deserving special attention was the Cooper Award won by Smith and Haigh Studios. This firm, based in San Francisco, has focused on the environment for the past 7 years and has attracted a great deal of attention in the industry and set future standards very high in architectural design.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** David Haigh <d.haigh@smithandhaighstudios.com>
 **From:** Jonathan Cols <Jonathan.Cols@excite-blades.com>
 **Date:** March 3
@@ -351,13 +355,17 @@ Sincerely, Jonathan Cols`,
             id: 'passage-7-709-13',
             text: `**French Quarter Suites**
 Come experience the atmosphere of the French Quarter in the heart of New Orleans. Our boutique style hotel is very intimate and well received by our loyal customers. Our rooms are nicely-appointed and have been equipped with all the modern amenities including HD TV and wireless internet. French Quarter Suites offers four unique room options. If you want to enjoy the exotic atmosphere, please visit our website, www.fqsuites.com to get more detail of our services.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **French Quarter Suites Room Options**
 - **Comfort:** For one or two guests. Includes a queen-sized bed and private bathroom with shower. $152 per night, plus tax and fees.
 - **Terrace:** Comparable to the Comfort but facing all the action on the street. Soak in the ambience and the cool evening breeze from a private terrace. $167 per night, plus tax and fees.
 - **Gold:** Spacious room with two queen-sized beds and a sitting area with a couch and love seat. Also includes a desk with a comfortable office chair. Private bath and shower. $199 per night, plus tax and fees.
 - **Mardi Gras Suite:** Includes two bedrooms with queen-sized beds. A private bath with jacuzzi in each room. Big seating area that is open to a large private balcony overlooking street level. $235, plus tax and fees.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **From:** smoore@fastmail.com
 **To:** reservation@fqsuites.com
 **Subject:** Room upgrade
@@ -374,13 +382,17 @@ I've been attempting to modify my reservation online without success. For some r
             id: 'passage-7-709-14',
             text: `**NOTICE**
 The downtown bus service that connects the east and west sides of the city recently removed the bus stop for southbound service on Emerson Avenue near Tall Street. (The northbound bus stop is still in place.) The removal allows developers of the new 30-story condominium at Marveling Terrace to occupy the sidewalk on that part of Emerson Avenue for construction access. As an alternative transportation option, city residents can catch the downtown bus heading eastbound on Tall Street, mid-block between Emerson Avenue and Helm Street. The downtown bus route connects Avery Street Seaport with Hobson City, making stops at many important destinations. Since it's free, you can hop on and off as often as you like.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Operational Information**
 - Service is provided seven days a week.
 - Daily service starting at 9 A.M., ending with a final run at 8:30 P.M.
 - Stops along the route include Hobson City, Avery Street Seaport, and dozens in between.
 - **Please note:** Passengers are permitted to carry bundles, packages, folded baby strollers, folded shopping carts, etc. aboard our buses except during the hours of 2 P.M. - 7 P.M. or when/where it would cause inconvenience to other passengers or block the aisles.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Marveling Terrace**
 In the vacant lot bordered by Melvin Street, Tall Street, and Emerson Avenue, a 30-story, 280-unit condominium building known as Marveling Terrace will be developed by the Hopkins Organization. Ground is scheduled to be broken before the end of this year, with construction expected to be complete in three years. The building will be configured in a U-shape with three sections of differing heights. The river-facing west wing will rise 14 floors above street level, and the city-facing east wing will rise 13 floors; both will feature landscaped roof gardens and sitting areas for building residents and their guests to enjoy. A 30-story south-facing building, housing a magnificent four-story glass enclosed lobby, complete with concierge and doorman, will connect the two wings.`,
             questions: [
@@ -399,7 +411,9 @@ In the vacant lot bordered by Melvin Street, Tall Street, and Emerson Avenue, a 
 To whom it may concern,
 I have recently purchased several pieces of miniatures to decorate my clothing store. When I received the kit, I was delighted to find that the model showed all the details of the original's construction and nothing was damaged during the shipment. The products that I had to assemble were challenging to put together. However one item (#48321) did not arrive with assembly instructions. My customer ID number is 3367 and Order ID number is 5128. I attached a copy of the invoice for further reference. I purchased from your store in the past and was surprised that such an oversight was made this time. I would greatly appreciate it if relevant instructions could be sent to me at this e-mail address as soon as possible.
 Sincerely, Patricia Manton
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **INVOICE**
 ORDER DATE: June 11 | ORDER ID: 5128 | DATE: June 22
 **Client:** Patricia Manton, CUSTMER ID: 3367
@@ -410,7 +424,9 @@ ORDER DATE: June 11 | ORDER ID: 5128 | DATE: June 22
 | 34008 | Furniture Set -D2 | 3 | $570 | $1,710 |
 | 48321 | Sailing Ship-S23 | 1 | $1,450 | $1,450 |
 Subtotal: $6,050 | Shipping: $280 | Total: $6,330
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **From:** Miniature World
 Dear, Patricia Manton,
 First, we are very sorry for your inconveniences. As you requested, the instruction for your item is attached in this e-mail. If you have any other question, we will handle it promptly and sincerely. As a token of our apology, we are offering a free delivery service for the products in the same line you have experienced discomforts in. Once again, thank you for your purchase and we look forward to continuing the next deals with you.`,

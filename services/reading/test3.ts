@@ -337,7 +337,7 @@ Saturday, September 9
 
 All events take place at the Bethesda Park Open-Air Stage unless otherwise noted. Feel free to bring picnic blankets.
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 From Rambling River Festival, Sep 8, 9:14 A.M.
 This afternoon's performance will take place in Cole Hall in anticipation of inclement weather. Bulky items are not allowed, but coat-check service will be available.
@@ -369,7 +369,7 @@ Best,
 Fran Corliss
 Director of Mobile Banking, Ogden Bank
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 Boost for Mobile Banking
 By Edward Panzius
@@ -392,7 +392,7 @@ According to Ms. DeFreese, in the few weeks since the upgrade, 20 percent of acc
 Attention, Library Members
 The Westwood Library is excited to announce the start of a book club, which is open to all library members. The club will meet on the last Thursday of each month, from 7:00 to 9:00 P.M. in the Harrison Meeting Room, to discuss a book chosen by one of our professional staff. From January to June, we will read recently published nonfiction works, and from July to December, we will focus on contemporary fiction titles. For more information, visit www.westwoodlibrary.org or speak with the staff at the circulation desk.
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 https://www.westwoodlibrary.org/bookclub
 We hope you will join us for the book club on the last Thursday of each month at 7:00 P.M.! Below are the titles selected for the first half of the year.
@@ -403,7 +403,7 @@ April: The Art of Mindful Carpentry by Peter Landers
 May: Mary Swan: A Legend Before Her Time by Kai Noble
 June: To Be Announced
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 To: Lisa Calle <lcalle@worldmail.com>
 From: Gail Frey <gfrey@myemail.com>
@@ -442,7 +442,7 @@ If picking up your order, we are located at 29 George Street. Parking is availab
 Sincerely,
 Tatiana Schwartz
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 George Street Sweets
 Order: 47892
@@ -460,7 +460,7 @@ Customisation Instructions: None
 | Delivery | £2.50 |
 | **Total** | **£39.50** |
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 From: Alejandro Ordaz <aordaz@brooksidestationery.co.uk>
 To: Tatiana Schwartz <orders@georgestreetsweets.co.uk>
@@ -478,6 +478,7 @@ Alejandro Ordaz`,
                 { id: '192', questionText: 'What is suggested about the building at 2 Spen Lane?', options: { A: 'It has parking spaces behind a bicycle shop.', B: 'It is located within 10 kilometers of George Street Sweets.', C: 'It is a residential apartment building.', D: 'It is owned by Ms. Schwartz.' }, correctAnswer: 'B' },
                 { id: '193', questionText: 'What can be concluded about the cake?', options: { A: 'It has not been paid for yet.', B: 'It will have only chocolate icing.', C: 'It was ordered over the phone.', D: 'It contains ice cream.' }, correctAnswer: 'C' },
                 { id: '194', questionText: 'In the second e-mail, what does Mr. Ordaz request?', options: { A: 'A full refund', B: 'A different flavor', C: 'A response to an e-mail', D: 'An additional candle' }, correctAnswer: 'C' },
+// FIX: Added missing 'D' option to the question with id '195'.
                 { id: '195', questionText: 'What does Mr. Ordaz mention about the event in his e-mail?', options: { A: 'It will take place on April 29.', B: 'It is an anniversary party.', C: 'Its start time has changed.', D: 'It will be larger than expected.' }, correctAnswer: 'D' }
             ]
         },
@@ -499,7 +500,7 @@ Best,
 Iqbal Grewal, Director of Business Transformation
 Woolf Flooring
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 https://www.surveyquest.com.au/109820
 Woolf Flooring Cost-Savings Survey
@@ -508,7 +509,7 @@ Date: 18 June
 Name and role: Beth Mair, sales manager
 I have noticed that some employees grab a new pair of disposable gloves every time they return from a break. They could be using the same ones throughout the whole day. By limiting the use of gloves to one pair per day, Woolf Flooring would save thousands of dollars per year. Doing so would also reduce waste. A new policy regarding the use of personal protective items would be easy to implement immediately and would simply require sending a company-wide e-mail to explain it.
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 Miyoko Consulting
 Woolf Flooring Report Summary
@@ -528,6 +529,7 @@ Thank you for allowing us to spend the last few weeks reviewing your operations.
     ]
 };
 
+// FIX: Corrected the exported variable name to 'test3Data' to fix the import error.
 export const test3Data = {
     part5: test3Part5,
     part6: test3Part6,

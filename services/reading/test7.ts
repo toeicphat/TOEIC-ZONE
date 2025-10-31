@@ -1,3 +1,4 @@
+
 import { ReadingTestData } from '../../types';
 
 const test7Part5: ReadingTestData = {
@@ -124,346 +125,310 @@ const test7Part7: ReadingTestData = {
     passages: [
         {
             id: 'passage-7-7-1',
-            text: `NOTICE
-As part of our routine maintenance of Selino Apartments, all public areas of our building will be painted according to the following schedule:
-• Stairwells, first and second floors: 12 April
-• Hallways, first and second floors: 13 April
-• Stairwells, third and fourth floors: 14 April
-• Hallways, third and fourth floors: 15 April
-The elevators will be available during this time. Please use caution, and do not touch any wet paint.
-Management, Selino Apartments`,
+            text: `Questions 147-148 refer to the following e-mail.
+To: mnandy@gmantcs.com
+From: jblaire@blaireaccounting.ca
+Re: AUTOMATIC REPLY
+Date: 9 January, 10:34 AM
+
+Hello, and thank you for contacting Blaire Accounting. I will be out of the office until 31 January.
+I will respond to your message when I ---131.---. If you need ---132.--- assistance, please contact Susan Lewis, my administrative assistant, at slewis@blaireaccounting.ca. You can ---133.--- call her directly at 416-555-0193. ---134.---.
+
+Jean Blaire, President`,
             questions: [
-                { id: '147', questionText: 'For whom is the notice most likely intended?', options: { A: 'Painting contractors', B: 'Elevator repair workers', C: 'Graphic artists', D: 'Apartment residents' }, correctAnswer: 'D' },
-                { id: '148', questionText: 'When will work on the stairwells of all floors most likely be completed?', options: { A: 'On April 12', B: 'On April 13', C: 'On April 14', D: 'On April 15' }, correctAnswer: 'C' }
+                { id: '147', questionText: 'Choose the best option for (131).', options: { A: 'recover', B: 'return', C: 'begin', D: 'finish' }, correctAnswer: 'B' },
+                { id: '148', questionText: 'What is indicated about Mr. Nandy?', options: { A: 'He works with Ms. Blaire.', B: 'He has an accounting question.', C: 'He recently changed his e-mail address.', D: 'He will likely be contacted by Ms. Lewis.' }, correctAnswer: 'D' }
             ]
         },
         {
             id: 'passage-7-7-2',
-            text: `Jin-Hwa Grill
-Serving the finest Korean cuisine in northern California for over 30 years
-Come celebrate the reopening of our newly remodeled restaurant on Lakeside Drive! Purchase any two dinners and enjoy a complimentary appetizer platter during the entire month of May.
-Valid only at Jin-Hwa Grill, 4104 Lakeside Drive, Oakland, CA. Coupon does not apply to takeout orders. Visit www.jin-hwagrill.com for a list of all our locations, hours of operation, and menus.`,
+            text: `Questions 149-150 refer to the following advertisement.
+**JOIN THE RGBS AUTOMOTIVE TEAM**
+RGBS Automotive is (131)_______ hiring full-time and part-time workers. Apply today! (132)_______ could become part of our manufacturing team! We make high-tech products (133)_______ found in cars and trucks of all kinds.
+RGBS Automotive pays well, and we provide ongoing training plus opportunities for promotion. (134)_______. Go to www.rgbsautomotive.com for more details and to fill out an application.`,
             questions: [
-                { id: '149', questionText: 'How can people receive the benefit from the coupon?', options: { A: 'By placing a takeout order', B: 'By spending a minimum amount of money', C: 'By ordering two meals', D: 'By attending the opening day celebration' }, correctAnswer: 'C' },
-                { id: '150', questionText: 'What is mentioned about Jin-Hwa Grill?', options: { A: 'It is celebrating an anniversary.', B: 'It has more than one location.', C: 'It recently began serving Korean food.', D: 'It has expanded its hours of operation.' }, correctAnswer: 'B' }
+                { id: '149', questionText: 'What is suggested about RGBS Automotive?', options: { A: 'It is a large company.', B: 'It has more than one location.', C: 'It values employee development.', D: 'It has been in business for 45 years.' }, correctAnswer: 'C' },
+                { id: '150', questionText: 'How should a person apply for a job?', options: { A: 'By calling the personnel department', B: 'By visiting a factory', C: 'By completing an online form', D: 'By sending an e-mail to the marketing team' }, correctAnswer: 'C' }
             ]
         },
         {
             id: 'passage-7-7-3',
-            text: `To: Bindu Gil <bgil@opalmail.com>
-From: Neela Balay <n_balay@celebrate.com>
-Date: June 18
-Subject: Follow-up
-
-Dear Ms. Gil,
-Regarding our telephone conversation earlier today, here in writing is the change I would like to make to Saturday's delivery.
-I am requesting that you now deliver the flowers to the Grand Dining Room at the Kaltan Hotel instead of the Saji Banquet Hall. I apologize for this last-minute switch, but the banquet hall manager contacted me just last night to inform me about an electrical system malfunction that will require a weekend repair. Since the office party I am planning cannot be postponed, I have had to reserve this other venue.
-I would appreciate receiving the delivery by 4:00 P.M.
-
-Best regards,
-Neela Balay`,
+            text: `Questions 151-152 refer to the following article.
+**Dine at the Newly Opened Sunnyside Restaurant**
+The Sunnyside Restaurant, one of the city's newest and most unique dining establishments, is now open for business. Located in a former railway station, it boasts an elegant yet informal atmosphere. The new restaurant specializes in locally sourced foods. The extensive menu features traditional Malaysian dishes. According to local food critics, the dishes served at Sunnyside are a welcome addition to the city's dining scene. They give rave reviews to both the food and the service.
+The restaurant is located at 1572 Abermarle Road, next door to the city art museum. The hours are Monday-Saturday from 11 A.M. until 10 P.M. and Sunday from 1 P.M. until 9 P.M. Walk-in customers are always welcome, but reservations are recommended for parties of six or more.
+Visit our Web site at www.sunnysiderestaurant.com to view our menu.`,
             questions: [
-                { id: '151', questionText: 'Why did Ms. Balay send an e-mail to Ms. Gil?', options: { A: 'To reschedule a weekend business trip', B: 'To invite her to an office party', C: 'To request the services of an electrician', D: 'To confirm some spoken instructions' }, correctAnswer: 'D' },
-                { id: '152', questionText: 'What does Ms. Balay expect to receive on Saturday afternoon?', options: { A: 'Flowers', B: 'Tickets', C: 'A signed contract', D: 'An updated cost estimate' }, correctAnswer: 'A' }
+                { id: '151', questionText: 'What is stated about the Sunnyside Restaurant?', options: { A: 'It offers a buffet-style meal.', B: 'It used to be a historic building.', C: 'It has received negative reviews.', D: 'It is a small, quiet place.' }, correctAnswer: 'B' },
+                { id: '152', questionText: 'When is it suggested that customers make a reservation?', options: { A: 'When visiting on a weekday', B: 'When visiting on the weekend', C: 'When ordering meals for delivery', D: 'When dining in a large group' }, correctAnswer: 'D' }
             ]
         },
         {
             id: 'passage-7-7-4',
-            text: `Ae-Cha Kim (9:16 Α.Μ.)
-Good morning. I have an issue with an order I placed on the Winter Wear Web site.
-Kelvin Long (9:18 Α.Μ.)
-Good morning. How can I help you?
-Ae-Cha Kim (9:20 Α.Μ.)
-Well, I ordered some gloves two weeks ago, and they still haven't arrived.
-Kelvin Long (9:21 Α.Μ.)
-I'm sorry to hear that. Did you get an order number?
-Ae-Cha Kim (9:22 Α.Μ.)
-It's ADF193.
-Kelvin Long (9:23 Α.Μ.)
-Thanks.
-Kelvin Long (9:26 Α.Μ.)
-This is very unusual. The system is showing that the order was fulfilled. I'm not sure why it hasn't left the warehouse yet. I can have another pair of gloves sent to you with rush shipping, at no extra charge.
-Ae-Cha Kim (9:27 Α.Μ.)
-That would be great! Thanks!`,
+            text: `Questions 153-154 refer to the following text-message chain.
+**Elina Saar (9:15 A.M.)**
+Hi, everyone. I just sent an updated draft of our presentation to your e-mail accounts.
+**Anwar Hafiz (9:16 A.M.)**
+Great! I'm happy to give you my thoughts.
+**Peter Koslow (9:17 A.M.)**
+It looks like there are only minor adjustments to my section. Did you update the timeline to account for the construction work that's taking place?
+**Elina Saar (9:19 A.M.)**
+Yes, and I've also incorporated the images from the client and the comments from our director. We can finalize everything tomorrow. I will make a reservation for us to use the multimedia room at 10 A.M.`,
             questions: [
-                { id: '153', questionText: 'What problem does Ms. Kim have?', options: { A: 'She received the wrong order.', B: 'Her order has not arrived.', C: 'An item was damaged in transport.', D: 'An item is missing from her order.' }, correctAnswer: 'B' },
-                { id: '154', questionText: 'At 9:26 A.M., what does Mr. Long most likely mean when he writes, "This is very unusual"?', options: { A: 'He is frustrated by the slow computer system.', B: 'He is sorry about taking so long to answer Ms. Kim\'s question.', C: 'He is surprised about the warehouse issue.', D: 'He is confused about which style of gloves was ordered.' }, correctAnswer: 'C' }
+                { id: '153', questionText: 'Why did Ms. Saar send a text message?', options: { A: 'To check a schedule', B: 'To notify colleagues about a file', C: 'To confirm an appointment', D: 'To ask for suggestions' }, correctAnswer: 'B' },
+                { id: '154', questionText: 'What is suggested about the presentation?', options: { A: 'It is almost completed.', B: 'It has a very small budget.', C: 'The client is not happy with it.', D: 'The director does not like the images.' }, correctAnswer: 'A' }
             ]
         },
         {
             id: 'passage-7-7-5',
-            text: `To: Jessica Yu <jyu@myemail.com>
-From: Customer Service <cs@velascobank.com>
-Date: July 15
-Subject: Customer account security
-
-Dear Ms. Yu,
-For security reasons we need our customers to review their contact information with Velasco Bank every year. — [1] —. This year, the deadline to review your contact information is July 29. — [2] —. You may check your information on our Web site at www.velascobank.com, or you can do so on the Velasco Bank mobile app. Simply log in to your digital banking account, go to "Settings," and then go to "Contact." — [3] —. Review your phone number and e-mail address to make sure they are both up-to-date. Then select them as your primary contact methods. If you are not yet enrolled in digital banking, we recommend doing so online at www.velascobank.com/myaccount.
-— [4] —. If you have any questions, please visit any of our branches or call us at 410-555-0156 Monday through Friday, 7:00 A.M. to 5:00 Р.М.
-
-Thank you,
-Velasco Bank Customer Service`,
+            text: `Questions 155-157 refer to the following notice.
+**Bancroft Community Centre Bulletin**
+The new basketball court at the Bancroft Community Centre is complete and ready for use. — [1] —. The new facility will officially open on 11 July. A special grand-opening celebration is planned for that day at 10:00 A.M. and will feature a ribbon-cutting by the mayor of Bancroft, Samara Cole. In addition, the first 100 people who arrive for the opening will receive a complimentary T-shirt.
+— [2] —. A brief press conference with local journalists will take place after the ribbon-cutting.
+Beginning on 12 July, the court will be open to all Bancroft Community Centre members. Reservations for court time can be made in person or on our Web site. All reservations must be made at least 24 hours in advance. — [3] —. Members should check our Web site for more information. — [4] —.`,
             questions: [
-                { id: '155', questionText: 'What is the purpose of the e-mail?', options: { A: 'To inquire about an account closure', B: 'To inform customers of a change in banking hours', C: 'To ask a customer to confirm personal data', D: 'To provide information about a bank deposit' }, correctAnswer: 'C' },
-                { id: '156', questionText: 'According to the e-mail, what should a customer do to register for digital banking?', options: { A: "Go to the bank's Web site", B: 'Contact a customer service representative', C: 'Visit a local bank branch', D: 'Install a mobile app' }, correctAnswer: 'A' },
-                { id: '157', questionText: 'In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong?\n"This can be done in one of two ways."', options: { A: '[1]', B: '[2]', C: '[3]', D: '[4]' }, correctAnswer: 'B' }
+                { id: '155', questionText: 'What can be inferred about the new basketball court?', options: { A: 'It is located next to a community library.', B: 'It is a state-of-the-art facility.', C: 'It is not yet open to the public.', D: 'It is larger than the old court.' }, correctAnswer: 'C' },
+                { id: '156', questionText: 'What is indicated about the grand-opening celebration?', options: { A: 'It will take place at the city hall.', B: 'It is a free, public event.', C: 'It is open only to the first 100 arrivals.', D: 'It is scheduled to begin at noon.' }, correctAnswer: 'B' },
+                { id: '157', questionText: 'In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong?\n"Please contact us to report any cancellations."', options: { A: '[1]', B: '[2]', C: '[3]', D: '[4]' }, correctAnswer: 'D' }
             ]
         },
         {
             id: 'passage-7-7-6',
-            text: `Sumner Woodcrafting
-Sumner Woodcrafting of Memphis, Tennessee, was established nearly 45 years ago by Kiran Sumner, with the goal of providing personalized service to customers seeking high-quality, handmade furniture. Now semiretired, Mr. Sumner still takes orders and responds to questions himself through the company's customer-service telephone line at 901-555-0185 on Thursdays and Fridays. Sumner Woodcrafting offers a wide selection of custom-made bedroom sets, tables, desks, cabinetry, and more—all made from high-quality solid woods.
-Prices for handcrafted furniture are naturally higher than for furniture that is mass-produced in a factory. Because our master crafters do exceptionally fine work, our customers never regret spending a bit more for pieces built to last for generations.
-Note that it can take up to two months to create a piece of furniture once it is ordered. Delivery fees are based on distance from our workshop. Unpacking and placing the item is available for an additional $50.
-For photos of our workshop, artisan biographies, customer reviews, and ordering information, please visit us online at www.sumnerwoodcrafting.com.`,
+            text: `Questions 158-160 refer to the following Web page.
+**The Art Institute of Portland**
+www.aip.edu
+In addition to our degree programs, the Art Institute of Portland is pleased to offer a wide variety of public courses on a range of art topics.
+Our classes include drawing, painting, photography, sculpture, and design. You can learn from the best instructors in the business, and our low-cost classes are fun for students of all ages.
+On our Web site, you can view the complete schedule of courses and instructor biographies. You may sign up for a course online, but please be sure to do so at least five business days before the scheduled start date. We cannot offer a full refund for courses that are canceled less than 48 hours before the start of the course.`,
             questions: [
-                { id: '158', questionText: 'What is mentioned about Sumner Woodcrafting?', options: { A: 'Its prices are highly competitive.', B: 'It offers free delivery in Memphis.', C: 'Its founder handles telephone inquiries.', D: 'It allows customers to tour its workshop.' }, correctAnswer: 'C' },
-                { id: '159', questionText: 'The word “fine” in paragraph 2, line 2, is closest in meaning to', options: { A: 'small', B: 'sharp', C: 'skillful', D: 'agreeable' }, correctAnswer: 'C' },
-                { id: '160', questionText: "What is suggested about Sumner Woodcrafting's products?", options: { A: 'They are extremely long-lasting.', B: 'They contain both natural and human-made materials.', C: 'They often require assembly after delivery.', D: 'They are usually ordered for offices.' }, correctAnswer: 'A' }
+                { id: '158', questionText: 'For whom is the Web page most likely intended?', options: { A: 'University students', B: 'Job applicants', C: 'Professional artists', D: 'The general public' }, correctAnswer: 'D' },
+                { id: '159', questionText: 'What is NOT stated about the instructors?', options: { A: 'They have designed a unique program.', B: 'They are very popular with the public.', C: 'They are experienced.', D: 'Their biographies are available online.' }, correctAnswer: 'B' },
+                { id: '160', questionText: 'What is indicated about the registration process?', options: { A: 'Payment must be made online.', B: 'Students are encouraged to apply early.', C: 'Refunds will be made to all students who withdraw.', D: 'Students may apply for a scholarship.' }, correctAnswer: 'B' }
             ]
         },
         {
             id: 'passage-7-7-7',
-            text: `COLLINSVALE (28 March)—Over the last decade, instability in the pricing of raw materials has become the biggest concern for manufacturers. The issue now surpasses recruitment and technology, which had previously been ranked by businesses as the top two concerns respectively.
-The reasons are not difficult to understand. For electronics manufacturers, materials typically represent 20 percent of all expenses, while makers of processed food can spend anywhere between 40 and 60 percent on materials. Thus, even a 10 percent rise in the cost of sugar can dramatically affect a factory's bottom line. Companies that can predict rising costs may be able to temper the effects of market volatility, but even the best forecasting cannot anticipate every change in the marketplace.`,
+            text: `Questions 161-163 refer to the following text-message chain.
+**Julia Kovac (9:15 A.M.)**
+Good morning. Can either of you bring me a ladder? I am on the second floor of the new construction. I need to take pictures of the plumbing and electrical work.
+**Peter Zaleski (9:18 A.M.)**
+I'm at the north end of the construction site. It'll take me a while to get there. How about you, David?
+**David Dvorak (9:19 A.M.)**
+I'm on the third floor. Just stay where you are. I'll be there in a minute.
+**Julia Kovac (9:20 A.M.)**
+Great. Thanks.
+**David Dvorak (9:21 A.M.)**
+No problem. Don't forget that we have to check on the concrete that was poured earlier.
+**Julia Kovac (9:22 A.M.)**
+Will do.`,
             questions: [
-                { id: '161', questionText: 'What is the article mainly about?', options: { A: 'An improvement in manufacturing methods', B: 'A recent shift in consumer preferences', C: 'The introduction of environmental regulations', D: 'The changes in costs faced by producers' }, correctAnswer: 'D' },
-                { id: '162', questionText: 'Why does the writer mention electronics manufacturers?', options: { A: 'To illustrate innovation over ten years', B: 'To show the impact of global trade', C: 'To explain recent staffing difficulties', D: 'To make a comparison between industries' }, correctAnswer: 'D' },
-                { id: '163', questionText: 'The word "temper" in paragraph 2, line 9, is closest in meaning to', options: { A: 'set', B: 'toughen', C: 'moderate', D: 'combine' }, correctAnswer: 'C' }
+                { id: '161', questionText: 'What does Ms. Kovac want a ladder for?', options: { A: 'To hang some electrical wires', B: 'To reach the top of a roof', C: 'To photograph some work', D: 'To store some tools' }, correctAnswer: 'C' },
+                { id: '162', questionText: 'At 9:22 A.M., what does Ms. Kovac most likely mean when she writes, "Will do"?', options: { A: 'She will wait in the lobby.', B: 'She will inspect some equipment.', C: 'She will order some materials.', D: 'She will return a phone call.' }, correctAnswer: 'B' },
+                { id: '163', questionText: 'Who will help Ms. Kovac?', options: { A: 'Mr. Zaleski', B: 'Mr. Dvorak', C: 'Mr. Dvorak and Mr. Zaleski', D: 'A new employee' }, correctAnswer: 'B' }
             ]
         },
         {
             id: 'passage-7-7-8',
-            text: `The Lowenstein Bookstore in Mission Bay invites you to this month's book discussion featuring author Hilda Flores. The event will be held on Thursday, April 10, from 7:00 P.M. to 8:30P.M. Ms. Flores will talk about her new novel, Grinding the Gears. — [1] —. The latest adventure in the popular Inspector Svensson series, Grinding the Gears finds the beloved inspector investigating strange equipment malfunctions at a national physics research laboratory. — [2] —.
-Ms. Flores will discuss the background research she performed while writing the book. — [3] —. A question and answer session will follow the presentation. The event is free for all to attend. — [4] —. The bookstore requires that attendees register at least one day in advance.`,
+            text: `Questions 164-167 refer to the following e-mail.
+To: All Employees
+From: Management
+Subject: Energy
+Date: March 1
+
+Dear Staff,
+The Environmental Health and Safety Committee has requested your help in conserving energy. The committee recently conducted a walkthrough inspection of all offices and found that many employees are not in compliance with our company energy-conservation guidelines. — [1] —. Please take the time to review the policies listed in the attachment.
+Energy conservation is vital for our company's success. — [2] —. A great deal of money is wasted each year because of inefficient energy usage. For example, leaving on lights at night and weekends costs us thousands of dollars a year. Last month, our building had a total energy bill of $23,450. The cost was $22,875 in the same month last year. We are hoping to reduce our energy consumption by at least 15 percent by the end of the year. — [3] —.
+To reward your efforts, we will hold a special prize drawing when we have achieved this goal. We will update you regularly on our progress. — [4] —.
+Thank you.`,
             questions: [
-                { id: '164', questionText: 'What is being announced?', options: { A: 'The opening of a new bookstore', B: 'A presentation by a book author', C: 'A book describing a research project', D: 'An upcoming movie based on a book' }, correctAnswer: 'B' },
-                { id: '165', questionText: 'What type of book is Grinding the Gears?', options: { A: 'A nonfiction story', B: 'A biography of a scientist', C: 'A collection of short stories', D: 'A mystery novel' }, correctAnswer: 'D' },
-                { id: '166', questionText: 'What is indicated about registration?', options: { A: 'It closes on April 9.', B: 'It requires payment of a fee.', C: 'It is optional but encouraged.', D: 'It cannot be completed online.' }, correctAnswer: 'A' },
-                { id: '167', questionText: 'In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong?\n"Part of her fact-finding involved interviewing government scientists."', options: { A: '[1]', B: '[2]', C: '[3]', D: '[4]' }, correctAnswer: 'C' }
+                { id: '164', questionText: 'What is the purpose of the e-mail?', options: { A: 'To thank employees for their conservation efforts', B: 'To ask for suggestions for improving energy conservation', C: 'To let employees know about some policy violations', D: 'To explain the reason for some new energy policies' }, correctAnswer: 'C' },
+                { id: '165', questionText: 'In the e-mail, what is suggested about the company?', options: { A: 'It spent more money on energy last month than in the same month last year.', B: 'It has been successful in getting employees to conserve energy.', C: 'It has been recognized for its energy conservation program.', D: 'It has had the same energy policy for a number of years.' }, correctAnswer: 'A' },
+                { id: '166', questionText: 'What will happen when the goal is reached?', options: { A: 'A raffle will be held.', B: 'There will be a cash bonus.', C: 'There will be a company party.', D: 'A special announcement will be made.' }, correctAnswer: 'A' },
+                { id: '167', questionText: 'In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong?\n"Let\'s hope it is soon!"', options: { A: '[1]', B: '[2]', C: '[3]', D: '[4]' }, correctAnswer: 'D' }
             ]
         },
         {
             id: 'passage-7-7-9',
-            text: `To: Customer Service <customerservice@kishintech.com>
-From: Dmytro Petrov <d.petrov@silkmail.com>
-Date: November 5
-Subject: Assistance with Kishin XT20 digital recorder
-
-To Whom It May Concern:
-I purchased the Kishin XT20 digital recorder to record several days' worth of conference presentations. Now, after my first day at the event, I am trying to transfer the audio files to my laptop, but I am not having any luck. I have followed all the instructions in the user manual as well as the tips found in the FAQ section of the product's Web page. I have even tried alternative cords and the laptops in the hotel's business center, so I do not believe computer hardware to be the issue.
-I am supposed to cover the remaining two days of this conference for work. My business partners expect me to return with as much information as I can. The Kishin XT20 digital recorder is of no use to me if I cannot properly share the files. Can you please help?
-
-Best regards,
-Dmytro Petrov`,
+            text: `Questions 168-171 refer to the following article.
+**International Trade in the Twenty-First Century**
+The international trade landscape is constantly changing, so it can be difficult for a company to remain successful. A business must have a good product, smart pricing, and a strong plan for marketing and distribution. But the most valuable asset is information. Companies must know how to obtain accurate and relevant information about the business climate and to analyze that information effectively. For example, knowing the details of free trade agreements can lead to substantial financial benefits. It's often the case that an agreement between two countries will have an effect on a third country's business prospects.
+For those who are not prepared to hire a staff of trade analysts, the Journal of International Trade and Commerce is a valuable tool. The publication, available online or in print, has recently expanded its coverage to include articles on a broad range of topics. A team of experts offers weekly summaries of key trends in international markets.`,
             questions: [
-                { id: '168', questionText: 'What problem does Mr. Petrov have with his device?', options: { A: 'He cannot move audio files to his computer.', B: 'He dislikes its appearance.', C: 'He is unable to rename the files.', D: 'He is unsatisfied with the sound quality.' }, correctAnswer: 'A' },
-                { id: '169', questionText: 'Why does Mr. Petrov mention a Web page?', options: { A: 'To suggest that an image is misleading', B: 'To explain that he obtained additional information', C: 'To recommend changing a product description', D: 'To inquire about compatible accessories' }, correctAnswer: 'B' },
-                { id: '170', questionText: 'The word "cover" in paragraph 2, line 1, is closest in meaning to', options: { A: 'protect', B: 'contain', C: 'extend over', D: 'report on' }, correctAnswer: 'D' },
-                { id: '171', questionText: 'What is true about Mr. Petrov?', options: { A: 'He volunteered to try some equipment.', B: 'He is currently traveling with his business partners.', C: 'He will share conference material with his colleagues.', D: 'He will soon receive a new laptop from his company.' }, correctAnswer: 'C' }
+                { id: '168', questionText: 'What is the article mainly about?', options: { A: 'The need for businesses to have good information', B: 'The increase in free trade agreements', C: 'The number of trade agreements', D: 'The value of business information' }, correctAnswer: 'A' },
+                { id: '169', questionText: 'The word "prospects” in paragraph 1, line 7, is closest in meaning to', options: { A: 'views', B: 'outlooks', C: 'customers', D: 'investors' }, correctAnswer: 'B' },
+                { id: '170', questionText: 'What is stated about the Journal of International Trade and Commerce?', options: { A: 'It is intended for an international readership.', B: 'It is a business with branches around the world.', C: 'It has a limited readership.', D: 'It has more writers now than in the past.' }, correctAnswer: 'A' },
+                { id: '171', questionText: 'According to the article, what is NOT an important factor in business success?', options: { A: 'Marketing', B: 'Product', C: 'Pricing', D: 'Government' }, correctAnswer: 'D' }
             ]
         },
         {
             id: 'passage-7-7-10',
-            text: `Kristin Burton (8:16 Α.Μ.): This is my first time posting on this small-business forum. Has anyone here experienced problems when ordering one of Atlara's credit card readers?
-Marcos Menke (9:04 A.M.): Are you referring to the little unit that attaches to your mobile phone or the larger, stand-alone tablet model?
-Kristin Burton (9:30 Α.Μ.): The phone unit. I started an online shop using the Atlara Web hosting service and added pictures of the necklaces and rings I create. But most of my sales are still in person. So I just need a way to accept in-person payments when I'm out at fairs or markets.
-Marcos Menke (10:19 A.Μ.): Just go to www.atlara.com/pos/hardware and add what you want to your cart.
-Kristin Burton (11:21 Α.Μ.): That's the problem. The system won't let me order it. I get the error message "Your account cannot be verified."
-Suzanne Shroer (11:42 A.Μ.): I think I know. You have to upload scans of your business registration, a government photo ID, and a statement from your business bank account.
-Kristin Burton (12:23 P.Μ.): I already did all that, and I still got the error message.
-Suzanne Shroer (12:33 P.M.): If that is the case, try logging back in and following the process again.
-Cindy Acosta (1:05 P.M.): You probably need to call the support line. I found them to be very helpful with my issues a few months ago.
-Kristin Burton (1:10 P.Μ.): I've spoken with three people already.`,
+            text: `Questions 172-175 refer to the following online chat discussion.
+**Elias Lindholm [1:15 P.M.]**
+Hi, everyone. I need some volunteers to assist me in setting up for our annual product showcase next Friday.
+**Zola Adebayo [1:16 P.M.]**
+I can help. What time will you need me?
+**Elias Lindholm [1:17 P.M.]**
+I will be at the showroom from 10 A.M. until the early evening. Any help at all would be appreciated.
+**Zola Adebayo [1:19 P.M.]**
+I will be there as soon as I can. I have a 10 o'clock appointment at the dentist's, but it's just a routine checkup, so I should not be there for long.
+**Elias Lindholm [1:20 P.M.]**
+Thank you!
+**Elias Lindholm [1:22 P.M.]**
+The tables and chairs are all in place. I just need help putting out the tablecloths and arranging the centerpieces.
+**Zola Adebayo [1:23 P.M.]**
+Sounds easy.
+**Tomasz Rosicky [1:24 P.M.]**
+I can come by after my 11 o'clock meeting, if you still need a hand.
+**Elias Lindholm [1:25 P.M.]**
+That would be great! Thanks, Tomasz! I appreciate your help. I will see both of you next Friday.`,
             questions: [
-                { id: '172', questionText: 'What does Mr. Menke ask Ms. Burton to clarify?', options: { A: 'The type of device she is trying to buy', B: 'The experience she had with a Web site', C: 'The way she charges her mobile phone', D: 'The amount she was charged for a service' }, correctAnswer: 'A' },
-                { id: '173', questionText: 'What does Ms. Burton sell?', options: { A: 'Art supplies', B: 'Board games', C: 'Jewelry', D: 'Furniture' }, correctAnswer: 'C' },
-                { id: '174', questionText: 'What does Ms. Shroer suggest?', options: { A: 'Filling out a service request', B: "Adjusting a card reader's settings", C: 'Submitting some documentation', D: 'Creating a separate business account' }, correctAnswer: 'C' },
-                { id: '175', questionText: 'At 1:10 P.M., what does Ms. Burton most likely mean when she writes, "I\'ve spoken with three people already"?', options: { A: "She is impressed with a company's response.", B: 'She has previously called the support line.', C: 'She has thoroughly researched some specifications.', D: 'She has confirmed that the product was shipped.' }, correctAnswer: 'B' }
+                { id: '172', questionText: "Why is Mr. Lindholm looking for help?", options: { A: 'He has an appointment.', B: 'He is hosting a training session.', C: 'He is organizing an event.', D: 'He is moving to a new office.' }, correctAnswer: 'C' },
+                { id: '173', questionText: 'At 1:19 P.M., what does Ms. Adebayo mean when she writes, "I will be there as soon as I can"?', options: { A: 'She has to arrange a display.', B: 'She needs to speak to Mr. Lindholm.', C: 'She is available to help at a certain time.', D: 'She will be leaving the office for the rest of the day.' }, correctAnswer: 'C' },
+                { id: '174', questionText: "What does Mr. Lindholm's work NOT involve?", options: { A: 'Moving some chairs', B: 'Covering some tables', C: 'Arranging some flowers', D: 'Greeting some guests' }, correctAnswer: 'D' },
+                { id: '175', questionText: 'What is suggested about the product showcase?', options: { A: 'It is a small event.', B: 'It will feature live music.', C: 'It is still several days away.', D: 'It will take place at a restaurant.' }, correctAnswer: 'C' }
             ]
         },
         {
             id: 'passage-7-7-11',
-            text: `**Web page from https://www.sunnywelcomehotel.co.in**
-At the Sunny Welcome Hotel in Kolkata, we work hard to ensure that you enjoy your stay. Please note:
-• Each room has a coffeemaker and complimentary coffee and tea. Guests may purchase snacks and other beverages in the vending areas located on each floor.
-• Guests with small children may request a rollaway bed or crib for their rooms for no additional charge.
-• The business center is open from 9:00 A.M. to 5:00 P.M. each day.
-• The swimming pool and children's playground are open during daylight hours. Children must always be supervised by an adult.
-• A deposit is necessary to guarantee a room reservation. The deposit will only be refunded if the reservation is cancelled or changed more than 24 hours prior to arrival.
-• Guests may check in as early as 2:00 P.M. Checkout after noon on the day of departure is subject to an additional charge.
-• Guests are required to present a passport or driver's license at the time of check-in.
-• We offer free shuttle service to the airport. Guests can make arrangements at the front desk.
-• Our reception desk is staffed 24 hours a day.
+            text: `Questions 176-180 refer to the following press release and Web page.
+**FOR IMMEDIATE RELEASE**
+**Contact:** Martin Gorski, pressliaison@riverlandrealty.com
+RIVERLAND (15 July)—Riverland Realty announced yesterday that it had completed the sale of the former Riverland Paper Mill to ZYP Design House for an undisclosed amount. The building is located in a historic riverfront district. The mill, which has been empty for five years, was previously owned by the city of Riverland.
 
----
+"We look forward to opening a new store that will serve the community and attract customers from outside of the Riverland area as well," said ZYP Design House's CEO, Zola Yusof. "Our architects are in the process of drafting a new design that will convert the former factory into a modern retail space while preserving the historical elements that make it special." According to Ms. Yusof, the work will begin next month.
 
-**E-mail**
-To: generalmanager@sunnywelcomehotel.co.in
-From: samuelramon@myemail.co.uk
-Date: 13 May
-Subject: Reservation number EX52417
-Hello,
-My family and I were very comfortable in the family suite at the Sunny Welcome Hotel in Kolkata last year, and we were looking forward to returning this year for a week starting on 17 April. Unfortunately, we suddenly had to postpone our trip until June, so I called the hotel on the morning of 17 April to change our reservation dates. I thought everything was in order, but when I opened my credit card statement this month, I discovered an additional charge from the Sunny Welcome Hotel.
-Could you please look into the matter? I believe that an error has been made and that I should be reimbursed. I would appreciate having the money credited to my account. We still plan to return to Kolkata later this year and anticipate an enjoyable stay at your hotel.
-Yours sincerely,
-Samuel Ramon`,
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
+**ZYP Design House: A River of Style**
+**HOME - OUR STORY - PRODUCTS**
+Founded in 2012 by Zola Yusof, ZYP Design House is a collective of artisans from across the nation. ZYP Design House specializes in high-quality handmade home furnishings. In addition, all of our products are eco-friendly and produced with a commitment to sustainable living.
+**Product Gallery:**
+- Rugs and tapestries
+- Blankets and quilts
+- Soaps and candles
+- Hand-carved wooden furniture
+- Dishware
+**Come see us!**
+- Riverland, 120 Front Street (Opening in November)
+- Southside, 1980 Oak Street`,
             questions: [
-                { id: '176', questionText: 'According to the Web page, what are hotel guests asked to provide at check-in?', options: { A: 'A home address', B: 'Payment in advance', C: 'Proof of identification', D: 'A confirmation number' }, correctAnswer: 'C' },
-                { id: '177', questionText: 'What is NOT included with a stay at the Sunny Welcome Hotel?', options: { A: 'Hot beverages', B: 'A light breakfast', C: 'Airport shuttle service', D: 'Use of a swimming pool' }, correctAnswer: 'B' },
-                { id: '178', questionText: 'What does Mr. Ramon indicate in his e-mail?', options: { A: 'He usually travels alone.', B: 'He has family living in Kolkata.', C: 'He is planning to move to Kolkata.', D: 'He has stayed at the Sunny Welcome Hotel before.' }, correctAnswer: 'D' },
-                { id: '179', questionText: 'Why most likely was Mr. Ramon charged a fee by the Sunny Welcome Hotel?', options: { A: 'He canceled a reservation less than a day before arrival.', B: 'He requested a rollaway bed for his room.', C: 'He checked out of his room after midday.', D: 'He reserved a work space in the business center.' }, correctAnswer: 'A' },
-                { id: '180', questionText: 'What does Mr. Ramon request?', options: { A: 'A credit to his account', B: 'A discount on a future hotel stay', C: 'A room upgrade to a family suite', D: 'An extension of a hotel stay' }, correctAnswer: 'A' }
+                { id: '176', questionText: 'Who most likely is Mr. Gorski?', options: { A: 'A company owner', B: 'A journalist', C: 'A city official', D: 'A public relations agent' }, correctAnswer: 'D' },
+                { id: '177', questionText: 'According to the press release, what is indicated about the city of Riverland?', options: { A: 'It is known for its paper mills.', B: 'It owned the Riverland Paper Mill.', C: "It is close to a large body of water.", D: 'It will expand its riverfront district.' }, correctAnswer: 'B' },
+                { id: '178', questionText: 'In the press release, the word "preserve” in paragraph 2, line 4, is closest in meaning to', options: { A: 'maintain', B: 'finance', C: 'observe', D: 'promote' }, correctAnswer: 'A' },
+                { id: '179', questionText: "What does Ms. Yusof's company sell?", options: { A: 'Antique rugs', B: 'Blankets', C: 'Vintage posters', D: 'Children\'s books' }, correctAnswer: 'B' },
+                { id: '180', questionText: 'What is suggested about the new ZYP Design House store?', options: { A: 'It will not be the first ZYP Design House store.', B: "It will be Ms. Yusof's largest store.", C: 'It will feature a special sale for local customers.', D: 'It will sell building supplies to customers.' }, correctAnswer: 'A' }
             ]
         },
         {
             id: 'passage-7-7-12',
-            text: `**E-mail from Dexter Abbott to Nina Sosa**
-Date: 20 August
-Subject: Next steps
-Dear Ms. Sosa,
-I have good news. The plans for the layout of the new Fountain Road office building have just been approved by Lanfei Chan at our corporate office. We now need to start thinking about the artwork for the main open-plan office area on the third floor of the building. This is one of our last tasks before the office opens in October.
-I have heard that Red Starling Art has a good reputation for helping with office interiors. Could you look at the company's Web site today and find out if any of its services might be suitable for us? I am wondering whether photography or paintings would look best in the space. What do you think? I am still waiting to hear back from Maxwell Willis in Finance about the budget for art, so please do not agree to anything with Red Starling Art until we know more.
-Thank you,
-Dexter Abbott, Facilities Manager, KLX Accountancy
-
+            text: `Questions 181-185 refer to the following notice and e-mail.
+**NOTICE**
+Next month, the employee café at the Corwin Business Center will be closed for a major renovation. — [1] —. The café will be closed from Monday, June 3 until Friday, June 14. We expect the facility to reopen on Monday, June 17, with a new menu, new hours, and an expanded seating area. The newly enlarged café will be able to accommodate up to 100 diners.
+During the renovation, temporary food services will be available in the West Conference Room. — [2] —. Food trucks will also be on-site from 11:30 A.M. to 2:00 P.M., Monday through Friday. — [3] —. The trucks will be in a new location this year, on the north side of the parking lot next to the building. We apologize for the inconvenience and hope you enjoy the updated space! — [4] —.
 ---
+To: All Corwin Business Center Tenants
+From: Mark Sayer, Building Manager
+Date: June 3
+Subject: Café renovation
 
-**Web page from https://www.redstarlingart.co.uk/offices/**
-Red Starling Art offers a range of consultancy services for office buildings:
-• **Remake:** For clients who want a complete redesign of the interior of their office, we work with you to create a layout and decoration scheme that meets your needs.
-• **Align:** For clients looking to incorporate artwork into a new office, we help you find the right pieces (paintings, photographs, prints, or sculptures) for your space.
-• **Connect:** For clients who want to add a local touch to their offices, we collaborate with area artists and photographers to bring their unique perspective to you.
-• **Reframe:** For clients who want to update but keep their existing artwork, we suggest new framing, new lighting, or new arrangements for a fresh look.
-Our work is always tailored to the specific needs of our clients, so we cannot provide fixed prices. Please e-mail Birgit Lowenbruck at blowenbruck@redstarlingart.co.uk to book a free consultation. After the consultation, she will provide you with an estimate for the agreed-upon services.`,
+Dear Corwin Business Center Tenants,
+This is to inform you that we ran into a small problem with the café renovation. The new furniture that was scheduled to arrive today has been delayed because of a problem with our supplier. We will be receiving only some of the items this week. We have pushed back our reopening date to Thursday, June 20.`,
             questions: [
-                { id: '181', questionText: 'What is suggested about the Fountain Road office building?', options: { A: 'It opened last October.', B: 'It is the corporate headquarters of KLX Accountancy.', C: 'It has more than one floor.', D: 'It has a conference center.' }, correctAnswer: 'C' },
-                { id: '182', questionText: 'In the e-mail, what does Mr. Abbott ask Ms. Sosa to do?', options: { A: 'Finish a task she started last week', B: 'Approve plans for the layout of an office', C: 'Agree to a price for purchasing artwork', D: 'Research interior design options online' }, correctAnswer: 'D' },
-                { id: '183', questionText: 'Who is responsible for the budget for artwork?', options: { A: 'Mr. Abbott', B: 'Ms. Chan', C: 'Mr. Willis', D: 'Ms. Sosa' }, correctAnswer: 'C' },
-                { id: '184', questionText: 'What Red Starling Art service would be most suitable for the Fountain Road office building?', options: { A: 'Remake', B: 'Align', C: 'Connect', D: 'Reframe' }, correctAnswer: 'B' },
-                { id: '185', questionText: "How can someone learn the cost of Red Starling Art's services?", options: { A: 'By submitting information through the Contact Us page', B: 'By going to a Web page with cost information', C: 'By submitting a document to Ms. Lowenbruck', D: 'By attending a consultation with Ms. Lowenbruck' }, correctAnswer: 'D' }
+                { id: '181', questionText: 'According to the notice, what is NOT a planned change for the employee café?', options: { A: 'An increase in menu options', B: 'Longer hours of operation', C: 'An expanded seating area', D: 'The availability of to-go boxes' }, correctAnswer: 'D' },
+                { id: '182', questionText: 'What does the notice say about the food trucks?', options: { A: 'They will require payment in cash only.', B: 'They will be located by the parking lot.', C: 'They will be available seven days a week.', D: 'They will offer a range of vegetarian options.' }, correctAnswer: 'B' },
+                { id: '183', questionText: "According to the e-mail, what is the problem with the renovation?", options: { A: 'The project went over budget.', B: 'A shipment has been delayed.', C: 'The menu has not been completed.', D: 'A contractor is understaffed.' }, correctAnswer: 'B' },
+                { id: '184', questionText: 'When is the employee café now scheduled to reopen?', options: { A: 'On June 14', B: 'On June 17', C: 'On June 20', D: 'On June 21' }, correctAnswer: 'C' },
+                { id: '185', questionText: 'In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong?\n"There will be a limited selection of cold food items available there for purchase."', options: { A: '[1]', B: '[2]', C: '[3]', D: '[4]' }, correctAnswer: 'B' }
             ]
         },
         {
             id: 'passage-7-7-13',
-            text: `**E-mail to Jenna Dixon**
-From: Judith Hathaway, Human Resources
-Date: April 28
-Subject: Employee survey responses
-Dear Ms. Dixon,
-I read through all the responses to the semiannual employee survey, and I want to highlight a few points that were repeatedly raised. We can use this list of suggestions to help determine our priorities.
-Suggestion 1. A more flexible policy for working from home
-Suggestion 2. An expanded in-office recycling strategy
-Suggestion 3. More financial rewards for excellent work
-Suggestion 4. More opportunities for technical training
-Also, if you approve, I would like to simplify the survey form before we administer it again. The open-ended questions make the data difficult to analyze. I propose incorporating more yes-no questions or rating scales to determine how much a colleague agrees or disagrees with a statement.
-
+            text: `Questions 186-190 refer to the following review, letter, and invoice.
+**Tillington Hotel Customer Feedback**
+How would you rate your stay at the Tillington Hotel? ★★★★☆
+Comment: We recently spent the weekend at the Tillington Hotel. It was our third visit in as many years. Overall, it was a very nice stay. However, a few of the television channels we used to receive were no longer available. Also, we noticed that our room had been recently painted, but the new paint had a very strong odor.
+Name: Ryo Watanabe | Hometown: Nagoya | Date of stay: March 15-17
 ---
+**Tillington Hotel, 8295 West Avenue, Bristol, VA 24201**
+March 19
+Ryo Watanabe, 12-2, Sakae, Nagoya, Aichi Prefecture 460-0008, Japan
 
-**MEMO 1**
-To: All Staff
-From: Jenna Dixon, General Manager
-Date: May 8
-Subject: Volunteers needed
-I am seeking volunteers to form a committee that will launch an office recycling program. Having such a program was one of the most frequently identified needs mentioned on the recent employee survey. This program will prevent recyclables, including plastics, glass, metal, paper, and cardboard, from ending up in landfills.
-Also, we need a volunteer to be the coordinator of this committee. I will be happy to meet with this coordinator to discuss first steps. Note that time spent on coordination tasks would be in addition to your regular work duties. A small amount of funds will be made available to be spent on program setup costs.
-
+Dear Mr. Watanabe,
+Thank you for providing us with feedback about your recent stay. We are happy that you had an enjoyable experience, and we have addressed the concerns you mentioned. We have switched our television service provider and now offer an expanded selection of channels. We have also installed air purifiers in all our rooms. Enclosed is a voucher for two free nights to be used on your next stay.
+Sincerely,
+Nora Davies, General Manager
 ---
-
-**MEMO 2**
-To: All Staff
-From: Mohammad Asghari
-Date: June 13
-Subject: Bins are here
-As chairperson of the In-office Recycling Committee, I am happy to report that we now have recycling bins in the kitchen for glass bottles, soda cans, and cardboard and paper. It took us some time to get this program started because finding containers narrow enough to squeeze three between the door and the refrigerator proved challenging. But I was finally able to purchase some.
-Please note that the recycling facility we are working with has stringent guidelines on what they accept, so I am creating illustrated instructions to hang above each bin. Those will be up tomorrow, and committee members will be monitoring our collection system to make sure the program is going smoothly. Please contact me with any questions, concerns, or feedback.`,
+**Tillington Hotel, 8295 West Avenue, Bristol, VA 24201**
+**Guest:** Ryo Watanabe
+**Address:** 12-2, Sakae, Nagoya, Aichi Prefecture 460-0008, Japan
+**Check-in:** March 15 | **Check-out:** March 17
+| Description | Amount |
+|---|---|
+| Double Room, 2 nights at $149 per night | $298.00 |
+| Taxes | $24.00 |
+| **TOTAL** | **$322.00** |
+**Paid in full with credit card ending in 7750**`,
             questions: [
-                { id: '186', questionText: 'In the e-mail, how does Ms. Hathaway suggest improving future surveys?', options: { A: 'By changing the format of some questions', B: 'By collecting the responses anonymously', C: 'By conducting them more frequently', D: 'By using specialized software' }, correctAnswer: 'A' },
-                { id: '187', questionText: 'What suggestion from the survey results is Ms. Dixon acting on?', options: { A: 'Suggestion 1', B: 'Suggestion 2', C: 'Suggestion 3', D: 'Suggestion 4' }, correctAnswer: 'B' },
-                { id: '188', questionText: 'According to Mr. Asghari, why was a new program delayed?', options: { A: 'Some orders took a long time to be processed.', B: 'Some equipment needed to be moved.', C: 'A coordinator needed to approve it.', D: 'A room had space limitations.' }, correctAnswer: 'D' },
-                { id: '189', questionText: 'What is suggested about Mr. Asghari?', options: { A: 'He has led a training series on recycling.', B: "He paid for some items using the company's money.", C: 'He meets with Ms. Dixon on a weekly basis.', D: 'He was acknowledged in a company newsletter.' }, correctAnswer: 'B' },
-                { id: '190', questionText: 'What is Mr. Asghari planning to do?', options: { A: 'Recruit volunteers', B: 'Contact suppliers', C: 'Display signs', D: 'Take inventory' }, correctAnswer: 'C' }
+                { id: '186', questionText: 'What does the review suggest about Mr. Watanabe?', options: { A: 'He is visiting Bristol on business.', B: 'He has stayed at the hotel before.', C: 'He has visited hotels around the world.', D: 'He has special dietary needs.' }, correctAnswer: 'B' },
+                { id: '187', questionText: 'Why did Ms. Davies write the letter?', options: { A: 'To describe some recent improvements', B: 'To announce an upcoming renovation', C: 'To request more information', D: 'To respond to a job inquiry' }, correctAnswer: 'A' },
+                { id: '188', questionText: 'What is NOT mentioned about Mr. Watanabe in the documents?', options: { A: 'Where he lives', B: 'When he stayed at the hotel', C: 'What he does for a living', D: 'How he paid for his hotel stay' }, correctAnswer: 'C' },
+                { id: '189', questionText: 'What problem did the hotel NOT address?', options: { A: 'A limited number of television channels', B: 'A strong paint smell', C: 'The high cost of some of the rooms', D: 'The noise level of the air conditioners' }, correctAnswer: 'D' },
+                { id: '190', questionText: 'What did Ms. Davies offer Mr. Watanabe?', options: { A: 'A complimentary meal', B: 'A discount on a future stay', C: 'A full refund', D: 'Two free nights at the hotel' }, correctAnswer: 'D' }
             ]
         },
         {
             id: 'passage-7-7-14',
-            text: `**Job Advertisement**
-Kooper's Vision is seeking an optician for its eyewear department. Must have a valid Massachusetts optician license and at least three years of relevant experience. The position requires excellent customer service skills and a strong awareness of current fashion trends in the industry. Responsibilities include helping clients choose frames, ordering eyeglasses, and filing insurance claims.
-This full-time position is available at Kooper's Vision at Danvers Mall. Contact store manager Tanisha Mosley at 978-555-0101. Must be available to start during the last week of August.
-
+            text: `Questions 191-195 refer to the following e-mail, article, and meeting minutes.
+To: Charles Benoit, cb@citycouncil.org
+From: Anna Schmidt, as@riversideassociation.org
+Date: March 11
+Subject: Riverside Park playground
+Dear Mr. Benoit,
+It was a pleasure to meet with you last week. On behalf of the Riverside Association, I want to thank you for agreeing to present our playground renovation proposal to the city council. The current playground equipment is old and worn out, and we are also hoping to build a picnic area and plant more trees in that area. We look forward to hearing from you again after the city council has a chance to vote on the proposal.
+Sincerely,
+Anna Schmidt
 ---
-
-**Web page from https://www.koopersvision.com**
-Kooper's Vision at Danvers Mall
-Hours: Monday-Friday 10 A.M.-7 P.M., Saturday 10 A.M.-6 P.M., Sunday 10 A.M.-4 P.M.
-During the month of August, enjoy 50% off the second pair of eyeglasses.
-Kooper's Vision is your local optical center for all your eye-care needs in Danvers, Massachusetts. We are located on the upper level of the Danvers Mall next to Eight Days Sporting Goods. Call 978-555-0101 today to schedule your annual eye exam. Exams by appointment only.
-
+**CITY COUNCIL HIGHLIGHTS**
+March 29—In a stunning move, the city council voted 10-2 to reject the Riverside Association's proposal to renovate the Riverside Park playground. After the Riverside Association's Anna Schmidt introduced the proposal, Councilman Charles Benoit urged the council to reject the proposal, which he called "fiscally irresponsible". "The cost is just too high," Mr. Benoit said. "There are too many other projects in our city that have a more urgent need for funds." He noted that the police department's request for additional funds to purchase body cameras for all police officers would be a better use of taxpayer money. Councilman Benoit, however, does not oppose all park improvements. He supports the Riverside Association's plans to build a picnic area and plant more trees and suggested that those projects would likely win council approval if they were submitted as separate proposals. He does oppose installing any new playground equipment in Riverside Park. The council will next consider the police department's funding request at its meeting on April 12.
 ---
-
-**Review from Optical Centers Reviews**
-Rating: 5 stars ★★★★★
-I have been wearing eyeglasses since I was ten years old. I now have five children, and four of them wear glasses, so I have visited many opticians over the years. My recent visit to Kooper's Vision on August 31 was, by far, the best.
-Ms. Palmer offered her help when she saw that I was overwhelmed by the eyeglass selection at Kooper's Vision. She looked at the shape of my face and steered me toward a few pairs of glasses that were perfect for me! She knew exactly what looked best on me and advised me about the size, color, quality, and cost of the frames I considered. Ms. Palmer also explained the different types of lenses and lens coatings available. I could not decide which was my favorite pair of eyeglasses, so I bought two pairs! I was incredulous when she told me it was her first day working at the store—she was the best optician I have ever had!
-- Melvin Drake`,
+**Riverside Association Meeting Minutes**
+April 20—The board of directors discussed the city council's decision to reject the Riverside Association's proposal to renovate the Riverside Park playground. Ms. Schmidt suggested that the Riverside Association should hold a fund-raiser to raise the money to purchase new playground equipment. She pointed out that there is still some funding available from a grant awarded to the association last year and that the association can try to apply for more grant funding. The board voted unanimously to move forward with the fund-raising campaign, with the goal of raising $10,000.`,
             questions: [
-                { id: '191', questionText: 'According to the job advertisement, what is true about the open position?', options: { A: 'It comes with health insurance.', B: 'It starts at the end of August.', C: 'It includes a fashionable company uniform.', D: 'It requires that candidates work on a team.' }, correctAnswer: 'B' },
-                { id: '192', questionText: "What is indicated about Kooper's Vision on the Web page?", options: { A: 'It stays open later on Saturday.', B: 'It is located on the lower level of a mall.', C: 'It offers a selection of sports eyeglasses.', D: 'It requires an appointment for an eye exam.' }, correctAnswer: 'D' },
-                { id: '193', questionText: 'What is most likely true about Ms. Palmer?', options: { A: 'She works with Ms. Mosley.', B: 'She previously worked at a fashion shop.', C: 'She earned an optician license two years ago.', D: "She is the new owner of Kooper's Vision." }, correctAnswer: 'A' },
-                { id: '194', questionText: 'According to the review, how did Ms. Palmer help Mr. Drake?', options: { A: 'By recommending frames that fit his face', B: 'By extending the length of his appointment', C: 'By choosing glasses for his children', D: 'By upgrading the coating on his eyeglass lenses' }, correctAnswer: 'A' },
-                { id: '195', questionText: 'What is suggested about Mr. Drake?', options: { A: 'He thinks his prescription has changed.', B: 'He started wearing eyeglasses recently.', C: 'He frequently shops at Danvers Mall.', D: 'He received a discount on his purchase.' }, correctAnswer: 'D' }
+                { id: '191', questionText: 'What can be inferred from the article?', options: { A: 'The city council will not provide any money for park improvements.', B: 'Mr. Benoit changed his mind about the project.', C: 'The city council is considering a new police chief.', D: 'Ms. Schmidt attended the city council meeting.' }, correctAnswer: 'D' },
+                { id: '192', questionText: 'In the article, the word "irresponsible" in paragraph 1, line 7, is closest in meaning to', options: { A: 'untruthful', B: 'reckless', C: 'unreliable', D: 'careless' }, correctAnswer: 'B' },
+                { id: '193', questionText: 'What is indicated about the police department?', options: { A: 'It will purchase new equipment.', B: 'It has made a request for money.', C: 'It supports the renovation of Riverside Park.', D: 'It will hire more police officers.' }, correctAnswer: 'B' },
+                { id: '194', questionText: "What is mentioned in the meeting minutes as a source of money for the playground?", options: { A: 'A bank loan', B: 'A government grant', C: 'Tax revenues', D: 'A charitable donation' }, correctAnswer: 'B' },
+                { id: '195', questionText: 'What does the meeting minutes suggest about the Riverside Association?', options: { A: "It will submit a new proposal to the city council.", B: 'It will try to raise money.', C: 'It will no longer seek to renovate the playground.', D: 'It will plant more trees in Riverside Park.' }, correctAnswer: 'B' }
             ]
         },
         {
             id: 'passage-7-7-15',
-            text: `**Web page from https://www.hellosnackvending.com/services**
-Our Services
-Hello Snack Vending offers a variety of vending and coffee services for company break rooms and vending machines.
-Service 1 (Micromarket)—We set up a small market in your break room, with customized products available on open shelves. Micromarkets are self-service and feature electronic payments. Shelving and fixtures are provided.
-Service 2 (Pantry)—We stock your break room cabinets with a variety of products that you select. Pantry service is paid for in advance, freeing users from paying per item.
-Service 3 (Coffee)—We keep your break room stocked with coffee, tea, and all related essentials. We supply you with group-sized coffee makers, coffee, and individually sized creamer and sugar varieties.
-Service 4 (Traditional Vending)—We regularly stock your vending machine with a customized selection of carbonated beverages, juice, and water.
-Service 5 (Healthy Vending)—We regularly stock your vending machine with a wide selection of healthy snacks.
-
+            text: `Questions 196-200 refer to the following information, review, and e-mail.
+**https://www.laskyandco.com/job_openings**
+Lasky & Co. has a long and proud history as a manufacturer of hand-crafted leather goods. We are currently recruiting for the position of Lead Designer. This position involves managing a design team, developing prototypes, and traveling to factories in Europe to oversee production. The ideal candidate will have 10-15 years of experience designing high-end women's handbags. A bachelor's degree in design or a related field is a prerequisite. To apply, please visit www.laskyandco.com/human_resources/job_postings.
 ---
-
-**E-mail 1**
-To: customercare@hellosnackvending.com
-From: dlewis@kivowitzcompany.com
-Date: November 14
-Subject: Vending service
-Hello,
-My company recently bought a gently used nonrefrigerated vending machine, which has been placed in our employee break room. I am looking for a stocking service to fill it so that the staff can start using it.
-Does your company only stock vending machines that you own, or do you also offer a stocking service for other machines? If you can service ours, I would like to know more about the snacks you have available to fill the machine. Could you please send me a list of the products you offer?
-Thank you for your assistance.
-Best regards,
-Denikia Lewis, Kivowitz Company
-
+**https://www.laskyandco.com/job_openings/employee_reviews**
+I was hired as a junior designer at Lasky & Co. three months ago, and I absolutely love it! My coworkers are all very talented, and I've learned so much from my mentor, the head of men's accessory design, Kenji Tanaka. His advice and guidance have helped me immensely, and I've even been asked to submit some designs for the new line of men's belts we are currently working on. It's great to be part of a company that is always growing and that values the contributions of all its employees.
+—Mina Sato
 ---
-
-**E-mail 2**
-To: Denikia Lewis <dlewis@kivowitzcompany.com>
-From: Customer Care <customercare@hellosnackvending.com>
-Date: November 15
-Subject: Re: Vending service
-Attachment: List
-Dear Ms. Lewis,
-Thank you for your e-mail. We would be happy to stock your machine even if it is not owned by our company. However, if your machine is old, it can be difficult to obtain parts for it, and older machines break more often. The cost of repairs can get high, making it more cost-effective for you to use one of our vending machines. Can you provide me with the model number?
-I have attached the list you requested. We can accommodate special requests if you have any. I also recommend renting a drink machine from us, because we find that employees usually enjoy having a cold drink with their snacks.
-Please contact me if you have additional questions.
+**To:** Ms. Olivia Chen <ochen@laskyandco.com>
+**From:** Ms. Isabella Rossi <irossi@laskyandco.com>
+**Date:** June 3
+**Subject:** Job candidate recommendation
+Dear Olivia,
+Thank you for asking me to look over the résumés you've received for the lead designer position. As you know, Mr. Tanaka is moving from men's to women's handbags, but there's a lot of talent here. I think you've made the right decision to consider candidates from both within and outside the company. I was especially impressed with the application of Mina Sato, who currently works here at Lasky & Co. Although she only has three months of experience with the company, her résumé reveals that she has been working in the fashion industry for nearly twelve years, much of that with European clothing companies. In addition, I think her educational background in product development would be valuable.
 Sincerely,
-Dominik Scheibler, Customer Care Representative`,
+Isabella Rossi`,
             questions: [
-                { id: '196', questionText: 'What is mentioned about Service 1?', options: { A: 'It comes with a fixed product selection.', B: 'It allows users to pay electronically.', C: 'It requires an annual contract.', D: 'It includes shelving for an extra fee.' }, correctAnswer: 'B' },
-                { id: '197', questionText: "What does Ms. Lewis suggest about her company's vending machine?", options: { A: 'It is in poor condition.', B: 'It was recently serviced.', C: 'It was overpriced.', D: 'It is currently empty.' }, correctAnswer: 'D' },
-                { id: '198', questionText: 'What does Mr. Scheibler ask Ms. Lewis to send him?', options: { A: 'A signed contract for the service', B: 'A picture of her vending machine', C: 'A list of needed parts', D: 'A model number' }, correctAnswer: 'D' },
-                { id: '199', questionText: 'What is included in the list Mr. Scheibler attached to his e-mail?', options: { A: 'The snacks that his company offers', B: 'The dates that his company can make deliveries', C: 'The brand of vending machines that his company uses', D: 'The costs involved with vending services' }, correctAnswer: 'A' },
-                { id: '200', questionText: 'What additional service does Mr. Scheibler suggest?', options: { A: 'Service 2', B: 'Service 3', C: 'Service 4', D: 'Service 5' }, correctAnswer: 'C' }
+                { id: '196', questionText: 'What is indicated about the lead designer position?', options: { A: 'It requires knowledge of a foreign language.', B: 'It has recently become vacant.', C: 'It involves a great deal of business travel.', D: 'It will be filled by an internal applicant.' }, correctAnswer: 'C' },
+                { id: '197', questionText: 'What does Ms. Sato mention about Lasky & Co.?', options: { A: 'It is opening a new factory.', B: 'It gives its employees a lot of responsibility.', C: 'It is a good place to work.', D: 'It will soon expand its product line.' }, correctAnswer: 'C' },
+                { id: '198', questionText: 'Who most likely is Mr. Tanaka?', options: { A: 'A junior designer', B: "Ms. Sato's manager", C: 'The owner of Lasky & Co.', D: 'An applicant for a job' }, correctAnswer: 'B' },
+                { id: '199', questionText: "What is mentioned as a qualification of Ms. Sato's?", options: { A: 'Her fluency in foreign languages', B: 'Her degree in business administration', C: 'Her ability to work on a team', D: 'Her knowledge of clothing companies' }, correctAnswer: 'D' },
+                { id: '200', questionText: 'According to the second e-mail, what is expected to happen?', options: { A: 'Mr. Tanaka will get a new job.', B: 'The men\'s accessories department will grow.', C: 'Ms. Chen will interview Ms. Sato.', D: 'Ms. Rossi will be promoted.' }, correctAnswer: 'A' }
             ]
         }
     ]
 };
-
 
 export const test7Data = {
     part5: test7Part5,

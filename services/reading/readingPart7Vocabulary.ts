@@ -322,7 +322,8 @@ const test1_172_175_words: VocabItem[] = [
     { word: "necessary", definition: "cần thiết", example: "" },
 ];
 
-const test1_176_180_words = [
+
+const test1_176_180_words: VocabItem[] = [
     { word: "press release", definition: "thông cáo báo chí", example: "" },
     { word: "review", definition: "bài đánh giá", example: "" },
     { word: "together", definition: "cùng nhau", example: "" },
@@ -873,6 +874,7 @@ const test2_196_200_words = [
     { word: "free passes", definition: "vé miễn phí, giấy thông hành miễn phí", example: "" },
     { word: "event planner", definition: "người lập kế hoạch sự kiện", example: "" },
 ];
+
 
 export const readingPart7VocabularyData: VocabularyPart = {
     id: 7,

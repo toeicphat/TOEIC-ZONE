@@ -1,3 +1,4 @@
+
 import { ReadingTestData } from '../../types';
 
 const test6Part5: ReadingTestData = {
@@ -318,7 +319,7 @@ Priyanka Kapoor [9:59 A.Μ.]: Each day of the conference begins with a continent
 Part-time worker needed to feed, wash, and groom horses. Must be able to work a minimum of eight hours a week, including occasional weekend hours. Although training is available, applicants who have experience working with horses are preferred. To apply, send an e-mail to Dorothy Lu, dlu@blissfulhorsestables.com.au, and attach your résumé.
 Blissful Horse Stables is the region's largest horse-boarding facility. It has been owned and operated by one family since 1988. Our business offers both long- and short-term boarding contracts. We have state-of-the-art indoor and outdoor exercise rings and a five-acre grazing pasture for our equine friends. A veterinarian is always on call.
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 **E-mail**
 From: ota.kyle@opalmail.com.au
@@ -346,7 +347,7 @@ Name: Mia Dixon
 E-mail: mdixon@sunmail.co.nz
 Comment: I saw the callout to local growers on your social media feed. A few years ago, I started a large community food garden with my neighbours here in Helensville for us to tend in our free time. This year, we have more plants than we can consume ourselves. Specifically, we have dozens of potted mint and cardamom seedlings as well as other uncommon herbs, and I wonder if you are interested in expanding your offerings of herbs. We also have a half dozen two-year-old lemon tree saplings that are between two and three feet tall.
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 **E-mail**
 To: mdixon@sunmail.co.nz
@@ -370,12 +371,12 @@ Purchaser, Pink Fern Gardens`,
         {
             id: 'passage-7-6-13',
             text: `Questions 186-190 refer to the following Web page, e-mail, and review.
-**Web page from https://www.elektroproofrepair.com/about**
+**https://www.elektroproofrepair.com/about**
 Trust Elektroproof Repair to get your computer running right again!
 Elektroproof Repair's no-surprises policy offers flat fees for labor at three price points: $145, $200, and $350. These fees do not include the cost of software or replacement parts. The majority of our repairs incur the $200 fee.
 NOTE: Because of a dramatic increase in demand, we now require appointments for all services. For an initial consultation with one of our highly qualified technicians, simply select from the available time slots on our schedule page. When you schedule your appointment, we require a $60 nonrefundable deposit which will be credited toward the cost of services rendered. If you have any questions, please e-mail us at inquiries@elektroproofrepair.com. Whenever possible, we will contact you the same day or on the following business day. Most repairs are completed within three to five business days.
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 **E-Mail Message**
 To: Jessica Nelson <jnelson17@saffronmail.com>
@@ -387,7 +388,7 @@ Thank you for contacting Elektroproof Repair. You asked if you could bring in yo
 Sincerely,
 Arthur Jacquet, Elektroproof Repair
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 **Review from https://www.buyertobuyerintel.com/repair_services/electronics/computer_devices**
 ★★★★★ Elektroproof Repair
@@ -408,7 +409,7 @@ I spilled tea on the keyboard of my faithful old laptop, and while I dried the e
 Learn to play guitar at Alexis Instruments!
 Alexis Instruments will offer group and individual guitar instruction beginning April 2. Each of our locations has been updated with newly constructed classrooms and practice rooms. Our instructors have years of experience teaching and playing as professional musicians. Call an Alexis Instruments store today for availability and pricing.
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 **E-mail**
 To: Lucia Rivera <luciarivera@rapidonet.com>
@@ -424,7 +425,7 @@ Sincerely,
 Krista Towers
 Alexis Instruments
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 **Receipt**
 Alexis Instruments
@@ -469,7 +470,7 @@ Training | Instruct museum staff on a specialized topic | Varies | $25/hour
 Electronic payments should be available ten business days after invoice submission.
 Jee-Young Choi, Education Coordinator
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 **Invoice**
 Devonte Merriweather
@@ -484,7 +485,7 @@ September 22 | Class: Drawing for Beginners | $65
 September 25 | Class: Sculpting with Clay | $110
 **Total** | **$225**
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 **E-mail 2**
 To: Devonte Merriweather <d.merriweather@camail.ca>

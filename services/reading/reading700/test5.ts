@@ -348,7 +348,9 @@ Lewis will be performing for the first time without his famous hip hop group and
 **Time:** 9 P.M. | **Admission:** $25
 To purchase advance tickets, send a personal check or money order to the Brouwer Amphitheater Box Office by Wednesday, June 19. Tickets are also available by phone at 812-546-8112 with all major credit cards accepted. Any leftover tickets will be sold at the box office up until the start of each performance. However, only cash and debit cards will be acceptable forms of payment on these evenings.
 For more information, please call 812-546-8112 or email Theodore Smith at tsmith@brouweramp.com.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** Theodore Smith, Brouwer Amphitheater
 **From:** Ron Harper
 **Date:** June 2
@@ -378,7 +380,9 @@ The schedule for the conference seminars is as follows:
 * **On Monday:** 9:30 A.M. – 12:00 P.M.: International Tourism | 1:30 P.M. – 4:00 P.M.: Hospitality Marketing
 * **On Tuesday:** 9:30 A.M. – 12:00 P.M.: Food Service Management | 1:30 P.M. – 4:00 P.M.: Lodging Service
 Have a safe trip and enjoy the seminars!
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **From:** Marie Jackson <mariejs@unet.com>
 **To:** Glenn Harris <gharris@zmail.com>
 **Date:** Thursday, Nov. 20, 10:18 A.M.
@@ -404,7 +408,9 @@ Dear Employees,
 I am pleased to announce an opportunity for career development. The California Design Association is hosting a conference on the weekend of May 5-6 that should be well worth attending, especially for those of you in the R&D and Engineering Departments. I am especially proud that one of our colleagues, Jane Selden, will be a featured speaker.
 Please see the notice posted in the 1st floor mail room and inform me after you have registered for the session that you plan to attend. If you cannot attend, you are still encouraged to sign up for a membership with the California Design Association. All employees will be reimbursed for the membership and registration fees, lunch and transportation.
 I hope many of you will be able to attend since it is imperative that we stay on the cutting edge of our field.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Design Research Conference**
 **When:** May 5-6, 9 A.M. - 5 P.M.
 **Where:** California Institute of Design, 6400 Lincoln Ave, Berkley, California
@@ -412,7 +418,9 @@ I hope many of you will be able to attend since it is imperative that we stay on
 **Membership:** $100 per year (includes subscription to CDA monthly newsletter)
 **Registration:** Visit www.californiadesignassociation.com and register online by April 20th
 **Featured speakers:** Travis Nightlinger (Sat 9 A.M.), Julio Cueto (Sat 11 A.M.), Jane Selden (Sun 1 P.M.), Mikyung Jung (Sun 3 P.M.)
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **From:** www.californiadesignassociation.com/membership/register
 **Name:** Sarah Chang
 **Company:** Collins & Walsh
@@ -430,7 +438,9 @@ I hope many of you will be able to attend since it is imperative that we stay on
             id: 'passage-7-705-14',
             text: `**From:** Calvin Hon | **Date:** July 4 10:11 A.M.
 Mr. Saunders, As we have discussed, your schedule for the trip to our headquarters and research laboratory has tentatively been confirmed. I sent this information via e-mail a moment ago so I want you to check out with care. Please, let me know your flight information. I will be picking you up at Fens Airport and dropping you off in Bristol. If you have any questions, feel free to contact me at 425-555-6272. Hope you have a safe and pleasant trip.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Subject: Your Schedule**
 **July 10 - Headquarters, Bristol**
 10:00 - 11:00 A.M. Meeting with Mr. Scott, Finance Director
@@ -442,7 +452,9 @@ Mr. Saunders, As we have discussed, your schedule for the trip to our headquarte
 12:30 - 2:30 P.M. Workshop for product development, by Dr. Durham
 2:45 - 5:45 P.M. Meeting with Mr. Peters, senior director for research and development
 7:00 - 8:30 P.M. Dinner hosted by Mr. Drogbba, president
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** Calvin Hon | **From:** Bill Saunders | **Date:** July 7 10:25 A.M.
 Dear Mr. Hon,
 Thank you for the schedule you sent me. I will be arriving on flight KL 709 at 9 P.M. on Wednesday, July 9, and I'm returning back to Seattle on July 13. Will there possibly be time to meet with Mr. Louis Timber on July 11 in Leeds? I would like to discuss some topics with him regarding our joint project.
@@ -461,11 +473,15 @@ Bill Saunders`,
             text: `**IMPORTANT NOTICE FROM THE REGISTRAR'S OFFICE** - September 23, 2016
 A review of currently enrolled students' records shows that you are classified as a U.S. citizen but were born outside the United States. University policy requires that your citizenship status be documented through the presentation of your U.S. passport, certificate of citizenship, or embassy document establishing your U.S. nationality. Voter registration, Social Security card, or driver's license are not acceptable documents for this purpose. You may bring your documents to 150 Administration or you may submit legible copies of the documents by fax at 544-432-3347. Your prompt attention to this matter is greatly appreciated. If you do not provide us with any relevant documents to prove your citizenship, you may not be able to participate in any of the school activities.
 Phillip McBillan, Associate Registrar, Georgia University
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **From:** Ronald Henry | **To:** Phillip McBillan
 **Subject:** I've already sent it twice.
 Hello, this is Ronald Henry, a student in Georgia University. This is my second time receiving this letter concerning the need for me to bring or send you any document that will prove my citizenship. However, I had already sent you a copy of my passport two weeks ago when I first received your letter. I would like to send you the copy of my passport again, but currently I am away and there's no fax machine here. So I will just give you information from my passport with this e-mail.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Passport Number:** 04938XXXX
 **Surname:** HENRY | **Given name:** RONALD
 **Nationality:** UNITED STATES OF AMERICA

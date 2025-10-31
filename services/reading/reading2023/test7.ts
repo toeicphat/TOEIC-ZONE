@@ -314,7 +314,9 @@ Sita Kumar`,
 *Reviewed by Peter Gottlieb*
 Qi Chien understands how restaurants work. Her new book, In the Kitchen: How to Thrive in the Restaurant Business, expertly advises restaurant managers on handling challenges in the industry, from creating reasonable schedules for chefs to appeasing picky diners. Throughout the book, Chien offers concise, practical suggestions with easy-to-understand concepts. Overall, the book offers a colorful snapshot of the various tasks involved in the day-to-day operations of a restaurant.
 Chien's book is unique among other industry guides in that she interviewed restaurant owners, managers, and customers as part of her research. She even spoke to journalists who write restaurant reviews to get a good sense of what they most prize in a dining experience. My only criticism is that the book should have also included the perspective of chefs, especially since their role is crucial to a restaurant's success. This caveat aside, In the Kitchen is an insightful and instructive read.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 To: editor@lakecountyherald.com
 From: qichien@rapidonline.com
 Date: August 5
@@ -346,7 +348,9 @@ The rectangular light fixtures will also arrive on Monday. There should be four�
 I have attached a drawing of the layout that includes more detail.
 Regards,
 Karl Vinton, Owner
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Harriet Trimble [8:05 A.M.]**
 I stopped by the Vint Apparel job site. We will have to put everything in place by June 15 because the grand opening is fast approaching. Mr. Vinton stressed that they need to start stocking merchandise the week of June 20 to be ready for the official event on July 1.
 **Jackson Ortega [8:06 A.M.]**
@@ -373,7 +377,9 @@ Located near downtown Miltonville, the building has a self-service laundromat an
 Located approximately six miles outside of Miltonville, the building features an on-site business center and is within walking distance of public transportation.
 **Cityview Gardens**
 Cityview Gardens is a complex of four two-story buildings located in Dayton, about a twenty-minute drive from downtown Miltonville. The property boasts a fitness center and a swimming pool and is adjacent to a community park. A bus line operates a route through the neighborhood.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 From: gsteuber@wardertechnology.com
 To: info@foursquarehousing.com
 Date: July 12
@@ -383,7 +389,9 @@ I work in the human resources office of Warder Technology's Miltonville division
 We need an apartment for employees who will be in Miltonville for two months or more. The apartment should have amenities like a gym and a pool.
 Sincerely,
 Gina Steuber
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 From: info@foursquarehousing.com
 To: gsteuber@wardertechnology.com
 Date: July 12
@@ -414,13 +422,17 @@ www.cyberneticrobotics.com/survey/everlast/
 Best regards,
 Gretchen Robertson
 Director, Everlast Hospital
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 https://www.cyberneticrobotics.com/survey/everlast/01282
 Deonardo is easy to work with. I like that I don't have to tell Deonardo directly what to do. When I update patient information in our system, Deonardo's tasks are updated as well. I have been better able to concentrate on my patients because I know Deonardo takes care of little things that used to take up so much of my time.
 Deonardo was particularly helpful during a recent state review because it delivered patients' medications for all the nurses so that we didn't have to, and we were able to focus on patient care. I believe Deonardo helped us receive positive comments from the inspectors.
 I do wish Deonardo could respond to voice commands. And occasionally, its wheels squeak as it moves around. But patients like watching it work, and everyone wants to take pictures with it. I wonder if you could get Deonardo to stand still for pictures?
 Lan Duy, BSN
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 To: Everlast Hospital Nursing Staff
 From: Gretchen Robertson
 Date: February 13
@@ -453,12 +465,16 @@ Attached are the résumés and references of the two candidates. The dates, time
 Sincerely,
 Supriya Chakravarty, Chair, Hiring Committee
 Primidian Food Industries
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Upcoming Events at Primidian Food Industries**
 On 7 October at 10 A.M., Ms. Inez Fuentes, director of research and development at Primidian Food Industries (PFI), will facilitate a workshop titled Food Innovation for the Future. Among other things, she will explain why PFI recently reformulated its pasta products and demonstrate how they can be prepared in novel, tasty ways.
 Ms. Fuentes is a certified nutritionist with a degree in food science from Mexico City's Academy of Science and Technology. Upon graduation, she accepted a two-year internship at Italy's prestigious Rome Institute of Culinary Arts. Before joining PFI's executive team, she served for five years as lead product development manager at Zesty Meals, based in Montreal, Canada.
 Register for this free event at www.pfi.co.uk/events/register, specifying whether you will attend online or in person at our corporate headquarters in Birmingham.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **https://www.pfi.co.uk/contact-us**
 **Your Message:**
 I thoroughly enjoyed the Food Innovation for the Future workshop led by Ms. Fuentes on 28 October. I almost missed it, though. Apparently, when details about the workshop were updated, including that it would be an online-only event, my registration—and, I learned, that of some other participants—was not transferred over. Luckily, a staffer charged with online registration was able to quickly reregister me. PFI may want to analyse its electronic registration system and make improvements where necessary so that this problem does not reoccur.

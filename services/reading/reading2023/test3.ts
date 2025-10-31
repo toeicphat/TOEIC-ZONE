@@ -286,7 +286,9 @@ No problem. Thanks!`,
 - **Jeffrey Lamb: Naturalist** (December 1–29): Scientist Jeffrey Lamb spent his life studying and taking pictures of wildlife on six continents. See photos of animals and landscapes from the researcher's personal collection, taken during his forty-year career.
 - **Humans in Art** (January 1–29): This collection of paintings and sculptures from dozens of artists, past and present, shows us the many ways artists can depict a human subject. Works from both famous and relatively unknown artists are included here.
 - **Everyday Art** (February 1–26): A variety of handmade items are on display in this exhibit showing art in everyday life. From handmade quilts to furniture, see these household items in a whole new way.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Review of Central Art Museum**
 Reviewer: Mary Walsh
 Stars: ★★★★★
@@ -311,7 +313,9 @@ I recommend the Central Art Museum to anyone interested in not only art but hist
 | Granite - premium | Synthetic laminate | Concrete |
 See the product catalog for the complete range of styles and colors. Contact a sales representative for pricing. Order delivery is usually 7–10 business days.
 Note: Black walnut cabinets and hardwood flooring are local products fabricated by small regional manufacturers. Please allow a minimum of three weeks to fulfill orders.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Modern Styles - Your Remodeling Experts**
 **Client Intake Form**
 **Client Name:** Theresa Dellman
@@ -340,14 +344,18 @@ Project contract and deposit were received on April 1.`,
 **Alexandria's Restaurant Showcase**
 June 5—Alexandria's Restaurant Showcase is back! From July 8 to July 25, participating restaurants in the Alexandria area will offer set menus at discounted prices. As in past years, restaurants can offer a two-course lunch menu for $15, a two-course dinner menu for $20, or a three-course dinner menu for $30. Both customers and restaurant owners love the showcase. Food enthusiasts try new options at a lower cost, and restaurants report it's the time of year when dining areas are at their fullest.
 Alexandria had its first restaurant showcase 15 years ago. It was modeled on a similar showcase in the beach town of Willmar. Originally, only eight restaurants participated. Since then, the showcase has grown, adding more restaurants and extending the number of days each year. This year, there will be 40 participating restaurants—about 70 percent of all the restaurants in Alexandria. Those looking to book a table should act fast. Some restaurants require reservations, and the most popular places book up quickly. To see the list of participating restaurants and make a reservation, visit www.alexandriarestaurants.com/showcase.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **https://www.alexandriarestaurants.com/showcase/reservations**
 Showing search results for: **Center City Neighborhood**
 - **Claire's** (French food, Serving lunch and 3-course dinner, Open Tuesday-Sunday, Call (703) 555-0102 to make a reservation.)
 - **Fresh Fish Grill** (Seafood, Serving lunch and 3-course dinner, Open Monday-Sunday, Call (703) 555-0195 to make a reservation.)
 - **Jin-Yi's House** (Korean food, Serving 2-course dinner, Open Wednesday-Saturday, Call (703) 555-0198 to make a reservation.)
 - **Roberto's Pizzeria** (Italian food, Serving lunch only, Open Tuesday-Sunday, No reservations necessary)
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **https://www.foodreviews.com/alexandria/freshfishgrill**
 **Nori Sato**
 I highly recommend Fresh Fish Grill. It was my first time eating there, and not only was the food excellent, but the staff was welcoming and efficient. I had some clients in town and was lucky enough to get a reservation on the last day of the restaurant showcase. We all really enjoyed the experience. I would gladly take clients there again.`,
@@ -374,7 +382,9 @@ To apply, write your cover letter in an e-mail, attach your résumé, and send i
 - Why do you believe you are a good fit for the position?
 - What are your professional strengths?
 - In which areas could you improve?
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **From:** Samantha Bradbury <sambradbury25@rapidonet.com>
 **To:** jobs@rollervy.edu
 **Date:** September 10
@@ -386,7 +396,9 @@ At Parvaton, I increased participation in student activities by 37 percent. I al
 Overall, I believe I'm an excellent fit for the available position. I am punctual, detail oriented, and committed to increasing students' connection to their academic institution. I look forward to hearing back about a potential interview.
 Sincerely,
 Samantha Bradbury
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** Samantha Bradbury <sambradbury25@rapidonet.com>
 **From:** Lisa Cooper <jobs@rollervy.edu>
 **Date:** October 2
@@ -416,7 +428,9 @@ Some companies have moved to a flat-rate model, whereby all employees who qualif
 I hope that, as head of Human Resources, you will consider adopting a policy like this.
 Sincerely,
 Monica Cheung
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Ferd Data Services MEETING AGENDA**
 **Location:** Online
 **Date:** October 24
@@ -431,7 +445,9 @@ Monica Cheung
 1. Continue to reimburse employees for up to 30 percent of their business mobile phone use
 2. Provide a flat monthly amount to employees who qualify; employees with high costs can submit requests for additional compensation
 3. Provide qualified employees with mobile phones for business use
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Ferd Data Services Employee Policies - Mobile Phone Reimbursement Policy**
 *Revised October 30*
 Employees who work remotely and/or travel for business purposes should be reimbursed for business use of mobile phones. Three options are available:

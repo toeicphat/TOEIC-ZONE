@@ -358,7 +358,9 @@ Dr. Duane Purdue, Senior Researcher, Portland
 Dr. Ryo Kobayashi, Senior Researcher, Osaka
 
 Please respond to this invitation by returning this enclosed form by March 30.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** Teresa Reed
 **From:** Curtis Norwood
 **Date:** March 17 03:28
@@ -395,7 +397,9 @@ Also, please find out if our customers have any other concerns about the Screen 
 
 Thanks for your help.
 Courtney
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** Courtney Lee <clee2@vistatelecom.net>
 **From:** Timothy Rinaldi <trinaldi@vistatelecom.net>
 **Subject:** Vista Screen Touch Phones
@@ -423,14 +427,18 @@ Tim`,
 How efficiently is your business operating? Trying to maximize your income?
 Join Bains Small Business Resource (BSBR) and receive comprehensive training and resources to manage your business in the financial aspects and others! We have specialized in helping small business owners nationwide achieve financial success for the last eleven years. If you want to seize the unique opportunity, you can find out the information about what a business owner can learn from BSBR on our website, http://www.bsbr.com, right now.
 Also, receive immediate access to BSBR now for a one-time registration of just $49.90 plus a monthly membership fee of $22 (Professional) or $30 (Exclusive).
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **http://www.bsbr.com/service**
 **SERVICE**
 - **Informational Resources?** Access to a wide variety of articles, reports, and reviews written by industry experts and aimed at helping business owners achieve long-term profitability. They are updated every week to provide members with the most up-to-date information available.
 - **Templates & Training Manual?** A very large database of free downloadable worksheets, forms, and reporting templates is available. Just click and download the templates that best suit your needs. Training manuals will be provided by mail.
 - **Online Community Service?** Participate in our online community to share ideas and insights from thousands of members who operate their own business.
 - **Specialized workshops?** Join our new series of online classes covering business plans, strategies for marketing and personnel management for small businesses and start-ups. This program is available only to exclusive members.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **http://www.bsbr.com/register**
 **BSBR's Application**
 First Name: Jane
@@ -465,7 +473,9 @@ Additionally, enclosed is the complete schedule of all sessions in this e-mail. 
 
 Thank you,
 Kathryn Perez, Human Resources
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Leadership Training Courses and Seminars**
 | Session | Presenter | Date and Time |
 | :--- | :--- | :--- |
@@ -475,7 +485,9 @@ Kathryn Perez, Human Resources
 | Leadership for Women | Lindsay Parks | August 25, 11:50 A.M.-12:30 P.M. |
 
 Note that the time listed may change within the range of five minutes, so please plan accordingly. All the sessions will take place in Marcus Hall. Refreshments will be provided at courses that begin in the afternoon.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Leadership Training Feedback Form**
 **Name:** Dane Green
 **Sessions attended:** [X] Critical Thinking, [ ] Situational Leadership, [X] Collaborative Leadership, [ ] Leadership for Women
@@ -497,7 +509,9 @@ It was mentioned in the schedule that we may be let go just a bit past the sched
             id: 'passage-7-701-15',
             text: `**Renew your Augusta Science Museum Membership Now**
 If you haven't been to the Augusta Science Museum recently, you will notice some upgrades to our facility upon your next visit: our lobby has been renovated, new seats have been installed in the dome theater, and we've added a cafe. As a past member of the museum, you know that our memberships offer great benefits. So if you want to enjoy the more newly upgraded experiences, please renew your membership at this moment. Basic benefits of membership include a year of unlimited free admission, the opportunity to purchase tickets in advance for special exhibitions, a 20% discount at the gift shop, and subscription to our Science and Technology Magazine. For more details, you can visit our website and sign up for this service.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Membership Level**
 - **Individual - $60:** Includes all basic benefits for one person.
 - **Individual Plus - $100:** Includes all basic benefits and free admission for all lectures for one person. Also includes 2 guest passes for museum admission.
@@ -505,7 +519,9 @@ If you haven't been to the Augusta Science Museum recently, you will notice some
 - **Family Plus - $200:** Includes all benefits of the family membership plus 6 guest passes. Also, Basic benefits of membership include a 20% discount at the gift shop, the opportunity to purchase tickets in advance for special exhibitions, and a private tour of one special exhibition of your choice.
 
 **Note:** Next year's first special exhibition "Inventions of Benjamin Franklin" will run from Jan. 5 to Feb. 28. Tickets go on sale for members beginning on Nov 15 and for non-members beginning on Dec. 1.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Augusta Science Museum**
 Mr. Todd Pollard
 725 Lauderdale Drive

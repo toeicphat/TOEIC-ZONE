@@ -1,3 +1,4 @@
+
 import { ReadingTestData } from '../../types';
 
 const test5Part5: ReadingTestData = {
@@ -307,7 +308,7 @@ I'd like you to add one more project to our "Portfolio" page. We have finally fi
 Sincerely,
 Youssef Zimri
 Owner, Zimri Mechanical
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 https://www.clarymedicalcentre.ie
 Clinic opening soon
 We have repurposed 47 High Street, Galway, into a satellite medical clinic and will celebrate with a grand opening party on Friday, 28 October. Remarks by Medical Director Dr. Celia O'Leary and local elected officials will begin promptly at 1:00 P.M., followed by a ribbon-cutting ceremony and tours until 4:30 P.M.
@@ -331,7 +332,7 @@ Pirate's Bounty Seafood
 Charlottetown, Prince Edward Island, C1A 0A5
 VENDOR: Rochette's Commercial Refrigeration, 2175 Lyons Avenue, Guelph, Ontario, NIC 0A1
 SHIP TO: Pirate's Bounty Seafood, 11 Harbor Street, Charlottetown, Prince Edward Island, C1A 0A5, Attn: Lenore Okiya
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 ITEM NUMBER: BF550
 DESCRIPTION: Blizzard walk-in freezer. Features: 1.5m x 2m x 2.5m, adjustable shelves, aluminum flooring, galvanized steel panels
 QUANTITY: 1, PRICE: $6,400.00, TOTAL: $6,400.00
@@ -339,7 +340,7 @@ COMMENTS OR SPECIAL INSTRUCTIONS: Restaurant expanding. Need unit by 17 November
 SUBTOTAL: $6,400.00
 TAX: $960.00
 GRAND TOTAL: $7,360.00
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 To: Lenore Okiya <l.okiya@piratesbounty.ca>
 From: Shaliya Umuma <customerservice@rochettesrefrigeration.ca>
 Date: 3 October
@@ -364,12 +365,12 @@ Shaliya Umuma, Customer Service Manager`,
 23–25 October, Grant Hotel and Conference Centre, London
 Day 1:
 Time | Description | Venue
----|---|---
+---|---
 7:00 A.M. to 8:00 A.M. | Morning Social: Complimentary omelets, pastries, coffee, tea | Mezzanine
 8:30 A.M. to 10:00 A.M. | Marcos Secada, founder and CEO, Grindstone Marketing Group | Room 2
 10:30 A.M. to noon | Claire Song, business columnist and best-selling author | Room 10
 12:30 P.M. to 2:00 P.M. | Lunch (ticket purchase required) | Alexander Ballroom
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 To: Nadir Kalwar <kalwar.n@kdbuildingconcepts.com>
 From: Olek Dzik <odzik.k@kdbuildingconcepts.com>
 Date: 12 May
@@ -379,7 +380,7 @@ Nadir,
 Thanks for your help with the corporate marketing plan. Attached is a link to the video created for us by Grindstone Marketing Group. It shows our 3-D printing equipment pouring fast-setting concrete, layer by layer. I think it looks great as is, and I believe it will be the most compelling aspect of our 1 June launch, especially if the Sheffield house is sold by then.
 In case you haven't heard, our next construction project will be a home just a couple of kilometres from your office building!
 Olek
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 House Constructed Using 3-D Technology For Sale
 SHEFFIELD (15 May)—An international construction firm specializing in innovative building technologies has completed one of Britain's first 3-D printed houses. The new structure is located on Morgan Road in Sheffield.
 KD Building Concepts took less than two weeks to execute the first phase of the project, which entailed printing the concrete walls and installing the electrical and plumbing systems, according to company president Olek Dzik. In just two months, the fully landscaped house with two bedrooms and two bathrooms was ready for market.
@@ -398,12 +399,12 @@ Next on the horizon for KD Building Concepts is the construction of a home in Ha
             id: 'passage-7-5-14',
             text: `Gallery manager at Richard Lahiri Gallery in Cromwood
 Applicants for this full-time position must have experience in retail art with an established history of successfully attracting patrons interested in purchasing original works of art. Experience managing a social media account is also desired. The position will be primarily on-site; however, some remote hours can be scheduled. Candidates must be available to start work on or before April 1. Qualified applicants should contact gallery director Richard Lahiri at rlahiri@richardlahirigallery.com.
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 Summer Scene Arts Program
 Starting on May 1, five art galleries in Cromwood will be hosting open houses every Friday from May through August. Come enjoy live music, refreshments, artist talks, and more on the Cromwood boardwalk. Activities start at 4:00 P.M. and continue until 9:30 P.M., rain or shine. Participating galleries are listed below.
 Rita Blake Art • Siitva Gallery • Richard Lahiri Gallery • Patricia Dolivo Painting • Ashland Pottery and Crafts
 Funded by the Cromwood City Council and Regents Bank
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 Summer Activities in Middleton County
 Compiled by Lisa Yu-Seaver
 Cromwood Art Nights
@@ -422,7 +423,7 @@ The popular summer movie series in Herrontown returns on June 16! Each Saturday 
             id: 'passage-7-5-15',
             text: `Senano Designs Buys Gendalla in $60 Million Deal
 LOS ANGELES (March 20)—Fashion powerhouse Senano Designs announced on Wednesday that it had acquired Gendalla, an up-and-coming luxury brand. The acquisition is part of Senano's plan to supplement its clothing products with a line of designer watches. Over the next two years, the company has further plans to expand its offerings to include fragrances and luggage. Lina Pacheco, Senano's chief executive officer, said that such expansion is necessary to keep up and compete with other international fashion houses. Although based in Los Angeles, in recent years Senano has opened offices in Philadelphia, Chicago, and Miami. Ms. Pacheco says she was unfamiliar with Gendalla products until a year ago, when she saw one of their ads in an automobile magazine. “The products have a distinctive, modern style," Ms. Pacheco said, "which will go well with Senano's trendsetting clothes."
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 MEMO
 From: Oscar Johansen, Accounting department
 To: All Gendalla employees
@@ -432,7 +433,7 @@ Attachment: Policy
 I have attached a copy of Senano's policy on travel expenses, which will go into effect when we officially become employees of Senano on March 31.
 Note that Senano's policy is more restrictive than Gendalla's policy in several ways. For example, employees will no longer have one month to submit expense reports. However, the new policy will make some processes much easier: specifically, Senano's requirements for submitting expenses under $50 are simpler than those under current Gendalla policy.
 Carlie Dawson, an accounting director who works at Senano's headquarters, will come to our New York office to lead an information session about this and other policy-related changes on Thursday, March 28, at 2:00 P.M. I strongly encourage you to attend.
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 Senano Designs Travel Expense Policy
 - To be reimbursed for work-related travel, employees must submit a travel request at least two weeks before a trip, listing the reason for travel and estimating all expenses.
 - Original receipts must be submitted for expenses above $50. Any expenses below that do not require the submission of original receipts.

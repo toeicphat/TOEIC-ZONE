@@ -384,7 +384,7 @@ I would like to meet at 9 A.M. on Monday (6 February) to figure out how to proce
 
 Madalyn Kerluke
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 Fatior Labs Consumer Taste-Testing Survey
 Date: 24 January
@@ -418,7 +418,7 @@ Create Great, an Ontario-based creative agency with a diverse range of global cl
 The ideal candidate will be someone who works well in a fast-paced environment with team members from international backgrounds. The copywriter will collaborate with the creative team to develop brand strategies that suit customer needs and with the marketing team to ensure the success of brand-based publicity campaigns for current and prospective clients. As remote work is permitted for copywriters, residence in Canada is not required.
 To apply, send your cover letter and résumé to the director of our creative team, Fran Benjamin, Create Great, 838 Colbert Street, London, ON N6B 3P5. Application deadline: August 5.
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 Annie Smith
 4810 South Bryant Street
@@ -462,7 +462,7 @@ Thank you,
 Akihito Nakashima, Executive Assistant
 Gilchrist Shipping
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 E-Mail Message
 From: Fowler Office Supplies <support@fowlerofficesupplies.com>
@@ -480,7 +480,7 @@ All the best,
 Cameron Higgins, Customer Relations
 Fowler Office Supplies
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 Fowler Office Supplies
 Receipt for Order: B19849
@@ -510,7 +510,7 @@ Return Policy: Unopened merchandise may be returned by mail or in one of our sto
 Crawford and Duval Opens Brick-and-Mortar Stores
 HONG KONG (18 February)—Crawford and Duval, the online retailer known for its handcrafted blankets, decorative pillows, and other household goods, has established four brick-and-mortar stores in Hong Kong. Last Monday, the company celebrated the grand opening of boutique stores in Causeway Bay, Discovery Bay, and Sheung Wan in addition to a large department store in Central District. While the boutique stores carry the most popular of the small household goods for which Crawford and Duval is famous, the Central District location also boasts an indoor plant department and an on-site café that features specialty coffees, teas, and light snacks. Moreover, it has a much more extensive selection of the merchandise than what is available through the company's Web site.
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 https://www.crawfordandduval.com.hk
 Crawford and Duval comes to our loyal shoppers in Hong Kong!
@@ -520,7 +520,7 @@ All locations are convenient to public transportation. Our Central District loca
 As part of our grand-opening celebration, shoppers who visit one of our stores before 1 March will receive a gift card for HK$70 to use during their visit.
 Members of our online Frequent Purchase Club will receive the same benefits in our stores, including a 10 percent discount on purchases of HK$500 or more.
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 Crawford and Duval
 Customer Receipt
@@ -561,7 +561,7 @@ Robot Building—Your group will be broken into teams. Each team builds a robot 
 All Chocolate—Your group will have the chance to use engineering skills to build a tower of chocolate. Then you learn how to make chocolate from a local chocolatier. Group size: 8-150 people. Time: 2 hours.
 Book an event in October and receive 15 percent off.
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 https://www.osawacorporateteambuilding.com/requests
 Name: Alexandra Peterson
@@ -575,7 +575,7 @@ Number of participants: 28 people
 Additional information: We are interested in a fun activity for our sales team before the busy selling season begins. We spend a lot of time in the office, so we want an outdoor event.
 We will contact you within three business days with a quote and confirmation.
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 https://www.osawacorporateteambuilding.com/reviews
 What Our Customers Are Saying

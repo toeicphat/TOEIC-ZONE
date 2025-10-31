@@ -298,7 +298,9 @@ Sheila Brown, Event Coordinator`,
 According to our records, you leased a car from us a year ago. With winter fast approaching, you might consider having the vehicle brought in for its regular maintenance inspection. We would recommend that you call or email to schedule a time for you to bring the car to our service center. The car you leased from us has a five-year warranty which includes annual maintenance checks to ensure that the car is running smoothly and any defects are repaired.
 You should consider having your car inspected now even if it seems to be working perfectly. Simple equipment check-ups made now can save a great deal of money in repairs and replacements in the long run. Furthermore, you should not wait until the middle of winter to have your vehicle checked. It may take longer for us to schedule a service because so many others will be making similar appointments.
 Linda Anderson
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** landerson@apexcars.com
 **From:** khudson@unitedinsurance.com
 **Date:** November 3
@@ -327,7 +329,9 @@ As another year comes to a close, we're pleased to announce the date of this yea
 The company will be supplying food, beverages, and musical entertainment. Sign-up sheets will be posted in the employee break room from now until December 8. In order to receive a ticket, you must sign up if you plan to attend.
 Our administrative staff have been working hard to plan this special day so please sign-up as soon as possible. We look forward to another memorable event.
 Regards, Betty
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** Betty Simmons <bettysms@worldmail.com>
 **From:** Andrew Fitzpatrick <andrewfzp@zmail.com>
 **Date:** November 22
@@ -349,19 +353,24 @@ Sorry for the inconvenience.`,
 1400 Westbury Avenue, Sarasota, Florida 60279
 Join fellow doctors from across the country for education seminars in a variety of fields. HTS seminars are led by some of today's top physicians at our Rowland Campus. All courses are accredited by American Council of Continuing Medical Education.
 Early registration is recommended as attendance is limited to 100 participants per seminar. Register online at www.htsmedseminars.com or call Valerie Bradshaw at 703-479-5500 for more information.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Upcoming Seminars Schedule**
 - Sep 3 (1-4 PM): Emergency Medicine, Dr. Walter Canfield
 - Sep 9 (3-5 PM): Primary Care and Women's Health, Dr. Michelle Leak
 - Sep 18 (12-3 PM): Infectious Diseases, Dr. Harold Kumar
 - Sep 22 (6:30-9 PM): Pediatric Medicine, Dr. John Kang
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 **Tuition Payments**
 $130 if registered by August 10
 $140 if registered by August 17
 $150 if registered by August 24
 $175 at seminar (if seats are available)
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **HTS ONLINE REGISTRATION FORM**
 Name: Donald Sterling
 I am registering for: September 22
@@ -384,11 +393,15 @@ Dear Friends and Colleagues,
 Here at Gallant Corporation, we recognize the importance of our employees' health and fitness. That's why we have worked diligently over the past three years to ensure that our employee exercise facility is in excellent condition. We want our fitness center to cater to your needs. Over the past few years, we have purchased modern exercise equipment, renovated the men's and women's locker rooms, and developed our well-known exercise and diet program, "For Your Health and Well-being".
 We would like to thank everyone who took part in our annual survey about the fitness center. Based on your suggestions, a few changes will be made. These will go into effect on January 1 of next year. Most importantly, we are extending our weekday hours; now the center will remain open for an extra three hours from Monday through Thursday. Also, long-time members will be pleasantly surprised to know that our most popular personal trainer Jenna Sanchez is to be the new manager of the fitness center.
 We would like to encourage more employees to take advantage of our fitness center and programs. Memberships, as always, are subsidized and cost only $15 monthly. Further, for a limited time, we are offering a special introductory rate for new members. If you sign up by December 31, you will only be charged $10 per month for the first three months. Contact Jenna Sanchez to learn more information.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **GALLANT FITNESS CENTER: NEW SCHEDULE**
 **Hours:** Mon-Thurs 6:30AM-9:30PM, Fri-Sun 6:30AM-9:30PM
 **Classes:** Mon/Wed 12-1:30PM, Tues/Thurs 5:30-7PM, Fri 7-8:30AM, Sat 9AM-12PM, Sun CLOSED
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Don't Forget!**
 1. Limit equipment time to 30 mins if others are waiting.
 2. One guest per visit, minors under 18 must be supervised.
@@ -413,7 +426,9 @@ We would like to encourage more employees to take advantage of our fitness cente
 Dear Kevin,
 I recently came across a property for sale that may be of interest to you. I have made some initial inquiries and I believe that it may be suitable to turn into a guest house like the one you have in mind. Presently, the location would probably not attract many drive-by customers; although it is near a major road and a popular restaurant, the closest tourist area is a few kilometers away. However, the construction of an amusement park just half a kilometer away will be complete in January of next year. So it seems safe to assume that in the near future there will be an increased demand for hotels in the area. I'm emailing you a copy of the property listing. If you need more information, I will call the agency, request a tour, and have a look inside the property. If it meets your needs, we should try to make an offer below the listing price because I think the price is a bit high given the interior renovations that are required. But I must say that I'm impressed by the property's special features, which would be nice for attracting guests.
 Sincerely, Deb Orth
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Real estate listing #3827**
 - Commercial building located 3 kilometers east of Seven Springs
 - Previously operated as a multi-family apartment building
@@ -422,7 +437,9 @@ Sincerely, Deb Orth
 **Special features**
 - Amenities include an outdoor swimming pool. 7 of the 15 rooms have a view of the pool.
 - Walk up attic with 1000 square feet of storage. No renovation necessary for common areas, although individual units could use aesthetic renovations such as new carpet and paint.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **From:** Kevin Kennedy
 **To:** Deb Orth
 **Received:** August 5, 6:53 PM

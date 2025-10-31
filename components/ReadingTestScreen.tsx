@@ -141,8 +141,8 @@ const ReadingTestScreen: React.FC<ReadingTestScreenProps> = ({ testData, onBack,
         const isCorrect = option === question.correctAnswer;
         const isSelected = userAnswers[question.id] === option;
 
-        if (isCorrect) return 'bg-green-100 dark:bg-green-900/50 border-green-500';
-        if (isSelected && !isCorrect) return 'bg-red-100 dark:bg-red-900/50 border-red-500';
+        if (isCorrect) return 'bg-green-200 dark:bg-green-800/60 border-green-600 dark:border-green-500';
+        if (isSelected && !isCorrect) return 'bg-red-200 dark:bg-red-800/60 border-red-600 dark:border-red-500';
         return 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600';
     };
     
@@ -163,7 +163,6 @@ const ReadingTestScreen: React.FC<ReadingTestScreenProps> = ({ testData, onBack,
 
         if (part !== 0 && availableParts.includes(part)) {
             if (activePart !== part) {
-                questionRefs.current = {};
                 setActivePart(part);
             }
             setScrollToQuestionId(question.id);
@@ -390,7 +389,7 @@ const ReadingTestScreen: React.FC<ReadingTestScreenProps> = ({ testData, onBack,
 
     const renderContent = () => {
         return (
-            <div className="lg:grid lg:grid-cols-3 lg:gap-8">
+            <div className="lg:grid lg:grid-cols-3 lg:gap-8 lg:items-start">
                 <div className="lg:col-span-2 space-y-8" ref={contentRef} onMouseUp={handleMouseUp}>
                     {isSubmitted && <div className="mb-12">{renderSummary()}</div>}
                     
@@ -437,7 +436,7 @@ const ReadingTestScreen: React.FC<ReadingTestScreenProps> = ({ testData, onBack,
                             )
                         )}
                         <button 
-                            onClick={() => { if(!isSubmitted && window.confirm('Are you sure you want to submit?')) handleSubmit(); }}
+                            onClick={handleSubmit}
                             disabled={isSubmitted}
                             className="w-full mt-4 bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors duration-200 disabled:bg-green-300 dark:disabled:bg-green-800 disabled:cursor-not-allowed"
                         >

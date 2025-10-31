@@ -376,7 +376,9 @@ Balance due date: December 13
 | **BALANCE DUE** | | **$500.00** |
 
 Comments or special instructions: See November 30 e-mail from Ms. Shibata about cake design. This will be for the GNA's annual reception.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 GARDENDALE (December 20)—The Gardendale Neighborhood Association (GNA) honored Mayor Karla Fugate at its annual reception last Saturday. Mayor Fugate had been asked to give a short speech about the city's plans to build a new recreational center, after which she was presented with a special plaque to thank her for her role in the Westside Park project. According to GNA president Manuel Yuen, "Mayor Fugate was instrumental in making last year's fund-raising festival for the park a huge success." The festival raised thousands of dollars more than the GNA expected.
 "It was a delightful surprise," said Mayor Fugate. "We set ourselves a difficult mission with the park project, but everybody in the GNA and the community at large came through admirably," the mayor continued.
 The GNA reception was held in the Gardendale Botanical Garden, which offered a beautiful setting. The food was provided by Dawn Sky Catering, which included an individual chocolate cake for each guest decorated with the GNA logo.`,
@@ -410,7 +412,9 @@ Sincerely,
 Kobu Matsui
 Kobu Matsui, Vice President
 Chisaka Gaming Systems
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 To: Virginia Granger <v.granger@chisakagamingsystems.jp>
 From: Jennifer Kinkaid <jkinkaid@albancgm.com>
 Date: June 12
@@ -446,7 +450,9 @@ Given your expertise in survey design and analysis, I would like you to develop 
 
 Regards,
 Henry Bunyasi
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **https://www.theushindigroup.co.ke/services_survey**
 **Satisfaction Survey - 1 May**
 At The Ushindi Group, we strive to provide you with top-quality marketing services. That is why we are asking our longtime clients to complete this short survey about our digital marketing services. With the information you provide, we can identify areas for improvement. Please submit your responses on or before 19 May. Thank you for helping us to serve you better.
@@ -457,7 +463,9 @@ B. Content creation, including written content, photos, and videos
 C. E-mail marketing to existing and potential customers
 D. Web and mobile app development and design
 Client name (optional):
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **https://www.theushindigroup.co.ke/companynews**
 **Improvements to Our Services**
 In response to customer feedback, The Ushindi Group will introduce a new e-mail marketing strategy on 15 July.
@@ -481,7 +489,9 @@ Rubio's childhood home was near a movie house, where he fell in love with the ar
 His extensive familiarity with a range of genres is apparent in his work. Titles range from the romantic *Send Me Some Roses* to the horror classic *That House*.
 Rubio retired from filmmaking at age 65 after almost 40 years of directing, but he has kept busy. Most recently, he has been working as a guest lecturer at the nearby Weberton Film School.
 Readers will be pleased to hear that our own Merrington Cinema will be showing Rubio's films throughout August. Whether you are a longtime fan or have never seen a Rubio film, you will surely enjoy this offering at Merrington Cinema.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **https://www.merringtoncinema.com**
 **Choose Your Own Double Feature**
 In August, we will celebrate the acclaimed director Pedro Rubio's birthday by showing many of his movies. And you can purchase tickets to two movies for the price of one! Rubio made the films listed below at the beginning of his directing career. See the Schedule page for the complete list of films and their weekly viewing times.
@@ -493,7 +503,9 @@ Two teams of researchers travel to Neptune and try to send their findings back t
 A group of old friends gather at a country house and discover that much has changed since they were last together. This film won the Gold Dreamer Award.
 *The Strange Drive*, Western, 107 minutes
 Cowboys on a cattle drive encounter a series of interesting and unusual strangers.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **https://www.merringtoncinema.com/reviews**
 I recently read a great article about director Pedro Rubio. It contained a lot of information about his work and life, including some surprising information about what he has been doing since he retired from filmmaking. The article also mentioned that Merrington Cinema would be showing his films. So I went to the cinema's Web site and saw the two-for-one deal. I thought this would be an excellent way to spend a Saturday, so I went! I saw two wonderful movies. One of the films I saw was new to me: it was about scientists on a mission in space. I loved it!
 For a movie fan like me, Merrington Cinema's promotion was perfect. I understand there will be a similar promotion for Meredeth Bui's films in October. I'll be sure to take advantage of great offers like this again.
@@ -517,7 +529,9 @@ Undeniable is an ad-supported literary journal of short fiction and nonfiction b
 • Attach your story in an e-mail to: submissions@undeniable.com. Please include a brief synopsis of your piece, and tell us how you discovered Undeniable.
 • We pay a $50 honorarium upon acceptance for publication.
 • If we accept your story, we will send you a contract and a form to set up an electronic money transfer.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** submissions@undeniable.com
 **From:** len.sutherland@onyxmail.com
 **Date:** March 15
@@ -531,7 +545,9 @@ Thank you for your consideration and for creating a forum for new writers like m
 
 Sincerely,
 Len Sutherland
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** len.sutherland@onyxmail.com
 **From:** jerrybuckman@undeniable.com
 **Date:** July 2

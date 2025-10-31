@@ -1,3 +1,4 @@
+
 import { ReadingTestData } from '../../types';
 
 const test10Part5: ReadingTestData = {
@@ -180,7 +181,7 @@ South Bank High School: High school diploma
 Dymocks University: Bachelor's degree
 EMPLOYMENT HISTORY
 Employer | Position | Duration
----|---|---
+---|---
 The Garment Barn | Sales associate | 2 years
 Altona Marketing | Assistant manager | 3 years
 EXPLANATION OF INTEREST IN THE POSITION
@@ -289,7 +290,7 @@ Presenter: Shrijana Patel
 Cost: €45 (Register by 10 January and receive a 10% discount!)
 This live webinar offers attendees a better understanding of how to improve the role that project management plays in their organizations. The presentation will provide the basics of managing projects and workers. Participants will learn strategies and best practices to effectively oversee their projects and foster buy-in from key players.
 Participants will explore a simple step-by-step process for managing projects and learn how to use tools and documents such as scope statements and communication plans. The presenter will also cover topics such as developing a project's business case and facilitating productive team meetings.
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 **E-mail**
 To: Maya Liu
 From: Leonard Chung
@@ -309,69 +310,53 @@ Leonard Chung`,
         },
         {
             id: 'passage-7-10-12',
-            text: `**Article: Galway (4 March)**—Adelle Rosier, a third-generation soap maker, opened her shop in Galway eight years ago. Nestled behind Eglinton Gourmet Market on Raven Terrace, her business, Rosier and Finch, is booming.
-Ms. Rosier credits the success to her commitment to lifelong learning. "Yes, my handcrafted soaps, shampoos, and lotions are luxurious," she said. "But there are a lot of high-quality skin-care products out there. So after learning the trade from my family, I have increased my sales knowledge by taking online courses in business-to-business (B2B) marketing."
-Ms. Rosier adds that those courses built her confidence in selling her products directly to hotels. "Thanks to what I learned in my B2B strategies courses, I managed to persuade a number of boutique hotels in Europe to try my products." And so Rosier and Finch skin-care products are available in guest rooms at, for instance, the Bruadair Hotel in Galway, the Florinda Grand in Lisbon, Portugal, and the Zerra Inn in Reykjavik, Iceland.
-Ms. Rosier further points out that many of her customers first learn of her products during a hotel stay. Afterward, they visit the shop in person or go online to purchase the items for themselves. Rosier and Finch is located at 12 Raven Terrace and can be found online at www.rosierandfinch.co.ie.
-
----
-**Review: https://www.florindagrand.pt/en/guest_reviews**
-I had to arrange a last-minute business trip to my company's Portugal office, and the usual hotel I book was completely full. Based on some online recommendations, I decided to stay at Florinda Grand. While this charming hotel is much smaller than the usual places I stay, it has every comfort one would want during a business trip. In addition to a tastefully decorated and comfortable room, there were gourmet treats on my pillowcase and the finest soap, shampoo, and other toiletries available for me to enjoy. My only regret is that I was in Lisbon for just three days. Next time I visit the Lisbon office, I will stay longer and book a room at the Florinda Grand.
-—posted by Ashton Wu, 7 June`,
+            text: `**Article: Planning a Tour of Your Facility by Didiane Lessard**
+Plant tours are commonplace in many factories, but not all tours are as effective as they could be. Too many companies make the mistake of adopting a one-size-fits-all approach rather than tailoring tours to maximize their usefulness. A potential investor and a casual tourist will probably not be impressed by the same things, so it is best to be clear about the tour's purpose early on. Here are some guidelines to make each tour as effective as possible.
+Be selective. Unless your tour is for a safety inspection, your guests do not need (or want) to see every part of your factory. Choose a few sections that will interest your guests and give them a better sense of your product. For example, journalists will want to create a story about your plant, so show them the parts of the plant that have historical significance, such as a room with the company's original production equipment.
+Timing is everything. Always be mindful of the physical demands of the tour. Even the hardiest guest will tire of standing or walking for long periods. It is a good idea to schedule breaks in tours lasting longer than an hour. The time spent in a single section matters also. If you allow guests only five minutes in an area, they will soon forget it. On the other hand, even the most impressive room gets boring after half an hour.
+Personality is NOT everything. While having a personable and friendly tour guide is essential, your guests are coming to see what goes into making your product. Tour guides get asked a variety of questions, some unexpected, so a comprehensive knowledge of the production processes is important (and absolutely vital during inspections). You also want someone who will keep the tour moving—visitors will appreciate a tour that begins and ends on time.
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+**E-mail**
+To: Masumi Toda <mt978@vidatechsystems.com>
+From: Ana Miftaroski <am680@vidatechsystems.com>
+Date: May 1
+Subject: Upcoming plant tour
+Attachment: Lessard_article
+Hi, Masumi,
+I have attached an April 15 article by Didiane Lessard to help you plan the tour we will be giving later this month. I especially agree with the section on timing. Since the tour, by necessity, will have to cover the entire plant, it must be conducted as efficiently as possible. As for a guide, I would have recommended Nathan Zarate, but he will be traveling on May 21. Perhaps Maja Clausen could do it. She has also worked here for several years; she is very knowledgeable about our facility, processes, policies, and procedures. I am confident that she will be able to handle any questions the visitors might ask.
+Ana Miftaroski, Vice President of Operations`,
             questions: [
-                { id: '181', questionText: 'What is the purpose of the article?', options: { A: 'To provide annual hotel ratings', B: 'To announce the opening of a store', C: 'To profile a small-business owner', D: 'To discuss online shopping trends' }, correctAnswer: 'C' },
-                { id: '182', questionText: 'How did Ms. Rosier improve her marketing skills?', options: { A: 'By visiting family members overseas', B: 'By joining a professional association', C: 'By working in the hotel industry', D: 'By participating in online classes' }, correctAnswer: 'D' },
-                { id: '183', questionText: 'What is stated about Rosier and Finch?', options: { A: 'It sells its products to other businesses.', B: 'It has shops in cities around the world.', C: 'It is redesigning its e-commerce site.', D: 'It offers courses on soapmaking.' }, correctAnswer: 'A' },
-                { id: '184', questionText: 'What is suggested about Mr. Wu?', options: { A: 'He manages Eglinton Gourmet Market.', B: 'He purchased Rosier and Finch products online.', C: 'He met Ms. Rosier on a business trip.', D: 'He likes Rosier and Finch products.' }, correctAnswer: 'D' },
-                { id: '185', questionText: 'According to the review, what was Mr. Wu not pleased about?', options: { A: 'The length of his trip', B: 'The decorations in the room', C: 'The comfort of the pillows', D: 'The size of the hotel' }, correctAnswer: 'A' }
+                { id: '181', questionText: 'What is one problem mentioned about factory tours in the article?', options: { A: 'They are often rescheduled at the last minute.', B: 'They give the same information to all types of visitors.', C: 'They fail to supply protective gear that fits everyone.', D: 'They allow groups that are too large.' }, correctAnswer: 'B' },
+                { id: '182', questionText: 'According to the article, what is the maximum amount of time that a tour should stay in one area?', options: { A: '10 minutes', B: '20 minutes', C: '30 minutes', D: '60 minutes' }, correctAnswer: 'C' },
+                { id: '183', questionText: 'What is NOT indicated in the article as a characteristic of a good tour guide?', options: { A: 'A friendly personality', B: 'The ability to stand for long periods', C: 'A deep knowledge of processes', D: 'The ability to pay close attention to time' }, correctAnswer: 'B' },
+                { id: '184', questionText: 'For whom is Mr. Toda most likely planning a tour?', options: { A: 'Casual tourists', B: 'New employees', C: 'Potential investors', D: 'Safety inspectors' }, correctAnswer: 'D' },
+                { id: '185', questionText: 'When is the tour scheduled to take place?', options: { A: 'On April 15', B: 'On April 21', C: 'On May 1', D: 'On May 21' }, correctAnswer: 'D' }
             ]
         },
         {
             id: 'passage-7-10-13',
-            text: `**Margot's House of Ice Cream: Flavor Purchases by Percentage of Sales (July)**
-| Flavor | Percent |
-|---|---|
-| Chocolate | 22 |
-| Vanilla | 18 |
-| Strawberry | 11 |
-| Cookies and cream | 8 |
-| Butter pecan | 8 |
-| Mint chocolate chip | 7 |
-| All others | 26 |
-
----
-
-**MEMO**
-To: All Store Managers
-From: June Willcox, CEO, Margot's House of Ice Cream
-Subject: New Stores
-Date: October 5
-Margot's House of Ice Cream is proud to welcome the following new stores.
-| Store Number | Location | Opening Date | Manager |
-|---|---|---|---|
-| 66 | Framingham, Massachusetts, United States | September 1 | Inga Slavin |
-| 67 | Appleton, Wisconsin, United States | September 7 | Zheng Tong |
-| 68 | Wollongong, New South Wales, Australia | September 14 | Geoffrey Pratt |
-| 69 | Rotorua, New Zealand | September 15 | Kehinde Ilogu |
-| 70 | Greater Sudbury, Ontario, Canada | September 29 | Hallie Strafford |
-For the next six months, we will be supporting these stores with advertisements in their local media markets. In December, we plan to open stores in Italy and Switzerland. Demand for our quality product is higher than ever, our market share is increasing, and we are not finished expanding! Stay tuned for more information!
-
----
-
-**Popular Ice Cream Purveyor Comes to New Zealand**
-By Ysai Mendez
-ROTORUA (2 November)—Residents of Rotorua have been flocking to Cargill Street, where Margot's House of Ice Cream has opened its first store in New Zealand.
-"I don't know what their secret is, but their ice cream really is something special,” said Jeremy Frank, a schoolteacher who was enjoying ice cream cones with his family on a recent afternoon. "We've been here several times already since they opened. I think we'll be regulars."
-“I love strawberry, and their strawberry is the best I ever had," added his daughter, Olivia Frank, age 10.
-Margot's House of Ice Cream was founded five years ago in San Francisco by Margot Summers, a former chemistry major. Its ice cream contains at least 11 percent milk fat. Milk used in production, according to company CEO June Willcox, is sourced locally or regionally whenever possible.
-Kehinde Ilogu, the manager of the Rotorua store, says that the number of visitors has been rising steadily.
-"We plan to keep the momentum going by having special events once a month," he said. "Next up is the strawberry festival. New Zealand's strawberry season will be getting started. In addition to our superb ice cream, we'll offer strawberries dipped in chocolate, strawberry cupcakes, and strawberry milkshakes. We look forward to a great future in Rotorua."`,
+            text: `**https://www.zonecatering.com/home**
+Zone Catering provides food trucks at film and television production sites throughout California. Just let us know where you need a food truck and how many people you need to feed. We can serve your entire cast and crew. Our trucks also move with you and your team if you are shooting scenes in various locations.
+At Zone Catering, we offer a wide variety of cuisines. All the fruits and vegetables we use in our menus are grown here in California. Our menus are easily adapted to accommodate dietary restrictions. For convenience, our food trucks offer both full meals and individual items. We can serve meals buffet-style, or people can order directly from the truck.
+Let us take care of the catering for your production. You will find our food delicious, and you will find our service friendly and convenient. We even offer 24-hour support in case any issues arise while we are at your location. We hope to serve you soon!
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+**Schedule: Zone Catering Food Trucks, June 10**
+| Film | Shooting Location | Contact Person |
+|---|---|---|
+| Trappings | Harpin Lot | Erin Begg |
+| Make the Meeting | 192 Laredo Street | Mark Lillo |
+| Tutors and Tuxedos | Tandor Fields | Jun-Seo Kil |
+| Jatem and the Storm | Spectrum Hall | Donna Gawason |
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+**Testimonial from https://www.zonecatering.com/testimonials**
+June 10—I have been in the acting business for over 25 years and am sometimes disappointed by the food trucks on film production sites. That was not the case today when we were filming Make the Meeting. The food truck had excellent coffee, and the strawberries in the large fruit salad were so fresh and tasty! Even though there was a long line of customers on an extremely hot and uncomfortable day, the server was able to get everyone's food ready quickly. She was friendly and easygoing, too! Even the food truck was pleasant-looking—the mural painted on the side of the truck was beautiful! I hope to see Zone Catering food trucks at future film shooting locations.
+—Robert Chiodo`,
             questions: [
-                { id: '186', questionText: 'According to the sales report, what flavor of ice cream is purchased at the same rate as Butter pecan?', options: { A: 'Chocolate', B: 'Vanilla', C: 'Cookies and cream', D: 'Mint chocolate chip' }, correctAnswer: 'C' },
-                { id: '187', questionText: 'What is true about the products listed in the sales report?', options: { A: 'They contain at least 11 percent milk fat.', B: 'They are made with artificial flavors.', C: 'They will increase in price soon.', D: 'They are sold mainly in San Francisco.' }, correctAnswer: 'A' },
-                { id: '188', questionText: 'What is indicated in the memo about the company\'s new managers?', options: { A: 'They were trained in Italy and Switzerland.', B: 'They will receive advertising support for six months.', C: 'They expect their stores to become profitable in December.', D: 'They offered special promotions on opening day.' }, correctAnswer: 'B' },
-                { id: '189', questionText: 'What will soon happen at store 69?', options: { A: 'More ice cream flavors will be added to the menu.', B: "A child's birthday will be celebrated.", C: 'An assistant manager will be hired.', D: 'A range of special treats will be sold.' }, correctAnswer: 'D' },
-                { id: '190', questionText: 'Who is most likely to enjoy the strawberry festival?', options: { A: 'Mr. Mendez', B: 'Ms. Willcox', C: 'Ms. Frank', D: 'Ms. Summers' }, correctAnswer: 'C' }
+                { id: '186', questionText: 'What does the Web page indicate about Zone Catering?', options: { A: 'It specializes in providing food at music concerts.', B: 'It has lower prices than its competitors.', C: 'It recently moved its corporate office to California.', D: 'It provides customer support 24 hours a day.' }, correctAnswer: 'D' },
+                { id: '187', questionText: 'According to the schedule, who was the contact person for the filming of Trappings on June 10?', options: { A: 'Erin Begg', B: 'Mark Lillo', C: 'Jun-Seo Kil', D: 'Donna Gawason' }, correctAnswer: 'A' },
+                { id: '188', questionText: 'Where was the food truck that Mr. Chiodo visited?', options: { A: 'At Harpin Lot', B: 'At 192 Laredo Street', C: 'At Tandor Fields', D: 'At Spectrum Hall' }, correctAnswer: 'B' },
+                { id: '189', questionText: 'What is probably true about the salad Mr. Chiodo ordered?', options: { A: 'It had an unusual taste.', B: 'It was too big for him to finish.', C: 'It included several types of berries.', D: 'It contained fruit grown in California.' }, correctAnswer: 'D' },
+                { id: '190', questionText: 'What is indicated about the food truck server in the testimonial?', options: { A: 'She had difficulty working in the heat.', B: 'She paints murals in her spare time.', C: 'She prepares orders quickly.', D: 'She has worked in her industry for 25 years.' }, correctAnswer: 'C' }
             ]
         },
         {
@@ -386,9 +371,7 @@ I'm writing to confirm the details of our telephone conversation earlier today. 
 Our maintenance fee, covering all four kiosks, is $120 per month. Our technicians will be available 24 hours a day, 7 days a week, to service the kiosks. All equipment will meet or exceed international quality standards, and all our work is guaranteed.
 A formal written agreement will be sent to you by registered mail. We look forward to working with you.
 Sincerely, Paul Soderman, Managing Director, Galahad Industrial Machinery
-
----
-
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 **E-mail 2**
 To: Paul Soderman <p.soderman@galahadindustrialmachinery.com>
 From: Emi Tokuda <etokuda@paterradepartmentstores.com>
@@ -398,9 +381,7 @@ Dear Mr. Soderman,
 Please be advised that we have decided to close our store at 1506 Maple Street. We plan to transfer the inventory and all equipment to our new location at 3300 Town Square Plaza. The transfer is planned for mid-June, but we have not yet set a date.
 I will contact you next month to confirm the date and arrange a convenient time for your work crew to install the self-service kiosk. I understand that, per our agreement dated January 25, your charge for the reinstallation will be the same as for the initial installation at the Maple Street store.
 Yours truly, Emi Tokuda, Managing Director, Paterra Department Stores
-
----
-
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 **MEMO**
 To: All Paterra Staff
 From: Eleanor Bianchi, Branch Manager
@@ -418,33 +399,35 @@ In appreciation of your efforts, I've brought pastries from Aniqa's Bakery. I've
         },
         {
             id: 'passage-7-10-15',
-            text: `**Survey: Consumers Prefer Physical Stores**
-A recent consumer survey has shown that 33% of respondents prefer to touch the products they intend to purchase. Moreover, 61% of those surveyed said they are likely to spend more when shopping at a brick-and-mortar store rather than at an online store. These data, backed up by other consumer preference studies, are causing many merchants who generate all their revenue from online sales to open physical stores as a supplement to their online presence.
-The advantage of a physical space is that it helps retail owners build brand loyalty. "In terms of convenience, nothing beats online," says Marlene Fitzroy, who owns Toddles, a children's store in Shelburn, and an online site, toddles.com. "But a physical space fosters a sense of community that keeps local customers coming back and attracts new ones."
-Ms. Fitzroy, a frequent speaker at local business events, is not only a strong supporter and promoter of customer engagement; she also practices what she preaches. "Four times a year, we host a special sales event during which children can enjoy themselves with a variety of activities," she said. “These events are a hit with both the children and their parents. And even if the parents don't buy anything on such occasions, the next time they need a children's toy, game, book, or puzzle, they'll probably think of us."
+            text: `**To:** kkennedy@globalmail.com
+**From:** deborth@whitmooreproperties.com
+**Date:** August 5
+**Subject:** Guest house location
 
----
-**Shelburn Business Coalition (SBC) Invitation**
-Businesspeople from Shelburn and the surrounding area are invited to join us at the Shelburn Convention Center on October 8 for our annual Business Summit.
-Our keynote speaker this year will be Mr. Hansraj Deshpande, founder and CEO of Wintereden Hoteliers. Other speakers, all local business owners, are Ms. Omodele Akindjo, Ms. Marlene Fitzroy, Mr. Jasper Klinkhamer, and Mr. Alvin Liu. Topics to be covered include building a strong workforce, establishing a line of credit, engaging with customers, and attracting venture capital. By registering for this event, you will automatically be added to our e-mail list. Please visit our Web site, www.shelburnbusinesscoalition.org, for the full schedule.
+Dear Kevin,
+I recently came across a property for sale that may be of interest to you. I have made some initial inquiries and I believe that it may be suitable to turn into a guest house like the one you have in mind. Presently, the location would probably not attract many drive-by customers; although it is near a major road and a popular restaurant, the closest tourist area is a few kilometers away. However, the construction of an amusement park just half a kilometer away will be complete in January of next year. So it seems safe to assume that in the near future there will be an increased demand for hotels in the area. I'm emailing you a copy of the property listing. If you need more information, I will call the agency, request a tour, and have a look inside the property. If it meets your needs, we should try to make an offer below the listing price because I think the price is a bit high given the interior renovations that are required. But I must say that I'm impressed by the property's special features, which would be nice for attracting guests.
+Sincerely, Deb Orth
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+**Real estate listing #3827**
+- Commercial building located 3 kilometers east of Seven Springs
+- Previously operated as a multi-family apartment building
+- Building has 800 square foot units (15 guest rooms), all with a kitchen and full bath
+- Includes 10 onsite parking spaces
+**Special features**
+- Amenities include an outdoor swimming pool. 7 of the 15 rooms have a view of the pool.
+- Walk up attic with 1000 square feet of storage. No renovation necessary for common areas, although individual units could use aesthetic renovations such as new carpet and paint.
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+**From:** Kevin Kennedy
+**To:** Deb Orth
+**Received:** August 5, 6:53 PM
 
----
-**E-mail**
-To: Vaughn Sgammato <vsgammato@opalmail.com>
-From: Irene Warga <irenewarga@shelburnbusinesscoalition.org>
-Date: September 15
-Subject: Your confirmation
-Dear Mr. Sgammato,
-Shelburn Business Coalition thanks you for registering for our Business Summit. Your confirmation number is R56690.
-As a reminder, please note that the convention center underground garage will be closed for maintenance on October 8. Therefore, please park your car in the public parking area across the street. At the end of the summit, you will receive a voucher to cover the parking fee.
-We look forward to seeing you. If you have any questions, please contact me at 555-0138.
-Yours very truly, Irene Warga, Event Coordinator`,
+Hello, Mr. Orth. I've got your e-mail and the related information. That is very helpful to me. By the way, I was wondering if we can get more parking spaces. I think it's better for each room to be provided with at least 1 space for parking. If it is possible, the property would be quite good. Please let me know about this issue as soon as possible. Thank you.`,
             questions: [
-                { id: '196', questionText: 'According to the article, what action is being considered by many online sellers?', options: { A: 'Redesigning their Web sites', B: 'Increasing their advertising budgets', C: 'Opening physical store locations', D: 'Developing new lines of products' }, correctAnswer: 'C' },
-                { id: '197', questionText: 'What does Ms. Fitzroy say she offers her customers?', options: { A: 'A convenient place to shop', B: "Discounts on children's clothing", C: 'An enjoyable shopping experience', D: 'Special deals on toys' }, correctAnswer: 'C' },
-                { id: '198', questionText: 'Who most likely will speak on the topic of engaging with customers?', options: { A: 'Ms. Akindjo', B: 'Ms. Fitzroy', C: 'Mr. Deshpande', D: 'Mr. Liu' }, correctAnswer: 'B' },
-                { id: '199', questionText: 'What is most likely true about Mr. Sgammato?', options: { A: 'He was added to a mailing list.', B: 'He will be starting a business.', C: 'He received a discount on his registration fee.', D: 'He has never attended an SBC event before.' }, correctAnswer: 'A' },
-                { id: '200', questionText: 'What is Mr. Sgammato expected to do upon arrival at a convention center?', options: { A: 'Ask to see to Ms. Warga', B: 'Park his car across the street', C: 'Obtain a confirmation number', D: 'Pick up some conference material' }, correctAnswer: 'B' }
+                { id: '196', questionText: 'What will happen in January?', options: { A: 'A new amusement park will open.', B: 'Renovation of the building will get under way.', C: 'A restaurant will open.', D: 'The construction of a new road will begin.' }, correctAnswer: 'A' },
+                { id: '197', questionText: 'What does Deb Orth offer to do?', options: { A: 'Visit a property for sale', B: 'Negotiate a lower price', C: 'Send photographs of the property', D: 'Request some quotes from contractors' }, correctAnswer: 'B' },
+                { id: '198', questionText: 'What feature does Deb Orth consider an advantage of the building?', options: { A: 'Its recently renovated common area', B: 'Its storage space', C: 'Its swimming pool', D: 'Its new carpeting' }, correctAnswer: 'C' },
+                { id: '199', questionText: "What was the building's prior use?", options: { A: 'A multi-family apartment', B: 'An inn', C: 'A restaurant', D: 'A real estate office' }, correctAnswer: 'A' },
+                { id: '200', questionText: 'How many parking spaces does Kevin want in total?', options: { A: '5', B: '10', C: '15', D: '20' }, correctAnswer: 'C' }
             ]
         }
     ]

@@ -186,7 +186,7 @@ Tillford Press is based in Manchester. It has offices in New York, Toronto, and 
         },
         {
             id: 'passage-7-202301-4',
-            text: `Questions 154-155 refer to the following text-message chain.
+            text: `Questions 153-154 refer to the following text-message chain.
 Greg Skagen (8:58 A.M.) Hi, Brenda. I'm here in the warehouse. All of my trainees have arrived, but I noticed the power door at Loading Dock B is acting up.
 Brenda Sadauskas (8:59 A.M.) Again?
 Greg Skagen (8:59 A.M.) When I push the button to open it, it raises all the way up but then drops back down to the closed position after about 30 seconds.
@@ -329,7 +329,7 @@ One similarity that the Pro Phone 4 has with previous models is the charger. Goi
 **Technician Assigned:** Arnold, Sam
 **Computer Workstation ID:** HYS31
 **Description:** Is it possible to remove the new layers of security on my voice mail in the new phone system? I really don't want to use a password, and I certainly don't want to change it every month. I don't need a high degree of security because my work is not confidential. If someone else gained access to my messages, it wouldn't do much harm.
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 To: Gina Xi
 From: Sam Arnold
 Date: Thursday, 10 April
@@ -351,7 +351,7 @@ Tech Support Associate`,
             ]
         },
         {
-            id: 'passage-7-202301-11',
+            id: 'passage-7-202301-12',
             text: `Questions 181-185 refer to the following e-mail and review.
 *E-mail*
 To: Linda Hanshu
@@ -366,7 +366,7 @@ All other aspects of the game are on schedule. Please send me an update about th
 Regards,
 Cliff Merson
 Project Manager, Rimerko Games
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 **Review of Titan Adventure: Neptune's Voyage**
 By Leo Weber, April 1
 
@@ -381,7 +381,7 @@ Neptune's Voyage launches May 5 on Rimerko Clutch and FS5. It is available in En
             ]
         },
         {
-            id: 'passage-7-202301-12',
+            id: 'passage-7-202301-13',
             text: `Questions 186-190 refer to the following schedule, e-mail, and job advertisement.
 **Wonder Ridge Radio Broadcast Schedule, Monday-Friday**
 | 6 A.M.-Noon | Noon-4 P.M. | 4 P.M.-7 P.M. | 7 P.M.-10 P.M. |
@@ -389,7 +389,7 @@ Neptune's Voyage launches May 5 on Rimerko Clutch and FS5. It is available in En
 | **COFFEE BREAK** | **AFTERNOON JAZZ** | **FOLK FRENZY** | **JOSIE'S JOINT** |
 | Local news and interviews with community members | Music from traditional jazz to jazz fusion | Folk music from around the world | Modern sounds selected by our station's own music director |
 | Host: Felice Finney | Host: Malachi Mzee | Host: Penny Ariza | Host: Josie Jones |
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 *E-mail*
 To: feedback@wonderridgeradio.org
 From: pfabre@sendmail.net
@@ -400,7 +400,7 @@ To the folks at Wonder Ridge Radio:
 As I was driving last week, I got tired of listening to sports talk and turned the dial. Suddenly, my car was filled with a song that I hadn't heard in many years. It was traditional music from France, where my grandmother was born. She used to play that song when I was a child. I never expected to hear it on the radio here in Wonder Ridge. Thanks for this experience and for all your great programs.
 Your new fan,
 Pierre Fabre
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 **Wonder Ridge Radio Job Opening: Programming Assistant**
 Posted November 2
 **Job Description**
@@ -421,7 +421,7 @@ To apply, e-mail a résumé and cover letter to hiring@wonderridgeradio.org.`,
             ]
         },
         {
-            id: 'passage-7-202301-13',
+            id: 'passage-7-202301-14',
             text: `Questions 191-195 refer to the following instructions, e-mail, and sign.
 **Instructions for Requesting Records**
 Thank you for your interest in official records and documents maintained by the City of Abilene. To file a request for public information, please follow these steps.
@@ -429,7 +429,7 @@ Thank you for your interest in official records and documents maintained by the 
 2. Use the drop-down menu to locate the department from which you are seeking information and submit your request. You will receive a confirmation e-mail with a reference number.
 3. The department staff will locate the requested records and contact you when they are available. You can have the records delivered to you, or you can pick them up in person. If you prefer to pick them up in person, you must make an appointment with the department staff.
 4. If there are any fees associated with your request, you will receive an itemized statement detailing the services provided and the charges for those specific services.
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 **E-Mail Message**
 To: Joo-Hee Park <jhpark@coa.net>
 From: Keith Brandenberg <kbrandenberg@mailcurrent.com>
@@ -442,7 +442,7 @@ I have a question about the fee. Apparently, I am being charged $300 for my docu
 Please clarify the fee for me, and let me know if I can pick up my documents this week. Thank you.
 Best regards,
 Keith Brandenberg
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 **City of Abilene Administrative Building**
 Visitors must sign in prior to entering this facility.
 Please enter your name and the room you will visit in the logbook.
@@ -460,14 +460,15 @@ Wastewater – Room 103`,
             ]
         },
         {
-            id: 'passage-7-202301-14',
-            text: `Questions 196-200 refer to the following review and e-mails.
+            id: 'passage-7-202301-15',
+            text: `Questions 196-200 refer to the following review, e-mail, and second e-mail.
+
 **Famous Actor, First Book**
 LONDON (25 February)—Fans of Simon Eklund will be delighted with his autobiography, The Theatre Lights Dimmed, the first book he has written in his storied career as an actor. It provides wonderful insight into his career, starting with his first roles in cinema in his native Sweden, moving into his work in France and Italy, and finishing with his recent theatre work in the U.K.
 In his book, Mr. Eklund dedicates a fair amount of text to discussing his mentor, Charles Gunnarsson, who helped him develop his skills early on in Stockholm. He also describes the difficulty of transitioning into different types of roles, especially from comedic to dramatic acting. He includes several funny anecdotes about his first attempts at acting onstage here in London. He describes them as disastrous, but anyone who saw his recent performance in Life and Games would say just the opposite.
 Mr. Eklund has long been a captivating actor on stage and screen, and now he is a thoroughly engaging author.
 —Uma Joshi
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 To: Edith Hocking
 From: Uma Joshi
 Date: 2 March
@@ -481,7 +482,7 @@ Best,
 Uma Joshi
 Arts and Culture Editor
 Top News U.K.
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 *E-mail*
 To: Uma Joshi <ujoshi@topnews.co.uk>
 From: Maria Cazalla <mcazalla@zephyrmail.se>

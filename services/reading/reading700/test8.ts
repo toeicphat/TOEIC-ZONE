@@ -292,7 +292,9 @@ Winston & Pretlow Company is pleased to announce that we have assumed the manage
 - **Maintenance and Operations:** Maintenance Supervisor, Mr. Michael Pittman <mpittman@winstonpretlow.com> (For issues with landscaping and outdoor maintenance, please contact our landscaping contractor directly, Mr. Marshall Weaver of Odyssey Landscape Services at mweaver@odysseylandscape.com)
 - **General Management:** Property Manager, Ms. Colleen Bullock <cbullock@winstonpretlow.com>
 Winston & Pretlow Company, 919-555-7870
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **From:** Mark Tinsley <mtinsley@comptontechnologies.com>
 **To:** Edward Ross <edross@winstonpretlow.com>
 **Date:** June 25
@@ -310,7 +312,9 @@ My name is Mark Tinsley and I work at Compton Technologies. We are located on th
             id: 'passage-7-708-12',
             text: `**Nuvotech Biosciences**
 Aiden Kelly, Vice President of Clinical Research
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** Aiden Kelly <akelly@nuvotech.com>
 **From:** Yuri Ito<yuri.ito@stricklanduniversity.edu>
 **Subject:** Follow up
@@ -333,7 +337,9 @@ I enjoyed meeting you at the clinical research conference in Anaheim, California
 **Re:** New advertising campaign
 At tomorrow's meeting, we need to make a final decision on which magazine we will advertise in for Zing all purpose cleaner. As you may know, we previously discussed advertising Zing using direct mailers or on the Internet, but we ultimately decided on inserts that will be placed inside magazines. In preparation for the meeting, please take a look at the attached list of magazines. We originally considered 15 different magazines, but we narrowed it down to these five based on circulations, size, price, and insert limitations. The attached table shows the different options and criteria we must take into consideration as we make a final selection.
 The genres of magazines are varied because cleaning products are used by everyone. Therefore, we are not targeting any specific readership. Management has indicated that they prefer the least expensive option. Although its circulation of 95,000 is less than the others, it has the best ratio of price to circulation and also limits the number of inserts. This means our advertisements will not have to compete with a lot of other inserts for the readers' attention.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 | Magazine | Circulation | Frequency | Max Inserts | Rates | Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | Sports Today | 180,000 | Weekly | 8 | $225,000 | |
@@ -341,7 +347,9 @@ The genres of magazines are varied because cleaning products are used by everyon
 | Paparazzi | 135,000 | Monthly | No limit | $150,500 | Entertainment news |
 | Discovery Earth | 125,000 | Monthly | 4 | $155,000 | Complimentary copy on airlines |
 | Health & Fitness| 95,000 | Monthly | 2 | $120,000 | |
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** Allison O'Donnell
 **From:** Christina Hendricks
 I've checked out the attached list. You recommended the cheapest publication but I don't think the option would be effective and suitable for our product, considering the potential readers. Rather, I think that the other magazines intended for home owners or many people will be more successful. I want us to reconsider this issue more carefully by the next meeting.`,
@@ -361,7 +369,9 @@ Jared Campbell is excited to announce that Campbell Studios is expanding to Barb
 - All portraits taken during the 1st-15th of April will receive a 20% discount.
 - All portraits taken during the 16th-30th of April will receive a free 8"x10" picture frame (valued at $50).
 **Terms:** Appointments for portraits must be made at least two days in advance. Cancellations made less than 24 hours before the scheduled appointment will be assessed a $20 fee. A 50% deposit is expected on the day of service.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** Jared Campbell
 **From:** Alford Willis
 **Sent:** April 10
@@ -380,14 +390,18 @@ On the weekend of April 25th, my son and his family will be visiting from Denton
             text: `**From:** Esther Simon
 **To:** Mr. Berkley
 I attended the Jump Junior Dance Competition yesterday and took some photographs that I think will be perfect for your magazine. I have attached the pictures to this letter and have labeled each picture with a name and short description. I recommend you to consult these attachments. I hope you will be able to use these for your article about the competition.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Picture Descriptions**
 - **Finalist:** All the finalists in the competition
 - **Shine-1:** The winner, Jennifer Shine on the stage
 - **Shine-2:** Ms. Shine at the awards ceremony
 - **Shine-3:** Ms. Shine hugging her coach, Matthew Collage
 - **Judges:** Judges evaluating a performance
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **From:** Derek Berkley <dberkley@flipsidedance.com>
 **To:** Esther Simon <colorworks@simonphotos.com>
 **Date:** September 10

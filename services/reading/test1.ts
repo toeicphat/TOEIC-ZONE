@@ -160,7 +160,7 @@ Follow the pictures and begin the assembly by placing the main part on its side.
         {
             id: 'passage-7-1-2',
             text: `We are asking all Winnipeg staff to keep a copy of this schedule at their desks as a quick reference tool for scheduling interoffice meetings. Whenever possible, please schedule these meetings during one of the underlined hours, that is, after 7:00 A.M. but before 11:00 A.M.
-            
+                
 Winnipeg | Toulouse
 ---|---
 7:00 A.M. | 2:00 P.M.
@@ -177,9 +177,9 @@ Winnipeg | Toulouse
         {
             id: 'passage-7-1-3',
             text: `The Bryant Foyer is one of the premier event spaces in our area. Set on a hill, it has expansive windows that provide sweeping views of the adjacent botanical gardens and the river. Built in 1897, it was the home of the Francona Charitable Trust until its renovation just over a year ago. Today, the space can accommodate up to 200 guests and is ideal for wedding receptions, office parties, and panel presentations. With its marble floors, cathedral ceiling, and stunning artwork, the Bryant Foyer is the ideal location for your next gathering.
-            
+                
 The on-site restaurant, Andito's, caters our events and also operates as its own business. This farm-to-table restaurant, headed by chef Michaela Rymond, meets all dietary needs and has revolutionized the local food scene. Area residents know to plan far in advance to get a seat.
-            
+                
 To reserve the event space or to make a dinner reservation, give us a call at 216-555-0157.`,
             questions: [
                 { id: '151', questionText: 'What is indicated about the Bryant Foyer?', options: { A: 'It is located on the shores of a lake.', B: 'It has recently been renovated.', C: 'It will build a botanical garden for guests.', D: 'It is reserved solely for corporate events.' }, correctAnswer: 'B' },
@@ -314,7 +314,7 @@ SYDNEY (4 June)—Kitchen Swifts and Chef Darius Cordero are joining together to
 "I've designed these simplified recipes for Kitchen Swifts so that cooks at home can enjoy new and exciting flavours with ease," he said. "While preparing and eating these meals, you can feel like you are travelling the world with me."
 Zahra Chambers, vice president of Kitchen Swifts, says she is pleased to work with Chef Cordero and to offer delicious new recipes to their customers. Kitchen Swifts supplies menus, recipes, and ingredients for two people, four people, or six people, including a range of vegetarian selections. Customers choose the most appropriate meal options, and then a box is delivered weekly. Current customers will see no price increase with the partnership. To find out more, visit the Kitchen Swifts Web site at www.kitchenswifts.com.au.
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 https://www.sydneyrestaurants.com.au
 A colleague arranged for us to eat at Enriqua's while I was at a conference in Sydney. It is usually fully booked for dinner; you may need to call months in advance for a table. We had a wonderful lunch there instead. Everything was delicious, and the bread and desserts are baked on-site! It was a worthwhile treat before I flew back to Hong Kong.
@@ -343,7 +343,7 @@ Sincerely,
 Conor Boyle
 Ceoleire Classics
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 Northern Ireland Ferry Service
 Date of Issuance: 26 May
@@ -371,7 +371,7 @@ Profiled in the latest Business Directions Nigeria newsletter, Train to Achieve 
 - Starting an Internet Radio Station (TTA7629): Online radio host Natalie Kabiru shows you how to appeal to your target market and gives practical tips for setting up your broadcast service.
 - Basics of Graphic Design (TTA7633): Veteran graphic designer Doug Umaru helps you acquire the basic skills needed to start a graphic design business.
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 Discussion forum for students enrolled in Train to Achieve Class TTA1504
 Posted on: 21 May, 9:41 A.M.
@@ -379,7 +379,7 @@ Posted by: Joseph Egbe
 Subject: Presentations
 Viewing the list of students enrolled in this class, I remembered chatting with some of you on the forum for January's poster design class. I look forward to sharing our learning experiences again for this class. Yesterday I was the second student to meet with Mr. Akpan for an individual videoconference about my business. I own a food truck from which I sell baked goods, and when I shared with Mr. Akpan the outline for my Web site, he suggested that I add a section with vivid images of all my baked goods. It was helpful advice.
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 Egbe's Bakery—Unique baked-in flavours in every bite!
 - Section 1: Explore our menu and price list
@@ -401,14 +401,14 @@ By Rebecca Roats
 NOTTINGHAM (1 August)—Orange Bay Kitchen has been serving up an infusion of Jamaican flavours in a laid-back Caribbean atmosphere for six months now. Managed by Keron Deslandes, the 150-seat restaurant is an aromatic jewel amid the bustling shops and eateries in Wester Square. The servers are always happy to help diners select from the variety of delights on the extensive menu, which includes curried goat, oxtail soup, and red snapper. The restaurant is most famous for its jerk chicken. Marinated for 24 hours prior to grilling and served with sides of stewed cabbage and coconut rice, the dish is a good deal at £12.
 If you stop in on any Friday night between 7 and 11 P.M., you will enjoy live reggae music.
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 https://www.dinerreviews.co.uk/orangebaykitchen
 Posted on 22 August by Tamika Peterkin, tpeterkin@sunmail.co.uk
 Orange Bay Kitchen: 2/5 Stars
 After reading a glowing article about Orange Bay Kitchen by Rebecca Roats, I was eager to give this place a try. My husband and I arrived there at 7 P.M. yesterday, keen to enjoy live music with our dinner. Unfortunately, the band's performance that night had been cancelled. Undeterred, we stayed and both ordered the jerk chicken. While the chicken's smoky flavour was outstanding, the stewed cabbage was lacking in flavour. Also, the portion size was smaller than we had anticipated, so we ordered another appetiser to avoid going home hungry. The head chef came out to apologise and was extremely nice, but we will probably not go back anytime soon.
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 E-Mail Message
 To: tpeterkin@sunmail.co.uk
@@ -447,7 +447,7 @@ Delivery charge | $350.00
 Grand Total | $4,535.00
 Please see the enclosed notice outlining important changes to your billing.
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 Orbys Distributors
 To our valued customers:
@@ -459,7 +459,7 @@ Rest assured that our long-standing incentives remain in place:
 - Free samples for members of our Frequent Buyer Club
 More information about our transition to electronic invoicing is available on our Web site. Thank you for your support. Orbys Distributors appreciates your business.
 
----
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 
 *E-mail*
 To: Mary Peterson, Billing Department

@@ -316,7 +316,9 @@ I have been renting a one-bedroom apartment in your building on Maple Boulevard 
 After spending three hours trying to repair the system, Mr. Simpson told me that he needed to order a part in order to fix the system correctly. It took 5 days for the part to arrive and be installed. While I acknowledge Ms. Myers and Mr. Simpson did everything they could to repair the system as quickly as possible, I was still without light almost a week. According to my rental agreement, electricity is included in my monthly rental payment; I feel I should receive financial compensation for my recent suffering. I paid $700 in rental last month and I think I'm entitled to $200 in compensation. I was forced to use several portable battery powered lamps and flashlights to lighten over 5 days.
 If you have further question, contact me at 888-423-1421 or email me at eallenhotmail.com.
 Sincerely, Elaine Allen, Apartment 8-A
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** Elaine Allen | **From:** William Kresky | **Date:** May 12 10:26
 Dear Ms. Allen,
 I am very sorry to hear that the electrical system in your apartment was out of commission for such an extended period of time. I fully understand the inconvenience this might have caused. I will be mailing you a reimbursement check in the amount that you requested. You have been a loyal tenant, and hope that will continue well into the future.
@@ -337,7 +339,9 @@ In a vivid account of his life as a male ballet dancer, Mr. Tsu will discuss his
 - **Admission fee:** $20.00 | **Special student price:** $15.00
 - **Post-event reception:** 8:30 P.M. – 10 P.M (Reservations required)
 To reserve a seat, contact the Art and Society Council membership coordinator at 1-800-555-7324.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Become a member of the Art and Society Council!**
 Membership offers these benefits:
 - Free admission to all Art and Society Council events
@@ -367,11 +371,15 @@ Assignment: Sherrington Accounting Services
 | Fri | Jul 14 | 8:00 AM | 4:00 PM | 8/00 |
 **TOTAL 40/00**
 *Employees are expected to take an unpaid lunch break of one-half hour each day. Employees must receive approval from their managers at their work assignment if they work over time.*
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** Sandra Culver | **From:** Hector Morales
 **Date:** July 18 | **Subject:** Weekly Time Report
 I'm writing concerning the weekly time report you submitted for the hours you worked last week at Sherrington Accounting Services. The report indicates that you worked 40 hours last week, but I received an e-mail from Melinda Burgess approving 3 hours of overtime to assist with a company event on the evening of Jul 12. If this information is correct, I will need you to revise the report to reflect those 3 additional hours and then I would be happy to approve it for you. I would like to make sure that you are compensated properly.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **From:** Sandra Culver | **Received:** July 19, 9:33 A.M.
 Mr. Morales, thank you for adjusting my payroll information. I confirm that I worked over time a week ago. Due to an unexpected schedule, I'm not certain whether I will be paid or not. I sent an e-mail with the document you required. Please check out the information. Also, I really want to be given more assignments like this time. If possible, I will carry out allocated duties very well. I'm looking forward to your response.`,
             questions: [
@@ -392,7 +400,9 @@ Register online at keysolutuions.com.
 2. **Management and Motivation:** explains how you can execute strategies most effectively and what you can do to encourage your team to work at its highest performance level. (Thurs, Apr 23, 9AM-1PM, Cost £120)
 3. **Customer Life Cycle:** recommends resources and tactics to help you retain your present customers and attract potential customers. (Thurs, May 21, 9AM-12PM, Cost £100)
 4. **Product Development:** inspires you how to revitalize and speed up your process for creating new products by studying several cases in detail. (Thurs, Jul 16, 9AM-2PM, Cost £140)
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **ONLINE REGISTRATION FORM**
 **Name:** Louise Jackson | **Workshop Number:** 3 | **Date:** May 21
 **Comments:** Some of my colleagues in the office may also be interested in attending. Do you offer special rates for groups?`,
@@ -411,7 +421,9 @@ Register online at keysolutuions.com.
 **Subject:** Acknowledgement
 This is to acknowledge receipt for the following submissions which we plan to publish in the next four issues of Publishing Professional's Magazine. The agreed-upon payment amount and publishing date is indicated on the document accompanied with this e-mail. You should receive payment for each article within 90 days of the publication.
 ...Our widely read publication is written for professionals in the publishing and journalism industry. It's been in print continuously for the past century...
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Attachment : payment schedule** | **To :** Anna Simpson
 | Title | Amount | Date |
 |---|---|---|
@@ -419,7 +431,9 @@ This is to acknowledge receipt for the following submissions which we plan to pu
 | Investigative Reporting | $155 | November 1 |
 | Writing Responsibly | $195 | December 1 |
 | Maximizing Advertising Space | $205 | January 1 |
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** Nelson Oliver | **From:** Anna Simpson
 **Date:** January 3
 **Subject:** Payment

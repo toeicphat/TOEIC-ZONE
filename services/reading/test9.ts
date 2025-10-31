@@ -1,3 +1,4 @@
+
 import { ReadingTestData } from '../../types';
 
 const test9Part5: ReadingTestData = {
@@ -17,7 +18,7 @@ const test9Part5: ReadingTestData = {
                 { id: '106', questionText: 'Stanley Point Theater in downtown Detroit will produce four plays and three ------ next season.', options: { A: 'actors', B: 'audiences', C: 'tickets', D: 'musicals' }, correctAnswer: 'D' },
                 { id: '107', questionText: 'There is enough money ------ in the budget to cover travel expenses.', options: { A: 'remains', B: 'remainder', C: 'remained', D: 'remaining' }, correctAnswer: 'B' },
                 { id: '108', questionText: 'Romm Industries staff trained nine new associates who were hired ------ the same day.', options: { A: 'as', B: 'into', C: 'on', D: 'once' }, correctAnswer: 'C' },
-                { id: '109', questionText: 'Taylor Kanagawa wrote several books on effective team management ------ his 40-year career at Sapp Publishers Ltd.', options: { A: 'between', B: 'while', C: 'beside', D: 'during' }, correctAnswer: 'D' },
+                { id: '109', questionText: 'Taylor Kanagawa wrote several books on effective team management --- his 40-year career at Sapp Publishers Ltd.', options: { A: 'between', B: 'while', C: 'beside', D: 'during' }, correctAnswer: 'D' },
                 { id: '110', questionText: 'The community clinic project is designed to improve health ------ in isolated areas.', options: { A: 'outcomes', B: 'reasons', C: 'corrections', D: 'grades' }, correctAnswer: 'A' },
                 { id: '111', questionText: 'Jingshen Airlines announced that it will be hiring 200 ------ employees next year.', options: { A: 'add', B: 'adding', C: 'additional', D: 'additionally' }, correctAnswer: 'C' },
                 { id: '112', questionText: 'The customer was impressed by how ------ Mr. Schmid operated the complicated machinery.', options: { A: 'skillfully', B: 'primarily', C: 'obviously', D: 'richly' }, correctAnswer: 'A' },
@@ -28,10 +29,10 @@ const test9Part5: ReadingTestData = {
                 { id: '117', questionText: 'The factory floor is divided into four ------ sections: one for each stage of product assembly.', options: { A: 'previous', B: 'eligible', C: 'distinct', D: 'installed' }, correctAnswer: 'C' },
                 { id: '118', questionText: 'Handouts for the afternoon seminar must be prepared ------ the lunch break.', options: { A: 'down', B: 'beside', C: 'before', D: 'off' }, correctAnswer: 'C' },
                 { id: '119', questionText: 'Chat Mobile will determine, based on end-of-the-year sales numbers, ------ the company will open any additional stores.', options: { A: 'whether', B: 'who', C: 'since', D: 'that' }, correctAnswer: 'A' },
-                { id: '120', questionText: 'The red line will ------ only express stops from Finn Street to Boone Street on weekends.', options: { A: 'made', B: 'makes', C: 'make', D: 'making' }, correctAnswer: 'B' },
+                { id: '120', questionText: 'The red line will ------ only express stops from Finn Street to Boone Street on weekends.', options: { A: 'made', B: 'makes', C: 'make', D: 'making' }, correctAnswer: 'C' },
                 { id: '121', questionText: "The company's latest video game, Hunting for Treasure, has been praised ------ by reviewers.", options: { A: 'enthusiastically', B: 'enthusiastic', C: 'enthusiasm', D: 'enthusiast' }, correctAnswer: 'A' },
                 { id: '122', questionText: 'During the off-season, the Great Mountain Amusement Park operates on ------ hours.', options: { A: 'reduced', B: 'employed', C: 'slow', D: 'busy' }, correctAnswer: 'A' },
-                { id: '123', questionText: 'The construction project will ------ 30 residential units and 10 commercial spaces.', options: { A: 'overall', B: 'first', C: 'about', D: 'include' }, correctAnswer: 'C' },
+                { id: '123', questionText: 'The construction project will ------ 30 residential units and 10 commercial spaces.', options: { A: 'overall', B: 'first', C: 'about', D: 'include' }, correctAnswer: 'D' },
                 { id: '124', questionText: "Ms. Pham's employment contract cannot be finalized ------ her starting salary is still being negotiated.", options: { A: 'once', B: 'because', C: 'after', D: 'until' }, correctAnswer: 'B' },
                 { id: '125', questionText: 'Office supplies are available in our resources cabinet for ------ who needs them.', options: { A: 'anyone', B: 'whichever', C: 'such', D: 'more' }, correctAnswer: 'A' },
                 { id: '126', questionText: 'Through its network of local agents, new housing start-up Philocenia intends to ------ the rental sector.', options: { A: 'exercise', B: 'indicate', C: 'participate', D: 'revolutionize' }, correctAnswer: 'D' },
@@ -50,7 +51,7 @@ const test9Part6: ReadingTestData = {
     part: 6,
     passages: [
         {
-            id: 'passage-6-9-1',
+            id: 'passage-6-9-131-134',
             text: `Questions 131-134 refer to the following notice.
 Sky Air First Pass
 Thank you for flying Sky Air First with ---131.---. We hope you enjoy your flight. You can take advantage of our best prices on future flights ---132.--- purchasing a Sky Air First Pass. For a ---133.--- annual fee, you will get special discounts, seat upgrades, and the use of our exclusive travelers' lounge. ---134.---. Ask your flight attendant for more information and an application.`,
@@ -62,7 +63,7 @@ Thank you for flying Sky Air First with ---131.---. We hope you enjoy your fligh
             ]
         },
         {
-            id: 'passage-6-9-2',
+            id: 'passage-6-9-135-138',
             text: `Questions 135-138 refer to the following article.
 CJOK Radio Show Welcomes New Staff
 QUEENSVILLE (7 July)—Local radio station CJOK announced Katherine Dees as the new producer of the popular show Out and About in Queensville. Ms. Dees is now ---135.--- for coordinating schedules, booking guests for the show, and managing media relations. ---136.---, the station hired sound editor Virginia Thacker and production assistant Reggie Dietrich to support Ms. Dees in her new role. ---137.---.
@@ -75,7 +76,7 @@ Out and About in Queensville, which has been airing for 30 years, is performed l
             ]
         },
         {
-            id: 'passage-6-9-3',
+            id: 'passage-6-9-139-142',
             text: `Questions 139-142 refer to the following e-mail.
 To: Sandra Barga <sbarga97@hjmail.ca>
 From: Artie Romanche <service@northwestbags.ca>
@@ -97,7 +98,7 @@ Customer Service Representative, Northwest Bags`,
             ]
         },
         {
-            id: 'passage-6-9-4',
+            id: 'passage-6-9-143-146',
             text: `Questions 143-146 refer to the following article.
 Sehelec Announces Wind-Solar Hybrid Project
 MUMBAI (15 March)—Sehelec Ltd. announced it will begin construction on a 500-megawatt wind-solar hybrid power ---143.--- outside of Bangalore, India. ---144.---. Sehelec expects to begin operations within 24 months, and it will sell the power to Indian energy giant Novaseon Industries.
@@ -118,7 +119,7 @@ const test9Part7: ReadingTestData = {
     part: 7,
     passages: [
         {
-            id: 'passage-7-9-1',
+            id: 'passage-7-9-147-148',
             text: `Carina's Café Lunch Specials
 Monday through Friday from 11:00 A.M. to 3:00 P.M.
 For only $8, combine the soup of the day with one of the following items:
@@ -132,7 +133,7 @@ Vegetable Wrap – Fresh tomato, cucumber, and carrots with hummus (made with ou
             ]
         },
         {
-            id: 'passage-7-9-2',
+            id: 'passage-7-9-149-150',
             text: `Certified Aqua Instructor Workshop
 This workshop helps fitness professionals become certified aqua instructors by demonstrating how to design challenging and effective aquatic classes. Join instructor Deshonte Smith for a full-day course to learn a sequence of pool-based workouts that will motivate your students. Mr. Smith started his journey to instructor certification by taking classes at Valley Floor Fitness. He is also a professor at Wilkinson University.
 The workshop costs $99 and will be held at Valley Floor Fitness in Missoula on August 27 from 9 a.m. to 5 p.m. For more information and to register, e-mail Maya Cramer at certification@valleyfloorfitness.com.`,
@@ -142,19 +143,24 @@ The workshop costs $99 and will be held at Valley Floor Fitness in Missoula on A
             ]
         },
         {
-            id: 'passage-7-9-3',
-            text: `Hyun-Jun Cho (3:27 P.M.): I'm scheduled to work the front desk on Saturday from 7 A.M. to 3 P.M. A friend of mine is coming to town then, and he's only going to be here for one day. I was wondering if I could switch shifts with you. I can work on Sunday.
-Stephanie Duchemin (3:29 Ρ.Μ.): Saturday is good for me. I hope you don't have a Sunday like last week. It was so busy. All the doctors attending the medical conference were checking in at the front desk.
-Hyun-Jun Cho (3:31 P.M.): And I heard that all the accountants from the other conference were also at the front desk reviewing their room charges at the same time!
-Stephanie Duchemin (3:32 Ρ.Μ.): The lobby was certainly bustling.
-Hyun-Jun Cho (3:34 P.M.): Thank you for helping me out. I haven't seen my friend Kai since we graduated from university.`,
+            id: 'passage-7-9-151-152',
+            text: `Hyun-Jun Cho (3:27 P.M.)
+I'm scheduled to work the front desk on Saturday from 7 A.M. to 3 P.M. A friend of mine is coming to town then, and he's only going to be here for one day. I was wondering if I could switch shifts with you. I can work on Sunday.
+Stephanie Duchemin (3:29 Ρ.Μ.)
+Saturday is good for me. I hope you don't have a Sunday like last week. It was so busy. All the doctors attending the medical conference were checking in at the front desk.
+Hyun-Jun Cho (3:31 P.M.)
+And I heard that all the accountants from the other conference were also at the front desk reviewing their room charges at the same time!
+Stephanie Duchemin (3:32 Ρ.Μ.)
+The lobby was certainly bustling.
+Hyun-Jun Cho (3:34 P.M.)
+Thank you for helping me out. I haven't seen my friend Kai since we graduated from university.`,
             questions: [
-                { id: '151', questionText: 'At 3:29 P.M., what does Ms. Duchemin most likely mean when she writes, "Saturday is good for me"?', options: { A: 'She prefers to work morning shifts.', B: 'She is able to do a favor for Mr. Cho.', C: 'She will attend a conference.', D: "She would like to meet Mr. Cho's friend." }, correctAnswer: 'B' },
+                { id: '151', questionText: 'At 3:29 P.M., what does Ms. Duchemin most likely mean when she writes, "Saturday is good for me"?', options: { A: 'She prefers to work morning shifts.', B: 'She is able to do a favor for Mr. Cho.', C: 'She will attend a conference.', D: 'She would like to meet Mr. Cho\'s friend.' }, correctAnswer: 'B' },
                 { id: '152', questionText: 'Where most likely do Mr. Cho and Ms. Duchemin work?', options: { A: 'At a hotel', B: 'At a university', C: 'At a medical center', D: 'At an accounting firm' }, correctAnswer: 'A' }
             ]
         },
         {
-            id: 'passage-7-9-4',
+            id: 'passage-7-9-153-154',
             text: `To: Madalena Navas <mnavas@cordovacreations.com>
 From: Hugo Jones <hkjones@sunmail.com>
 Date: April 2
@@ -169,7 +175,7 @@ Hugo Jones`,
             ]
         },
         {
-            id: 'passage-7-9-5',
+            id: 'passage-7-9-155-157',
             text: `Hibiscus Supply to Run Its Own Container Ship
 BUSAN (15 October)—As international shipping continues to increase, companies that transport goods between continents have found themselves competing for expensive space on container ships. — [1] —. Delays in getting goods to factories and into stores have become more common. — [2] —.
 As one of the biggest exporters of home building supplies in the country, Hibiscus Supply is particularly vulnerable to these issues. — [3] —. To avoid potential shipping problems, Hibiscus Supply has decided to operate its own container ship to export products overseas. — [4] —.
@@ -177,33 +183,34 @@ According to Hibiscus Supply president James Koh, operating the company's own sh
             questions: [
                 { id: '155', questionText: 'What products does Hibiscus Supply most likely sell?', options: { A: 'Construction materials', B: 'Pillows and sheets', C: 'Wholesale food items', D: 'Spare automobile parts' }, correctAnswer: 'A' },
                 { id: '156', questionText: 'Why does Hibiscus Supply want to operate its own container ship?', options: { A: 'To provide shipping services to other companies', B: 'To ship its products quickly and cheaply', C: 'To deliver its products to unusual locations', D: 'To ship more goods than most freight companies can handle' }, correctAnswer: 'B' },
-                { id: '157', questionText: 'In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong?\n"The newly acquired ship is scheduled to begin running later this month."', options: { A: '[1]', B: '[2]', C: '[3]', D: '[4]' }, correctAnswer: 'D' }
+                { id: '157', questionText: 'In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong? "The newly acquired ship is scheduled to begin running later this month."', options: { A: '[1]', B: '[2]', C: '[3]', D: '[4]' }, correctAnswer: 'D' }
             ]
         },
         {
-            id: 'passage-7-9-6',
+            id: 'passage-7-9-158-160',
             text: `MEMO
 To: All Accounting Staff
 From: Jennifer Snow, Senior Manager
 Date: January 8
 Subject: Pedro Allende
+
 Please join me in congratulating Pedro Allende as he prepares to enter his new role as a full-time administrative assistant in our accounting department. Mr. Allende, a part-time clerk in our mail room, completed a certificate program in computer support at Lander Vocational Institute last month. He was first hired by our company as a delivery driver, a role he held for two years before transferring to the mail room.
 Mr. Allende's first day in the accounting department will be Monday, January 11. We all wish him well!`,
             questions: [
-                { id: '158', questionText: 'Why did Ms. Snow send the memo?', options: { A: 'To invite employees to an office party', B: "To announce a change to an employee's job", C: 'To inform employees about a reduction in work hours', D: 'To request employee feedback on a departmental policy' }, correctAnswer: 'B' },
+                { id: '158', questionText: 'Why did Ms. Snow send the memo?', options: { A: 'To invite employees to an office party', B: 'To announce a change to an employee\'s job', C: 'To inform employees about a reduction in work hours', D: 'To request employee feedback on a departmental policy' }, correctAnswer: 'B' },
                 { id: '159', questionText: 'The word "prepares” in paragraph 1, line 1, is closest in meaning to', options: { A: 'assembles', B: 'returns', C: 'reaches out', D: 'gets ready' }, correctAnswer: 'D' },
                 { id: '160', questionText: 'What is indicated about Mr. Allende?', options: { A: 'He currently works as a delivery driver.', B: 'He recently completed a training program.', C: 'He previously assisted Ms. Snow in a different department.', D: 'He will begin working part-time next week.' }, correctAnswer: 'B' }
             ]
         },
         {
-            id: 'passage-7-9-7',
+            id: 'passage-7-9-161-163',
             text: `Help Wanted: Machinist
 Camerley Corp. of Napier, New Zealand, has an opening for an experienced machinist to work in our 15,000-square-metre fabrication plant, which produces custom tools and machine parts for a variety of industries. Requirements for the position include:
-• Ability to collaborate with engineers to fabricate tools and machine parts
-• Familiarity with specialised equipment
-• Skill with doing precision work based on technical drawings
-• Comfort working with metal and various other materials, such as wood and plastics
-• Ability to work both independently and as part of a team
+- Ability to collaborate with engineers to fabricate tools and machine parts
+- Familiarity with specialised equipment
+- Skill with doing precision work based on technical drawings
+- Comfort working with metal and various other materials, such as wood and plastics
+- Ability to work both independently and as part of a team
 To apply, please send CV and two references to jobs@camerleycorp.co.nz.`,
             questions: [
                 { id: '161', questionText: 'What type of business placed the advertisement?', options: { A: 'A land developer', B: 'A car-repair shop', C: 'A factory', D: 'A hardware store' }, correctAnswer: 'C' },
@@ -212,33 +219,39 @@ To apply, please send CV and two references to jobs@camerleycorp.co.nz.`,
             ]
         },
         {
-            id: 'passage-7-9-8',
-            text: `Lanie McGinnis (7:16 Α.Μ.): Good morning, Kelly and Matthieu. I removed the Funfair preregistration signs from the park entrances, but I think I forgot one at the north gate. Could one of you check to see if it is still there?
-Kelly Sen (7:18 Α.Μ.): Hi, Lanie. I rode my bike to the park earlier this morning to help put pamphlets and other materials on the welcome table in the main tent. But I could head over to that entrance now since there are other volunteers here who can finish up.
-Lanie McGinnis (7:19 Α.Μ.): That would be great, since I'm going to be on the other side of the park at the south entrance for a while. I'm meeting some representatives from the city parks department.
-Matthieu Herman (7:21 Α.Μ.): I've got it, Kelly. I just arrived at the north entrance and will take down the sign we hung here. Lanie, what would you like me to do with it?
-Lanie McGinnis (7:22 Α.Μ.): Perfect! Can you put it with the others behind the welcome table in the main tent? I will pick them up later today. We can change the dates and use them again next year.
-Matthieu Herman (7:23 Α.Μ.): Will do. Here's to a successful fair!`,
+            id: 'passage-7-9-164-167',
+            text: `Lanie McGinnis (7:16 Α.Μ.)
+Good morning, Kelly and Matthieu. I removed the Funfair preregistration signs from the park entrances, but I think I forgot one at the north gate. Could one of you check to see if it is still there?
+Kelly Sen (7:18 Α.Μ.)
+Hi, Lanie. I rode my bike to the park earlier this morning to help put pamphlets and other materials on the welcome table in the main tent. But I could head over to that entrance now since there are other volunteers here who can finish up.
+Lanie McGinnis (7:19 Α.Μ.)
+That would be great, since I'm going to be on the other side of the park at the south entrance for a while. I'm meeting some representatives from the city parks department.
+Matthieu Herman (7:21 Α.Μ.)
+I've got it, Kelly. I just arrived at the north entrance and will take down the sign we hung here. Lanie, what would you like me to do with it?
+Lanie McGinnis (7:22 Α.Μ.)
+Perfect! Can you put it with the others behind the welcome table in the main tent? I will pick them up later today. We can change the dates and use them again next year.
+Matthieu Herman (7:23 Α.Μ.)
+Will do. Here's to a successful fair!`,
             questions: [
                 { id: '164', questionText: 'What is probably true about the writers?', options: { A: 'They are registering people for a bike-to-work program.', B: 'They are coordinating a public event.', C: 'They work for a city parks department.', D: 'They are members of a club that walks in a park.' }, correctAnswer: 'B' },
                 { id: '165', questionText: 'What was Ms. Sen doing?', options: { A: 'Erecting a tent', B: 'Designing pamphlets', C: 'Placing items on the welcome table', D: 'Attaching signs to the park entrance' }, correctAnswer: 'C' },
                 { id: '166', questionText: 'At 7:21 A.M., what does Mr. Herman mean when he writes, “I\'ve got it, Kelly"?', options: { A: 'He has already taken down a sign.', B: 'He will perform a task requested by Ms. McGinnis.', C: 'He will return unused materials to the office.', D: 'He realizes that Ms. Sen does not need help.' }, correctAnswer: 'B' },
-                { id: '167', questionText: 'What does Ms. McGinnis instruct Mr. Herman to do?', options: { A: 'Help her locate the main tent', B: 'Meet her at the south entrance', C: "Write down participants' information", D: 'Leave an object behind the welcome table' }, correctAnswer: 'D' }
+                { id: '167', questionText: 'What does Ms. McGinnis instruct Mr. Herman to do?', options: { A: 'Help her locate the main tent', B: 'Meet her at the south entrance', C: 'Write down participants\' information', D: 'Leave an object behind the welcome table' }, correctAnswer: 'D' }
             ]
         },
         {
-            id: 'passage-7-9-9',
+            id: 'passage-7-9-168-171',
             text: `Zealandia Airlines Fact Sheet for Fiscal Year Ending 30 June
-Service Levels and Capacity: Zealandia Airlines provides regional service among four cities. In each case, average flight capacity exceeded the company goal of 85 percent.
-On-Time Performance (OTP): For the purpose of measuring OTP, flights are considered "on time" when they reach their destination within fifteen minutes of the scheduled arrival time. Regional airlines are subject to fines when OTP drops below 50 percent. The following chart shows Zealandia's commendable OTP rates for the recent fiscal year.
+**Service Levels and Capacity:** Zealandia Airlines provides regional service among four cities. In each case, average flight capacity exceeded the company goal of 85 percent.
+**On-Time Performance (OTP):** For the purpose of measuring OTP, flights are considered "on time" when they reach their destination within fifteen minutes of the scheduled arrival time. Regional airlines are subject to fines when OTP drops below 50 percent. The following chart shows Zealandia's commendable OTP rates for the recent fiscal year.
 | City | OTP |
 |---|---|
 | Kelton Falls | 52% |
 | Grangerton | 68% |
 | Satcherville | 79% |
 | Barbour City | 64% |
-Proposed Expansion: Zealandia Airlines provides regional passenger air service and is seeking to expand its fleet to begin providing commercial airfreight delivery. Establishing this service is a component of the airline's growth plan and corporate vision. The airline is currently in negotiations with aviation authorities to explore options.
-Terminal and Service Improvements: Zealandia Airlines is participating in discussions with airport management about comprehensive renovations to its passenger lounge and café and has offered to commit $5 million from its budget to the project. Company executives have also finalized a plan and committed funds to overhaul its rewards program. The initiative supports the aim to be a leading service provider among similar airlines and capture an increasing percentage of the market share.`,
+**Proposed Expansion:** Zealandia Airlines provides regional passenger air service and is seeking to expand its fleet to begin providing commercial airfreight delivery. Establishing this service is a component of the airline's growth plan and corporate vision. The airline is currently in negotiations with aviation authorities to explore options.
+**Terminal and Service Improvements:** Zealandia Airlines is participating in discussions with airport management about comprehensive renovations to its passenger lounge and café and has offered to commit $5 million from its budget to the project. Company executives have also finalized a plan and committed funds to overhaul its rewards program. The initiative supports the aim to be a leading service provider among similar airlines and capture an increasing percentage of the market share.`,
             questions: [
                 { id: '168', questionText: 'The word “exceeded” in paragraph 1, line 2, is closest in meaning to', options: { A: 'surpassed', B: 'excelled', C: 'perfected', D: 'decided' }, correctAnswer: 'A' },
                 { id: '169', questionText: 'According to the fact sheet, what is true about Zealandia Airlines?', options: { A: 'Executives aim to improve its flight capacity.', B: 'Most of its flights arrive at their destinations on time.', C: 'It is larger than 85 percent of regional airlines.', D: 'It has received a fine from aviation authorities.' }, correctAnswer: 'B' },
@@ -247,23 +260,27 @@ Terminal and Service Improvements: Zealandia Airlines is participating in discus
             ]
         },
         {
-            id: 'passage-7-9-10',
+            id: 'passage-7-9-172-175',
             text: `New Fleet for Northeast Railways
-Northeast Railways expects to spend $5.6 billion to replace its fleet of 65 passenger trains, many of which are more than 40 years old. — [1] —. The company has entered into a contract with Logiens Transport for a new fleet of trains that will operate on electrified tracks when those track systems are available and on diesel fuel at all other times. — [2] —. The trains will be capable of traveling at speeds of up to 130 kilometers per hour and will produce far less pollution than the current fleet does.
-Logiens also promises an enhanced passenger experience. The train cars will have panoramic windows, improved ventilation, and wider aisles. — [3] —. Northeast's contract with Logiens also includes equipment and replacement parts and provides a long-term service agreement. — [4] —.`,
+Northeast Railways expects to spend $5.6 billion to replace its fleet of 65 passenger trains, many of which are more than 40 years old. — [1] —.
+The company has entered into a contract with Logiens Transport for a new fleet of trains that will operate on electrified tracks when those track systems are available and on diesel fuel at all other times. — [2] —. The trains will be capable of traveling at speeds of up to 130 kilometers per hour and will produce far less pollution than the current fleet does.
+Logiens also promises an enhanced passenger experience. The train cars will have panoramic windows, improved ventilation, and wider aisles. — [3] —.
+Northeast's contract with Logiens also includes equipment and replacement parts and provides a long-term service agreement. — [4] —.`,
             questions: [
-                { id: '172', questionText: "What is Logiens Transport's role?", options: { A: 'To recommend ways to reduce pollution', B: 'To acquire financing for a purchase', C: 'To familiarize train engineers with new technology', D: 'To manufacture and service the replacement fleet' }, correctAnswer: 'D' },
+                { id: '172', questionText: 'What is Logiens Transport\'s role?', options: { A: 'To recommend ways to reduce pollution', B: 'To acquire financing for a purchase', C: 'To familiarize train engineers with new technology', D: 'To manufacture and service the replacement fleet' }, correctAnswer: 'D' },
                 { id: '173', questionText: 'What information is included in the press release?', options: { A: 'The date on which the trains will be delivered', B: 'The budget for replacing the current trains', C: 'The annual cost for parts and service', D: 'The number of passenger seats in each train car' }, correctAnswer: 'B' },
                 { id: '174', questionText: 'What is suggested about the tracks that Northeast Railways uses?', options: { A: 'They are owned by the government.', B: 'They are not shared with freight trains.', C: 'Most are in urgent need of repair.', D: 'Some are not electrified.' }, correctAnswer: 'D' },
-                { id: '175', questionText: 'In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong?\n"Each reclinable seat will have an individual power supply and USB port."', options: { A: '[1]', B: '[2]', C: '[3]', D: '[4]' }, correctAnswer: 'C' }
+                { id: '175', questionText: 'In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong? "Each reclinable seat will have an individual power supply and USB port."', options: { A: '[1]', B: '[2]', C: '[3]', D: '[4]' }, correctAnswer: 'C' }
             ]
         },
         {
-            id: 'passage-7-9-11',
-            text: `**E-mail from Ian Qalandar to headquartersstaff**
-Date: October 1
+            id: 'passage-7-9-176-180',
+            text: `To: headquartersstaff@seonwulawfirm.com
+From: iqalandar@seonwulawfirm.com
+Date: October 1, 9:39 Α.Μ.
 Subject: Remote work setup
 Attachment: Equipment request form
+
 Dear Associates,
 On December 3, our headquarters will close for a month for renovation. As all of you normally work out of these offices in San Francisco, please plan to work off-site and collect everything you may need (your laptop, files, etc.) before December 1. Entry to the building will be restricted after that date.
 If you would like a temporary space at our San Jose offices, please e-mail me, and I will reserve one for you. If you plan to work from home and need additional equipment (such as a printer), fill out the attached form from our technology department and return it to me. A representative of that department will mail the equipment to your home address.
@@ -271,39 +288,36 @@ We realize this work on the building is a disruption, but timing it with our slo
 Best,
 Ian Qalandar, Manager
 Seonwu Law Firm
-
----
-
+(415) 555-0177
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 **Seonwu Law Firm—Equipment Request Form**
-Employee name: Jason Kang
-Employee ID: 102899
-E-mail: jkang@seonwulawfirm.com
-Date to receive: November 30
-Equipment: desktop monitor, printer
+**Employee name:** Jason Kang
+**Employee ID:** 102899
+**E-mail:** jkang@seonwulawfirm.com
+**Date to receive:** November 30
+**Equipment:** desktop monitor, printer
+
 (This section is to be completed by the technology department.)
-Request completed: ✓ Yes
-Request filled by: Aubrey Smith
-Equipment serial numbers: VN3902556, MXE96400
-Date sent: November 27 via overnight mail`,
+**Request completed:** ✓ Yes No
+**Request filled by:** Aubrey Smith
+**Equipment serial numbers:** VN3902556, MXE96400
+**Date sent:** November 27 via overnight mail`,
             questions: [
                 { id: '176', questionText: 'What is indicated about Seonwu Law Firm?', options: { A: 'It focuses on real estate law.', B: 'It has a large advertising budget.', C: 'It serves clients across the country.', D: 'It is headquartered in San Francisco.' }, correctAnswer: 'D' },
                 { id: '177', questionText: 'According to the e-mail, what will the technology department do?', options: { A: 'Install updates on employee laptops', B: 'Send office equipment to employees', C: 'Train employees to use new software', D: 'Place equipment in renovated offices' }, correctAnswer: 'B' },
                 { id: '178', questionText: 'What is suggested in the e-mail about Seonwu Law Firm?', options: { A: 'It plans to expand its operations.', B: 'It mostly employs remote workers.', C: 'It is usually not busy in December.', D: 'It handles many high-profile cases.' }, correctAnswer: 'C' },
                 { id: '179', questionText: 'What can be concluded about Mr. Kang?', options: { A: 'He chose not to work in the San Jose office.', B: 'He is a senior partner at the Seonwu Law Firm.', C: 'He will be on vacation after November.', D: 'He has requested a larger office.' }, correctAnswer: 'A' },
-                { id: '180', questionText: "What most likely is Ms. Smith's occupation?", options: { A: 'Lawyer', B: 'Office manager', C: 'Technical support staff', D: 'Administrative assistant' }, correctAnswer: 'C' }
+                { id: '180', questionText: 'What most likely is Ms. Smith\'s occupation?', options: { A: 'Lawyer', B: 'Office manager', C: 'Technical support staff', D: 'Administrative assistant' }, correctAnswer: 'C' }
             ]
         },
         {
-            id: 'passage-7-9-12',
-            text: `**Article: Planning a Tour of Your Facility by Didiane Lessard**
+            id: 'passage-7-9-181-185',
+            text: `**Planning a Tour of Your Facility** by Didiane Lessard
 Plant tours are commonplace in many factories, but not all tours are as effective as they could be. Too many companies make the mistake of adopting a one-size-fits-all approach rather than tailoring tours to maximize their usefulness. A potential investor and a casual tourist will probably not be impressed by the same things, so it is best to be clear about the tour's purpose early on. Here are some guidelines to make each tour as effective as possible.
 Be selective. Unless your tour is for a safety inspection, your guests do not need (or want) to see every part of your factory. Choose a few sections that will interest your guests and give them a better sense of your product. For example, journalists will want to create a story about your plant, so show them the parts of the plant that have historical significance, such as a room with the company's original production equipment.
 Timing is everything. Always be mindful of the physical demands of the tour. Even the hardiest guest will tire of standing or walking for long periods. It is a good idea to schedule breaks in tours lasting longer than an hour. The time spent in a single section matters also. If you allow guests only five minutes in an area, they will soon forget it. On the other hand, even the most impressive room gets boring after half an hour.
 Personality is NOT everything. While having a personable and friendly tour guide is essential, your guests are coming to see what goes into making your product. Tour guides get asked a variety of questions, some unexpected, so a comprehensive knowledge of the production processes is important (and absolutely vital during inspections). You also want someone who will keep the tour moving—visitors will appreciate a tour that begins and ends on time.
-
----
-
-**E-mail**
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 To: Masumi Toda <mt978@vidatechsystems.com>
 From: Ana Miftaroski <am680@vidatechsystems.com>
 Date: May 1
@@ -321,25 +335,24 @@ Ana Miftaroski, Vice President of Operations`,
             ]
         },
         {
-            id: 'passage-7-9-13',
-            text: `**Web page from https://www.zonecatering.com/home**
+            id: 'passage-7-9-186-190',
+            text: `https://www.zonecatering.com/home
+**Home | Menus | Testimonials | Contact Us**
 Zone Catering provides food trucks at film and television production sites throughout California. Just let us know where you need a food truck and how many people you need to feed. We can serve your entire cast and crew. Our trucks also move with you and your team if you are shooting scenes in various locations.
 At Zone Catering, we offer a wide variety of cuisines. All the fruits and vegetables we use in our menus are grown here in California. Our menus are easily adapted to accommodate dietary restrictions. For convenience, our food trucks offer both full meals and individual items. We can serve meals buffet-style, or people can order directly from the truck.
 Let us take care of the catering for your production. You will find our food delicious, and you will find our service friendly and convenient. We even offer 24-hour support in case any issues arise while we are at your location. We hope to serve you soon!
-
----
-
-**Schedule: Zone Catering Food Trucks, June 10**
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+**Zone Catering Food Trucks**
+**Schedule Date: June 10**
 | Film | Shooting Location | Contact Person |
 |---|---|---|
 | Trappings | Harpin Lot | Erin Begg |
 | Make the Meeting | 192 Laredo Street | Mark Lillo |
 | Tutors and Tuxedos | Tandor Fields | Jun-Seo Kil |
 | Jatem and the Storm | Spectrum Hall | Donna Gawason |
-
----
-
-**Testimonial from https://www.zonecatering.com/testimonials**
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+https://www.zonecatering.com/testimonials
+**Home | Menus | Testimonials | Contact Us**
 June 10—I have been in the acting business for over 25 years and am sometimes disappointed by the food trucks on film production sites. That was not the case today when we were filming Make the Meeting. The food truck had excellent coffee, and the strawberries in the large fruit salad were so fresh and tasty! Even though there was a long line of customers on an extremely hot and uncomfortable day, the server was able to get everyone's food ready quickly. She was friendly and easygoing, too! Even the food truck was pleasant-looking—the mural painted on the side of the truck was beautiful! I hope to see Zone Catering food trucks at future film shooting locations.
 —Robert Chiodo`,
             questions: [
@@ -351,35 +364,31 @@ June 10—I have been in the acting business for over 25 years and am sometimes 
             ]
         },
         {
-            id: 'passage-7-9-14',
-            text: `**E-mail 1**
-To: Hae-won Jeong
+            id: 'passage-7-9-191-195',
+            text: `To: Hae-won Jeong
 From: Julia Laurent
 Date: July 28
 Subject: Dallas hotels
 Attachment: List of downtown accommodations
+
 Dear Hae-won,
 I plan to attend the National Digital Marketing Conference in October. I know you have traveled to this conference in Dallas many times. This will be my first time attending, and I'm not sure which hotel to book. I have attached a list of accommodations that are near the convention center. Right now, I am leaning toward the Bonita Suites Hotel, but I would like to know which property you would recommend.
 I hope you have settled into your new position with the digital marketing department. I am looking forward to the conference and hope to see you again there.
 Kind regards,
 Julia Laurent, E-mail Marketing Specialist, The 3R Marketing Firm
-
----
-
-**List of Downtown Accommodations**
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+**List of Downtown Accommodations (from www.topbusinesshotels.com/search/Dallashotels)**
 | Hotel | Rate | Description |
 |---|---|---|
 | The Oaktree Hotel | $204/night | Luxury hotel in the heart of downtown. Close to the convention center. Outdoor pool, three on-site restaurants. Close to shopping. |
 | Alessi Dallas Hotel | $155/night | Quaint boutique hotel in downtown Dallas. Lobby restaurant for breakfast and dinner. Near convention center and history museum. |
 | Bonita Suites Hotel | $125/night | New hotel in downtown convention center area. Office and kitchen in each suite. Computer center with printers located in lobby. Meeting space available for groups. Free on-site parking available. |
-
----
-
-**E-mail 2**
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
 To: Julia Laurent
 From: Hae-won Jeong
 Date: July 29
 Subject: RE: Dallas hotels
+
 Dear Julia,
 I will be attending the National Digital Marketing Conference this year as well! I love traveling to Dallas every year for this conference because it is a great networking opportunity. Since this is your first time attending, I recommend you go to the newcomers' reception on the first night. The conference executive planning committee is putting it on, and it could be an excellent occasion to socialize with other conference goers.
 I will be staying at the Alessi Dallas Hotel. It is the closest to the convention center, and the rooms are comfortable. For you, I would suggest the one you already seem to prefer. It so happens that the newcomers' reception will be held in one of the event rooms there. It is a little farther away but still convenient. As a friendly reminder, we are advised not to book hotels with rates that exceed our company's limit of $175/night.
@@ -395,37 +404,37 @@ Hae-won Jeong, Digital Marketing Director, The 3R Marketing Firm`,
             ]
         },
         {
-            id: 'passage-7-9-15',
-            text: `**Letter from Dover Water Supply**
-March 12
-Ms. Na-Ri Cam, 361 Farming Avenue, Dover, DE 19902
+            id: 'passage-7-9-196-200',
+            text: `March 12
+Ms. Na-Ri Cam
+361 Farming Avenue
+Dover, DE 19902
+
 Dear Ms. Cam,
 This letter is to confirm that Dover Water Supply will begin service at your address on Wednesday, April 6. Your customer account number, which is the same as your water meter number, is DWS4289.
 Billing is monthly, and payment is due on the fifteenth of each month. Bills can be paid by mailing a check to our main address or by entering your account number and payment information on our secure page at www.doverwatersupply.com/billing.
 We will be performing a system flush of the pipes in your area on Monday, April 4. Customers may temporarily see discoloration or sediment in their water around that time. Please visit our Web site for more information. You can also contact Customer Support at questions@doverwatersupply.com or call us at (302) 555-0135.
 Sincerely,
 Matthew Ensign, Account Representative, Dover Water Supply
-
----
-
-**E-mail 1**
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+*E-mail*
 To: questions@doverwatersupply.com
 From: Na-Ri Cam <n.cam@mailcurrent.com>
 Date: March 17
 Subject: Account number DWS4289
+
 Hello,
 I am in the process of moving to my new home in Dover. I received a letter stating that my water service will start on April 6. It also said something about pipes being flushed on April 4. Should I expect to see discoloration when I start using my water? Are there any steps I should take?
 Also, I tried to use your secure page, but it gave me an error message saying that my account number was not valid. I will need your help in getting online access by the May 15 due date.
 Thank you for any information you can provide.
 Na-Ri Cam
-
----
-
-**E-mail 2**
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+*E-Mail Message*
 To: Na-Ri Cam <n.cam@mailcurrent.com>
 From: Customer Support <questions@doverwatersupply.com>
 Date: March 18
 Subject: RE: Account number DWS4289
+
 Dear Ms. Cam,
 Thank you for your message. Your water might look cloudy on April 6 when you first turn on your faucets. We recommend that you keep the water running until it is clear before you use it. I assure you that the water is not harmful in any way. The minerals that cause the discoloration occur naturally, and our latest water analysis showed very high quality.
 I apologize for the problem you described. I have fixed it, so you should not have any further trouble.

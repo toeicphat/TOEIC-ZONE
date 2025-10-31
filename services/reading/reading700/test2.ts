@@ -321,7 +321,9 @@ HCC offers private swimming, tennis, and golf lessons to our members. Both adult
 786 New Castle Rd. Huntington, WV, 304-737-7142
 
 Watson's Nursery has a perfect idea for your new year's resolution! Why not plant a vegetable garden at your home? Gardening is a great source of exercise, provides healthy food to eat, and saves you money! Watson's is adding a farmer's garden section to our spring catalog. If you'd like to start growing your own fresh ingredients for your salads, you'll love our selection of vegetable seeds and plants including cucumbers, tomatoes, and carrots. If you'd like to grow a big juicy watermelon or cantaloupe, we have a nice selection of fruit seeds as well. To get you started, we're offering an early bird special on all products that are listed on page 1 of our latest catalog. These items will be offered at a ten percent discount for the first three months after they become available at the store on January 1st.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **WATSON'S NURSERY FARMER'S GARDEN CATALOG**
 
 **Page 1: Vegetables**
@@ -345,7 +347,9 @@ Your former colleague, Ralph Pietras, suggested that I contact you in regard to 
 I am writing to request your permission to use the costume worn by one of the actors in the movie Renaissance, which was released by Gold Pictures in 1985 and won that year's award for the best costume design at the American Screen Actors Awards. I will arrange for a courier to pick up and return the costume, ensuring that it is displayed under proper conditions and so that it is cleaned by a costume preservation expert before it is returned to you. Thank you for your consideration.
 Sincerely,
 Frederick Mathews
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Film Journal: award winning costumes. p 14**
 The costume pictured was worn by the British actress Kate Briggs, who was nominated for the Academy Award for her portrayal of Anna York in the 1985 hit film Renaissance. The costume was hand made by Julia Chapman, who designed costumes for Gold Pictures for many years. She continues to work as a costume designer for the company today. This costume was critically acclaimed for its combination of stunning beauty and accurate depiction of 15th century Europe.`,
             questions: [
@@ -360,14 +364,18 @@ The costume pictured was worn by the British actress Kate Briggs, who was nomina
             id: 'passage-7-702-13',
             text: `**"A CONVERSATION WITH AUTHORS" IN JUNE!**
 Gloria's Bookstore will hold a series of events for meeting five best-selling authors in June. Stop by, get your books signed, and ask questions during the events. All books can be purchased onsite. All of the meetings are open to the public. Light refreshments will be served by the Gloria Book Cafe. The event, 'A Conversation with Authors', began three years ago and is getting more popular each year. Don't miss this unique opportunity to meet the great authors.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Schedule for June**
 - JUSTIN MORRISON: FRIDAY, JUNE 12, 2015 - 7:00 P.M. TO 8:30 P.M.
 - MARTIN OLIVER: SATURDAY, JUNE 13, 2015 - 6:00 P.M. TO 7:00 P.M.
 - LORETTA PAGE: TUESDAY, JUNE 16, 2015 - 2:00 P.M. TO 3:30 P.M.
 - MONICA SIMPSON: WEDNESDAY, JUNE 17, 2015 - 6:00 P.M. TO 7:00 P.M.
 - SHANNON WAGNER: THURSDAY, JUNE 18, 2015 - 6:00 P.M. TO 7:00 P.M.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **From:** kstanley@gloriabooks.com
 **To:** shannonw@kmail.net
 **Date:** June 8
@@ -390,13 +398,17 @@ Kristin Stanley, Coordinator, Gloria's Bookstore`,
 Although you are a freshman in college, things you do NOW will affect your success when it's time to leave WU. Because of this, I offer some advice on how to get the job or attend the professional school you want after graduation: There are lots of resources at WU that will help you succeed both academically and personally. Your residence hall mentors, your professors, your academic advisors, and all the other support staff at WU can help you and want you to be successful. Make sure you use your support network to the fullest, and enjoy your first year at WU!
 For any other information, please contact the student resource center and you can take a related booklet here.
 Dr. John Roses, Professor in WU, Roses@wu.edu
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **INTRODUCTION**
 1. GRADES ARE IMPORTANT. Employers and graduate programs use grades as a screening tool for interviews and applications. Get off to a strong start on your first year by working on your study skills.
 2. IT'S NEVER TOO EARLY TO START PLANNING. Begin exploring your options for the future now. Visit the Natural Science Career Web at http://www.ns.wu.edu/acrc/ careexploration/index.asp to learn more about career options. There will be many career events this semester. You can find the list at http://events.csp.wu.edu/
 3. DEVELOP YOUR WRITING AND SPEAKING SKILLS. Good communication skills are the number one personal trait desired these days, according to the National Association of Collegiate Employers. The Writing Center (http://writing.wu.edu) can help you with writing assignments or even creating a PowerPoint presentation.
 Dr. John Roses, Professor in WU
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** Roses@wu.edu
 **From:** TS0330@wu.edu
 **Sub:** Dr. Roses, where can I apply for scholarships?
@@ -420,7 +432,9 @@ Sincerely, Tomas`,
 Dear, Carl Jackson,
 You can find an attachment with this letter which includes an itemized list of the expenses you incurred while staying at our hotel. The total will be charged to the credit card you used when you checked in. Thanks for using our express checkout service and your continued patronage of The Wyndham Hotel. We look forward to your next stay.
 Attachment: a list of hotel expenses
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **The Wyndham Hotel**
 Tel: 914-555-6655
 Guest name: Carl Jackson
@@ -430,7 +444,9 @@ Dates of stay: Arrival: January 12th Check-out : January 15th
 - Dry Cleaning ... $25.00
 - Hotel shuttle: airport-hotel round trip ... $30.00
 **Total ... $545.00**
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** <customerservice@wyndhamhotel.com>
 **From:** Carl Jackson <cjackson@unet.com>
 **Date:** January 18

@@ -330,7 +330,9 @@ AUCKLAND (11 July)—The south end of Darby Street is dominated by the imposing 
 The debut show is Relax, a comedy by Mi-Sun Yeo about a popular tourist site. Performances are scheduled to begin on Saturday, 16 July, and run until the end of the month.
 According to Noah Larkins, the artistic director of the Cornata Theatre Company, "talk-backs" will immediately follow every performance. Talk-backs allow the director and cast members to share their thoughts about the play, and audience members can ask them questions. "We want to be part of the artistic communities in both Auckland and the larger community around us," said Mr. Larkins.
 The building houses a main stage theatre that seats approximately 325 people and a smaller studio theatre upstairs. The company will also offer acting classes for children and adults. For more information or to buy tickets, visit the company's Web page at www.cornatatheatre.nz.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Thank you for attending Relax. Please take a few moments to tell us about your experience.**
 **Name and e-mail address:** Julia Cruz <jcruz@northwing.nz>
 **1. How would you rate the performance you saw?**
@@ -361,7 +363,9 @@ Print advertisement ☒ Social media ☒ Television ☐ E-mail ☐
 | 5. Blend | Press the orange button on the blender. The texture should be creamy. |
 | 6. Finish and serve | Pour into a plastic cup. For regular drinks, top with whipped cream and use a domed lid. For light drinks, do not top with whipped cream and use a flat lid. |
 | 7. Clean up | Rinse blender cover and metal blender cup. Wipe the counter. |
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Blendora Coffee Barista Training**
 **Trainee:** Matt Molinelli
 **Trainer:** Kuniko Osawa
@@ -391,7 +395,9 @@ Mr. Molinelli measured correctly for a medium beverage, and he used nonfat milk.
 - Assistant Manager, Commercial Lending, First Bank of Barbados (Three years, three months (present position))
 - Loan Officer, First Bank of Barbados (Three years, eight months)
 - Teller, First Bank of Barbados (1 year, two months)
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** Quentin Rines <qrines@islandlink.bb>
 **From:** Rozella Huy <rozella.huy@ventana.com>
 **Date:** 14 November
@@ -402,7 +408,9 @@ Please let us know whether you accept the offer by 29 November and inform us of 
 Congratulations on being selected. We look forward to welcoming you to our team.
 Sincerely,
 Rozella Huy, President, Ventana Bank
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **To:** Tomas Melville <tmelville@homenetwork.bb>
 **From:** Quentin Rines <qrines@islandlink.bb>
 **Date:** 14 November
@@ -430,7 +438,9 @@ From our organic fields to your kitchen table!
 3. We toast the cocoa beans and remove the shells by hand.
 4. We grind the shelled beans to produce 100% pure cocoa powder.
 5. YOU enjoy our Mexican cocoa, a rich, sensational, delicious superfood!
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Mayan Joy Cocoa**
 Av Tulum Plaza Galerias, Cancun, Quintana Roo 97655, Mexico
 **March 24**
@@ -440,7 +450,9 @@ When I was recently in Mexico, I purchased a block of your fine cocoa. It was th
 I would like to purchase some more to make my own chocolates at home. Please send me information and pricing. I would prefer to purchase a one-pound block of pure, unsweetened Yucatan cocoa. I will be sweetening the candy myself, so I am not looking for sweetened cocoa.
 Thank you.
 James Grigio
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Mayan Joy Cocoa Products Chart**
 | House Blend | Artisan Block | Block Gift | Mountain Bag |
 |---|---|---|---|
@@ -470,13 +482,17 @@ Conducted by: Gwyneth Gupta, Medallion Marketing Consultants
 **Web site organization:** ☐ Completely Unsatisfied ☐ Somewhat Unsatisfied ☐ Neutral ☐ Somewhat Satisfied ☑ Very Satisfied
 **Comments:** The results of Medallion's survey are compiled above. We had 923 responses. There are several areas where Floorsy could improve its services to grow the business. First, customers had issues getting adequate customer service—this was due to slow e-mail response times, especially when making changes to orders. Medallion recommends investing in a chat window for the Web site and training customer representatives to use it. Customers enjoyed the Web site, and the chat feature would allow customers to get immediate service.
 One general comment stood out regarding product options. Customers appreciated the wide variety of low-pile carpets with short fibers. They appreciated their high durability for areas where people frequently walk. However, they were also interested in thicker shag rugs for lounge areas like living rooms.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Floorsy Discount Coupon**
 Thank you for responding to our customer survey!
 As a reward for your support, get 20% off your next online purchase from May 1 to 31!
 Enter the code REWARD20 at checkout.
 Note: Floorsy.com offers free shipping and handling on all orders.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **Thank You For Your Order**
 Dear Mr. Lindsay,
 Thank you for your phone order. The following items from your order #104850 have been delivered.

@@ -26,10 +26,6 @@ const TestScreen: React.FC<TestScreenProps> = ({ testData, userAnswers: initialA
     const questionRefs = useRef<Record<string, HTMLDivElement | null>>({});
     const allQuestions = useMemo(() => testData.questions, [testData.questions]);
 
-    useEffect(() => {
-        questionRefs.current = {};
-    }, [allQuestions]);
-
     const [currentQuestionIdInView, setCurrentQuestionIdInView] = useState<string | null>(
         allQuestions.length > 0 ? String(allQuestions[0].id) : null
     );
@@ -121,11 +117,11 @@ const TestScreen: React.FC<TestScreenProps> = ({ testData, userAnswers: initialA
                 </div>
             </div>
 
-            <div className="mt-8 lg:mt-0 space-y-8">
+            <div className="mt-8 lg:mt-0 space-y-8 lg:sticky lg:top-24 lg:self-start">
                 <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700">
                     <div className="text-center p-2 text-slate-500 dark:text-slate-400 font-semibold">Untimed Practice</div>
                     <button 
-                        onClick={() => { if(window.confirm('Are you sure you want to submit your answers?')) onSubmit(answers); }}
+                        onClick={() => onSubmit(answers)}
                         className="w-full mt-4 bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors duration-200"
                     >
                         Submit Answers
@@ -222,11 +218,11 @@ const TestScreen: React.FC<TestScreenProps> = ({ testData, userAnswers: initialA
         </div>
 
         {/* Right Sidebar */}
-        <div className="mt-8 lg:mt-0 space-y-8">
+        <div className="mt-8 lg:mt-0 space-y-8 lg:sticky lg:top-24 lg:self-start">
             <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700">
                 {time > 0 ? <Timer initialTime={time} onTimeUp={handleTimeUp} /> : <div className="text-center p-2 text-slate-500 dark:text-slate-400 font-semibold">Untimed Practice</div>}
                 <button 
-                    onClick={() => { if(window.confirm('Are you sure you want to submit your answers?')) onSubmit(answers); }}
+                    onClick={() => onSubmit(answers)}
                     className="w-full mt-4 bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors duration-200"
                 >
                     Submit Test

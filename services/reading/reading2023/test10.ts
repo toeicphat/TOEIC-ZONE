@@ -288,7 +288,9 @@ Secretary, International Technological Society`,
 Tips on healthful eating are available almost everywhere—from TV shows to online cooking forums. It's often difficult to know whether the advice you encounter is based on scientific evidence. That's why the *Central University Health Newsletter* is indispensable. Each month, it delivers informative, easy-to-understand articles that summarize findings by researchers at the Central University School of Nutrition. For example, last April's issue evaluated nutritional supplements that are sold in supermarkets. The back page features our Ask an Expert column, in which the director of the School of Nutrition answers readers' questions.
 A one-year subscription is $20 and includes online access to all previous issues. We also offer a 10 percent discount on your first subscription renewal. What's more, subscribers receive our free weekly "Healthy Living" e-mail update, which includes special reports plus links to videos and podcasts.
 To get started, simply go to our Subscribe page and follow the instructions.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 https://www.centraluniversity.edu/nutrition/newsletter/reviews
 **Publication:** Central University Health Newsletter
 ★★★★★
@@ -317,7 +319,9 @@ Contact: (020) 7946 0612, lisa.yamashita@bluesun.co.uk
 | Lydia Quinn of Hyden Interiors | Marketing copy editing | 17 September | 8.5 hours |
 | Winona Rogers | Journal article editing | 22 September | 2 hours |
 | Tony Withers | CV and cover letter editing | 28 September | 2.5 hours |
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 To: Lisa Yamashita <lisa.yamashita@bluesun.co.uk>
 From: Claudio Aguilar <caguilar@britrevision.co.uk>
 Date: 1 October
@@ -353,14 +357,18 @@ New-employee orientation for all is on June 10 from 9:00 A.M. to 12:00 noon. Ple
 I can confirm that the employee paperwork has been finalized for most of you, so at this point we just need to ensure that your Motman Motors portal account is set up using the employee identification number recently sent to you and that your bank account information is entered there. Please follow the attached instructions to complete this final step. It should not take any more than fifteen minutes, and I ask that you do this by June 17. Don't hesitate to reach out if you have any questions.
 Welcome aboard!
 Hemi Amos, Human Resources, Motman Motors
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 Please follow these steps to create and activate your new Motman Motors portal account. Go to https://motmanmotors.com/portal/activation to begin.
 1. Go to the "New User Registration" page and enter your employee ID number.
 2. Your name and address will appear. Confirm that this information is correct.
 3. A new screen titled "Bank Account" will appear. Fill in your bank account information.
 4. Finally, you will be asked to select two security questions and provide the answers.
 Once you have created your account, your account will become active, the payroll department will be alerted, and your payment schedule will be set. Please e-mail Mr. Hemi Amos at hamos@motmanmotors.com if you have any difficulties or questions.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 To: Hemi Amos <hamos@motmanmotors.com>
 From: Karuna Dimaano <kdimaano@motmanmotors.com>
 Date: June 9
@@ -397,7 +405,9 @@ Thank you for sending the rough version of the informational video for our new F
 I look forward to seeing the final version on September 23. As always, thank you and your colleagues at Video Genie Productions for the excellent work.
 Sincerely,
 Ms. Sapna Mathai, Project Manager, The Hospital Equipment Company
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **The Hospital Equipment Company**
 Invoice 9984
 Billing date: October 25
@@ -408,7 +418,9 @@ Bill to: All-City Hospital, 3 Shoreline Road, Clear Lake, Minnesota 55319
 | 2 | 62630 | Fluorolook Imager | $242,300 | $484,600 |
 | | | Delivery and Installation | | $2,350 |
 | | | **Total** | | **$486,950** |
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **MEMO**
 To: All The Hospital Equipment Company Employees
 From: Marcia Oliver, Vice President of Sales
@@ -440,7 +452,9 @@ Order Number: SK6224
 | EVO163 | 3-litre extra-virgin olive oil bulk size Reina logo tin | 5 cases |
 | EVO001 | 50-millilitre extra-virgin olive oil December sample size | 2 cases |
 Celebrate the season with us! Place your next order by 31 January to receive 10 percent off.
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **E-mail**
 To: Pablo Nadal <pnadal@reinaoliveoilcompany.es>
 From: Min Hae Seong <seongmh@bestproductssupermarket.co.kr>
@@ -451,7 +465,9 @@ We appreciate your fulfilling our recent order of extra-virgin olive oil so quic
 We would like to arrange to send these products back. Please inform us how to proceed.
 Thank you,
 Min Hae Seong, Receiving and Distribution, Best Products Supermarket
----
+
+<hr class="my-6 border-slate-300 dark:border-slate-600 border-dashed" />
+
 **E-mail**
 To: Min Hae Seong <seongmh@bestproductssupermarket.co.kr>
 From: Pablo Nadal <pnadal@reinaoliveoilcompany.es>
