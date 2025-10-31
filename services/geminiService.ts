@@ -26,7 +26,9 @@ import {
 import { getRandomVocabularyWords } from './vocabularyLibrary';
 import { commonWords } from './pronunciationLibrary';
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
+const ai = new GoogleGenAI({
+  apiKey: import.meta.env.VITE_GOOGLE_API_KEY
+});
 
 // Interface for the structured response from the speaking evaluation AI
 export interface SpeakingEvaluationResult {
