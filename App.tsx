@@ -75,7 +75,6 @@ const App: React.FC = () => {
     { username: 'thupham.241004@gmail.com', password: 'thidautoeic' },
     { username: 'luongthihongquy2240@gmail.com', password: 'thidautoeic' },
     { username: 'luongzattu800@gmail.com', password: 'thidautoeic' },
-    { username: 'tranvi06042004@gmail.com', password: 'thidautoeic' },
     { username: 'phammynhu6104@gmail.com', password: 'thidautoeic' },
     { username: 'minhchungsuke121@gmail.com', password: 'thidautoeic' },
     { username: 'tamlan0703@gmail.com', password: 'thidautoeic' },
