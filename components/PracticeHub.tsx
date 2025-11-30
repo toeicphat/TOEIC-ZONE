@@ -1,6 +1,6 @@
 
 
-import React, { useState } from 'react';
+import React from 'react';
 import { 
     TargetIcon, 
     SparklesIcon, 
@@ -144,12 +144,12 @@ const PracticeHub: React.FC<PracticeHubProps> = ({
       
       {/* Reward Info moved to bottom */}
       <div className="mt-16 max-w-3xl mx-auto">
-          <div className="relative bg-gradient-to-br from-yellow-100 to-amber-200 dark:from-yellow-900/50 dark:to-amber-800/50 p-6 rounded-xl shadow-lg border border-yellow-200 dark:border-yellow-700 overflow-hidden">
-              <SparklesIcon className="absolute -top-2 -left-3 h-10 w-10 text-yellow-400 opacity-30 transform rotate-12" />
-              <SparklesIcon className="absolute -bottom-4 -right-2 h-12 w-12 text-yellow-400 opacity-40 transform -rotate-12" />
+          <div className="relative bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/50 dark:to-blue-800/50 p-6 rounded-xl shadow-lg border border-blue-200 dark:border-blue-700 overflow-hidden">
+              <SparklesIcon className="absolute -top-2 -left-3 h-10 w-10 text-sky-400 opacity-30 transform rotate-12" />
+              <SparklesIcon className="absolute -bottom-4 -right-2 h-12 w-12 text-sky-400 opacity-40 transform -rotate-12" />
               <div className="relative z-10 text-center">
                   <div className="flex items-center justify-center gap-2 mb-4">
-                      <TrophyIcon className="h-8 w-8 text-amber-500 dark:text-amber-400 flex-shrink-0"/>
+                      <TrophyIcon className="h-8 w-8 text-blue-500 dark:text-blue-400 flex-shrink-0"/>
                       <h3 className="text-xl font-bold bg-gradient-to-r from-blue-700 to-sky-500 dark:from-blue-400 dark:to-sky-300 bg-clip-text text-transparent">
                           Hoạt động đổi thưởng
                       </h3>

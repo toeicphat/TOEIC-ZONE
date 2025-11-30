@@ -39,7 +39,7 @@ import { getVocabularyPart, getVocabularyTest } from './services/vocabularyLibra
 import { getGrammarQuizQuestions } from './services/grammarLibrary';
 import { addTestResult } from './services/progressService';
 import { getSettings, saveSettings } from './services/settingsService';
-import { LogoIcon, LoadingIcon } from './components/icons';
+import { LoadingIcon, HeadphoneIcon } from './components/icons';
 import { allDictationTests, getDictationExercisesForParts } from './services/dictationLibrary';
 import DictationPracticeSetupScreen from './components/DictationPracticeSetupScreen';
 import DictationTestScreen from './components/DictationTestScreen';
@@ -53,6 +53,27 @@ const NavButton: React.FC<{ onClick: () => void, children: React.ReactNode, isAc
     >
         {children}
     </button>
+);
+
+interface NewsPopupProps {
+    onClose: () => void;
+}
+
+const NewsPopup: React.FC<NewsPopupProps> = ({ onClose }) => (
+    <div className="fixed top-24 right-4 z-50 w-80 bg-white dark:bg-slate-800 p-4 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 animate-fade-in-down">
+        <div className="flex justify-between items-center mb-3">
+            <h3 className="text-lg font-bold text-red-600 dark:text-red-400">Thông báo quan trọng!</h3>
+            <button onClick={onClose} className="text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors">
+                &times;
+            </button>
+        </div>
+        <p className="text-sm text-slate-700 dark:text-slate-300 mb-2">
+            <span className="font-semibold">Thời gian:</span> 15:00 - 13/11/2025
+        </p>
+        <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+            Hiện tại trang web đang bị cắt giảm các tính năng sử dụng AI nên người dùng có thể gặp lỗi "Failed to generate text from API". Khi gặp lỗi này, các bạn hãy thoát trang web và đợi trong vài phút rồi thử lại nhé.
+        </p>
+    </div>
 );
 
 
@@ -75,6 +96,7 @@ const App: React.FC = () => {
     { username: 'thupham.241004@gmail.com', password: 'thidautoeic' },
     { username: 'luongthihongquy2240@gmail.com', password: 'thidautoeic' },
     { username: 'luongzattu800@gmail.com', password: 'thidautoeic' },
+    { username: 'tranvi06042004@gmail.com', password: 'thidautoeic' },
     { username: 'phammynhu6104@gmail.com', password: 'thidautoeic' },
     { username: 'minhchungsuke121@gmail.com', password: 'thidautoeic' },
     { username: 'tamlan0703@gmail.com', password: 'thidautoeic' },
@@ -91,11 +113,12 @@ const App: React.FC = () => {
     { username: 'buingocanh2046@gmail.com', password: 'thidautoeic' },
     { username: 'kieuanhnguyen322@gmail.com', password: 'thidautoeic' },
     { username: 'luongthaonguyen2002@gmail.com', password: 'thidautoeic' },
-    { username: 'pebanh0505@gmail.com', password: 'thidautoeic' },  
+    { username: 'pebanh0505@gmail.com', password: 'thidautoeic' },
   ]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [appState, setAppState] = useState<AppState>(AppState.PracticeHub);
   const [userSettings, setUserSettings] = useState<UserSettings | null>(null);
+  const [showNewsPopup, setShowNewsPopup] = useState(false);
   
   // Grammar State
   const [selectedGrammarTopic, setSelectedGrammarTopic] = useState<string | null>(null);
@@ -463,6 +486,7 @@ const App: React.FC = () => {
     const handleNavigateToVocabulary = useCallback(() => setAppState(AppState.VocabularyHome), []);
     const handleNavigateToSpeaking = useCallback(() => setAppState(AppState.SpeakingHome), []);
     
+    const toggleNewsPopup = () => setShowNewsPopup(prev => !prev);
 
     const renderContent = () => {
         if (!currentUser) return null;
@@ -623,7 +647,7 @@ const App: React.FC = () => {
 
     if (isLoading) {
         return (
-          <div className="flex justify-center items-center h-screen bg-slate-50 dark:bg-slate-900">
+          <div className="flex justify-center items-center h-screen bg-slate-100 dark:bg-slate-900">
             <LoadingIcon className="h-12 w-12 text-blue-600 animate-spin" />
           </div>
         );
@@ -633,20 +657,20 @@ const App: React.FC = () => {
         return <LoginScreen onLoginSuccess={handleLoginSuccess} users={users} isLoggingIn={isLoggingIn} />;
     }
     
-    const lightPattern = "data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3e%3cpath d='M30 50c-11 0-20-9-20-20s9-20 20-20 20 9 20 20-9 20-20 20zm0-38c-9.94 0-18 8.06-18 18s8.06 18 18 18 18-8.06 18-18-8.06-18-18-18zm-3-5h6v6h-6z' fill-opacity='.1' fill='%23fb923c'/%3e%3cpath d='M5 10 C 10 0, 20 0, 25 10 L 15 15 Z' fill-opacity='.07' fill='%231f2937'/%3e%3c/svg%3e";
-    const darkPattern = "data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3e%3cpath d='M30 50c-11 0-20-9-20-20s9-20 20-20 20 9 20 20-9 20-20 20zm0-38c-9.94 0-18 8.06-18 18s8.06 18 18 18 18-8.06 18-18-8.06-18-18-18zm-3-5h6v6h-6z' fill-opacity='.1' fill='%23f97316'/%3e%3cpath d='M5 10 C 10 0, 20 0, 25 10 L 15 15 Z' fill-opacity='.08' fill='%23d1d5db'/%3e%3c/svg%3e";
+    const lightPattern = "data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3e%3cpath d='M30 50c-11 0-20-9-20-20s9-20 20-20 20 9 20 20-9 20-20 20zm0-38c-9.94 0-18 8.06-18 18s8.06 18 18 18 18-8.06 18-18-8.06-18-18-18zm-3-5h6v6h-6z' fill-opacity='.1' fill='%2393c5fd'/%3e%3cpath d='M5 10 C 10 0, 20 0, 25 10 L 15 15 Z' fill-opacity='.07' fill='%231f2937'/%3e%3c/svg%3e";
+    const darkPattern = "data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3e%3cpath d='M30 50c-11 0-20-9-20-20s9-20 20-20 20 9 20 20-9 20-20 20zm0-38c-9.94 0-18 8.06-18 18s8.06 18 18 18 18-8.06 18-18-8.06-18-18-18zm-3-5h6v6h-6z' fill-opacity='.1' fill='%233b82f6'/%3e%3cpath d='M5 10 C 10 0, 20 0, 25 10 L 15 15 Z' fill-opacity='.08' fill='%23d1d5db'/%3e%3c/svg%3e";
 
 
     return (
         <div className="relative min-h-screen font-sans text-slate-900 dark:text-slate-200">
-            <div className={`absolute inset-0 bg-orange-50 dark:bg-gray-950 bg-repeat bg-[length:60px_60px] bg-[url('${lightPattern}')] dark:bg-[url('${darkPattern}')]`}></div>
+            <div className={`absolute inset-0 bg-slate-100 dark:bg-slate-900 bg-repeat bg-[length:60px_60px] bg-[url('${lightPattern}')] dark:bg-[url('${darkPattern}')]`}></div>
             <div className="relative z-10 flex flex-col min-h-screen">
-                <header className="bg-orange-50/80 dark:bg-gray-950/80 backdrop-blur-sm shadow-md border-b border-orange-200 dark:border-gray-800 sticky top-0 z-40">
+                <header className="bg-blue-50/80 dark:bg-slate-900/80 backdrop-blur-sm shadow-md border-b border-blue-200 dark:border-slate-800 sticky top-0 z-40">
                     <nav className="container mx-auto px-4 py-3 flex justify-between items-center">
                         <div className="flex items-center gap-2 cursor-pointer" onClick={handleGoHome}>
-                            <LogoIcon className="h-8 w-8 text-orange-600" />
+                            {/* Removed LogoIcon as requested */}
                             <span className="text-xl font-bold text-slate-800 dark:text-slate-100">TOEIC Pavex</span>
-                            <span className="hidden lg:inline-block align-middle ml-2" aria-hidden="true">🎃 🎃 🎃 🎃 🎃 🎃 🎃 🎃 🎃 🎃 🎃</span>
+                            
                         </div>
                         <div className="hidden md:flex items-center gap-2">
                             <NavButton onClick={handleGoHome} isActive={appState === AppState.PracticeHub || appState.startsWith('MINI_TEST')}>Practice Hub</NavButton>
@@ -654,11 +678,21 @@ const App: React.FC = () => {
                             {currentUser?.username === 'admin' && (
                                 <>
                                     <NavButton onClick={() => setAppState(AppState.StudentManagement)} isActive={appState === AppState.StudentManagement}>Students</NavButton>
-                                    <span className="hidden lg:inline-block align-middle ml-1" aria-hidden="true">🎃 🎃 🎃 🎃 🎃 🎃 🎃 🎃 🎃 🎃 🎃</span>
+                                    
                                 </>
                             )}
                         </div>
                         <div className="flex items-center gap-4">
+                            <button 
+                                onClick={toggleNewsPopup} 
+                                className="relative p-2 rounded-full bg-red-100 dark:bg-red-900/50 hover:bg-red-200 dark:hover:bg-red-800/50 transition-colors"
+                                aria-label="Show news updates"
+                            >
+                                <HeadphoneIcon className="h-5 w-5 text-red-600 dark:text-red-300" />
+                                {showNewsPopup && (
+                                    <span className="absolute -top-1 -right-1 block h-3 w-3 rounded-full bg-red-500 ring-2 ring-white"></span>
+                                )}
+                            </button>
                             <span className="hidden sm:inline text-sm font-medium text-slate-600 dark:text-slate-300">Welcome, {currentUser?.username}</span>
                             <NavButton onClick={() => setAppState(AppState.Settings)} isActive={appState === AppState.Settings}>Settings</NavButton>
                             <button onClick={handleLogout} className="px-4 py-2 text-sm font-semibold text-red-600 bg-red-100 dark:bg-red-900/50 dark:text-red-300 rounded-lg hover:bg-red-200 dark:hover:bg-red-800/50 transition-colors">
@@ -673,6 +707,8 @@ const App: React.FC = () => {
                 </main>
                 
                 <StatsFooter />
+
+                {showNewsPopup && <NewsPopup onClose={toggleNewsPopup} />}
             </div>
         </div>
     );
