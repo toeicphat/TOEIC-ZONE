@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from 'react';
 import { generateDictationExercise, generateDictationFromUserInput } from '../services/geminiService';
 import { allDictationTests } from '../services/dictationLibrary';
@@ -9,9 +10,11 @@ import DictationTestScreen from './DictationTestScreen';
 interface DictationScreenProps {
     currentUser: User;
     onSelectTestSet: (testId: number) => void;
+    difficulty?: 'easy' | 'hard';
+    onSetDifficulty?: (difficulty: 'easy' | 'hard') => void;
 }
 
-const DictationScreen: React.FC<DictationScreenProps> = ({ currentUser, onSelectTestSet }) => {
+const DictationScreen: React.FC<DictationScreenProps> = ({ currentUser, onSelectTestSet, difficulty = 'easy', onSetDifficulty }) => {
     const [isGenerating, setIsGenerating] = useState(false);
     const [generationError, setGenerationError] = useState<string | null>(null);
     const [userInput, setUserInput] = useState('');
@@ -80,11 +83,30 @@ const DictationScreen: React.FC<DictationScreenProps> = ({ currentUser, onSelect
         <div className="container mx-auto px-4 py-12">
             <div className="max-w-6xl mx-auto">
                 <div className="text-center mb-12">
-                    <h2 className="text-4xl font-extrabold text-slate-900 sm:text-5xl">Dictation Practice</h2>
-                    <p className="mt-4 text-lg text-slate-600">
+                    <h2 className="text-4xl font-extrabold text-slate-900 dark:text-white sm:text-5xl">Dictation Practice</h2>
+                    <p className="mt-4 text-lg text-slate-600 dark:text-slate-400">
                       Choose from the library or create your own exercise from any topic.
                     </p>
                 </div>
+
+                {onSetDifficulty && (
+                    <div className="flex justify-center mb-12">
+                        <div className="bg-slate-200 dark:bg-slate-700 p-1 rounded-lg flex items-center shadow-inner">
+                            <button
+                                onClick={() => onSetDifficulty('easy')}
+                                className={`px-6 py-2 rounded-md font-semibold text-sm transition-all duration-200 ${difficulty === 'easy' ? 'bg-white dark:bg-slate-600 shadow text-blue-600 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'}`}
+                            >
+                                Easy Mode (Partial)
+                            </button>
+                            <button
+                                onClick={() => onSetDifficulty('hard')}
+                                className={`px-6 py-2 rounded-md font-semibold text-sm transition-all duration-200 ${difficulty === 'hard' ? 'bg-white dark:bg-slate-600 shadow text-blue-600 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'}`}
+                            >
+                                Hard Mode (Full)
+                            </button>
+                        </div>
+                    </div>
+                )}
 
                 {isGenerating && (
                     <div className="flex justify-center items-center p-12">
@@ -96,8 +118,8 @@ const DictationScreen: React.FC<DictationScreenProps> = ({ currentUser, onSelect
                 {generationError && <p className="mt-6 text-center text-red-500 font-semibold">{generationError}</p>}
 
                 <div className="mb-12">
-                    <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg border border-slate-200">
-                        <h3 className="text-2xl font-bold text-slate-800 mb-4 text-center">
+                    <div className="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
+                        <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-4 text-center">
                            Tự chọn bài nghe - Bạn muốn học từ vựng về chủ đề gì? 
                         </h3>
                         <div className="flex flex-col sm:flex-row gap-2">
@@ -106,7 +128,7 @@ const DictationScreen: React.FC<DictationScreenProps> = ({ currentUser, onSelect
                                 value={userInput}
                                 onChange={(e) => setUserInput(e.target.value)}
                                 placeholder="Hãy nhập một chủ đề mà bạn muốn luyện tập (e.g., 'History of Jazz')"
-                                className="flex-grow w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-slate-900 placeholder:text-slate-400"
+                                className="flex-grow w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400"
                                 disabled={isGenerating}
                             />
                              <button
@@ -120,9 +142,9 @@ const DictationScreen: React.FC<DictationScreenProps> = ({ currentUser, onSelect
                     </div>
                 </div>
 
-                <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg border border-slate-200">
-                    <h3 className="text-2xl font-bold text-slate-800 mb-6 text-center border-b pb-4">
-                        TEST 2024
+                <div className="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
+                    <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6 text-center border-b dark:border-slate-700 pb-4">
+                        TEST 2024 {difficulty === 'hard' ? '(Hard Mode)' : ''}
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
                         {allDictationTests.map(test => (
@@ -137,9 +159,9 @@ const DictationScreen: React.FC<DictationScreenProps> = ({ currentUser, onSelect
                 </div>
 
                  <div className="mt-12 text-center">
-                     <div className="bg-blue-50 p-6 rounded-xl shadow-lg border border-blue-200 inline-block">
-                         <h3 className="text-xl font-bold text-slate-800 mb-2">Need a Random Topic?</h3>
-                         <p className="text-slate-600 text-sm mb-4">Let AI generate a brand new dictation exercise for you.</p>
+                     <div className="bg-blue-50 dark:bg-blue-900/30 p-6 rounded-xl shadow-lg border border-blue-200 dark:border-blue-800 inline-block">
+                         <h3 className="text-xl font-bold text-slate-800 dark:text-slate-200 mb-2">Need a Random Topic?</h3>
+                         <p className="text-slate-600 dark:text-slate-400 text-sm mb-4">Let AI generate a brand new dictation exercise for you.</p>
                          <button
                             onClick={handleGenerate}
                             disabled={isGenerating}

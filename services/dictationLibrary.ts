@@ -1,3 +1,4 @@
+
 import { LibraryDictationExercise } from '../types';
 import { dictationTest1Data } from './dictation/dictationTest1';
 import { dictationTest2Data } from './dictation/dictationTest2';
@@ -85,7 +86,34 @@ export const allDictationTests: DictationTestSet[] = [
     },
 ];
 
-export const getDictationExercisesForParts = (testId: number, parts: number[]): LibraryDictationExercise[] => {
+// Helper function to convert a normal exercise into Hard Mode (all words blank)
+const transformToHardMode = (exercise: LibraryDictationExercise): LibraryDictationExercise => {
+    // Split text into tokens (words and non-word characters)
+    // This regex separates alphanumeric sequences (including apostrophes/hyphens inside) from other characters
+    const tokens = exercise.fullText.split(/([a-zA-Z0-9\u00C0-\u00FF\-\']+|[^a-zA-Z0-9\u00C0-\u00FF\-\']+)/g).filter(t => t.length > 0);
+    
+    let newTextWithBlanks = "";
+    const newMissingWords: string[] = [];
+
+    tokens.forEach(token => {
+        // If token contains letters or numbers, treat it as a word to be blanked
+        if (/[a-zA-Z0-9\u00C0-\u00FF]/.test(token)) {
+            newTextWithBlanks += "____";
+            newMissingWords.push(token);
+        } else {
+            // Keep punctuation, spaces, newlines as is
+            newTextWithBlanks += token;
+        }
+    });
+
+    return {
+        ...exercise,
+        textWithBlanks: newTextWithBlanks,
+        missingWords: newMissingWords
+    };
+};
+
+export const getDictationExercisesForParts = (testId: number, parts: number[], mode: 'easy' | 'hard' = 'easy'): LibraryDictationExercise[] => {
     const testSet = allDictationTests.find(t => t.id === testId);
     if (!testSet) return [];
 
@@ -95,5 +123,9 @@ export const getDictationExercisesForParts = (testId: number, parts: number[]): 
     if (parts.includes(3)) exercises = exercises.concat(testSet.parts.part3);
     if (parts.includes(4)) exercises = exercises.concat(testSet.parts.part4);
     
+    if (mode === 'hard') {
+        return exercises.map(transformToHardMode);
+    }
+
     return exercises;
 }

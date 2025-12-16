@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { LogoIcon, LoadingIcon } from './icons';
 import { User } from '../types';
@@ -26,7 +27,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess, users, isLogg
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-slate-900 flex items-center justify-center p-4">
+    <div className="flex flex-grow items-center justify-center w-full p-4">
       <div className="max-w-md w-full bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8 space-y-8">
         <div className="text-center">
             <div className="flex items-center justify-center mb-4">

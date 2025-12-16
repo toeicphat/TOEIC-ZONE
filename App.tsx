@@ -39,7 +39,7 @@ import { getVocabularyPart, getVocabularyTest } from './services/vocabularyLibra
 import { getGrammarQuizQuestions } from './services/grammarLibrary';
 import { addTestResult } from './services/progressService';
 import { getSettings, saveSettings } from './services/settingsService';
-import { LoadingIcon, HeadphoneIcon } from './components/icons';
+import { LoadingIcon, HeadphoneIcon, LogoIcon } from './components/icons';
 import { allDictationTests, getDictationExercisesForParts } from './services/dictationLibrary';
 import DictationPracticeSetupScreen from './components/DictationPracticeSetupScreen';
 import DictationTestScreen from './components/DictationTestScreen';
@@ -132,6 +132,7 @@ const App: React.FC = () => {
   // Dictation State
   const [selectedDictationTestId, setSelectedDictationTestId] = useState<number | null>(null);
   const [selectedDictationTestData, setSelectedDictationTestData] = useState<{ id: number; title: string; exercises: LibraryDictationExercise[] } | null>(null);
+  const [dictationDifficulty, setDictationDifficulty] = useState<'easy' | 'hard'>('easy');
   
   // Reading State
   const [selectedReadingTestId, setSelectedReadingTestId] = useState<number | null>(null);
@@ -311,8 +312,9 @@ const App: React.FC = () => {
         return;
     }
 
-    const combinedExercises = getDictationExercisesForParts(selectedDictationTestId, parts);
-    const combinedTitle = `${testSet.title} - ${parts.map(p => `Part ${p}`).join(' & ')}`;
+    // Pass the difficulty level to the library function
+    const combinedExercises = getDictationExercisesForParts(selectedDictationTestId, parts, dictationDifficulty);
+    const combinedTitle = `${testSet.title} - ${parts.map(p => `Part ${p}`).join(' & ')} (${dictationDifficulty === 'hard' ? 'Hard Mode' : 'Easy Mode'})`;
     
     const newTestData = { 
         id: selectedDictationTestId, 
@@ -322,7 +324,7 @@ const App: React.FC = () => {
 
     setSelectedDictationTestData(newTestData);
     setAppState(AppState.DictationTest);
-  }, [selectedDictationTestId, handleGoHome]);
+  }, [selectedDictationTestId, handleGoHome, dictationDifficulty]);
 
   const handleBackToDictationPracticeHome = useCallback(() => {
     setSelectedDictationTestId(null);
@@ -486,7 +488,11 @@ const App: React.FC = () => {
     const handleStartSingleWordPractice = useCallback(() => setAppState(AppState.SingleWordPractice), []);
 
 
-    const handleNavigateToDictation = useCallback(() => setAppState(AppState.DictationPracticeHome), []);
+    const handleNavigateToDictation = useCallback(() => {
+        setDictationDifficulty('easy'); // Default to easy when entering main hub
+        setAppState(AppState.DictationPracticeHome);
+    }, []);
+    
     const handleNavigateToReadingPractice = useCallback(() => setAppState(AppState.ReadingPracticeHome), []);
     const handleNavigateToGrammar = useCallback(() => setAppState(AppState.GrammarHome), []);
     const handleNavigateToVocabulary = useCallback(() => setAppState(AppState.VocabularyHome), []);
@@ -497,11 +503,6 @@ const App: React.FC = () => {
     const renderContent = () => {
         if (!currentUser) return null;
         
-        // FIX: Removed redundant `if` block and corrected PracticeHub props usage in the switch statement.
-        // The `onNavigateToPracticeTest` prop is obsolete and was causing errors. All navigation props
-        // are now correctly passed via the `practiceHubProps` object. This also resolves a
-        // potential TypeScript control-flow analysis issue.
-
         const practiceHubProps = {
             onNavigateToDictation: handleNavigateToDictation,
             onNavigateToReadingPractice: handleNavigateToReadingPractice,
@@ -514,19 +515,16 @@ const App: React.FC = () => {
         };
 
         switch (appState) {
-            // FIX: Removed invalid 'onNavigateToPracticeTest' prop.
             case AppState.PracticeHub:
                 return <PracticeHub {...practiceHubProps} />;
             case AppState.MiniTest:
-                // FIX: Removed invalid 'onNavigateToPracticeTest' prop.
                 if (!currentTest) return <PracticeHub {...practiceHubProps} />;
                 return <TestScreen testData={currentTest} userAnswers={currentUserAnswers} onSubmit={handleSubmitTest} />;
             case AppState.MiniTestResults:
-                // FIX: Removed invalid 'onNavigateToPracticeTest' prop.
                 if (!currentTest) return <PracticeHub {...practiceHubProps} />;
                 return <ResultsScreen testData={currentTest} userAnswers={currentUserAnswers} onGoHome={handleGoHome} />;
             case AppState.DictationPracticeHome:
-                return <DictationScreen currentUser={currentUser} onSelectTestSet={handleSelectDictationTestSet} />;
+                return <DictationScreen currentUser={currentUser} onSelectTestSet={handleSelectDictationTestSet} difficulty={dictationDifficulty} onSetDifficulty={setDictationDifficulty} />;
             case AppState.DictationPracticeSetup:
                 if (selectedDictationTestId === null) return null;
                 return <DictationPracticeSetupScreen testId={selectedDictationTestId} onStartPractice={handleStartDictationPractice} onBack={handleBackToDictationPracticeHome} />;
@@ -646,7 +644,6 @@ const App: React.FC = () => {
                     onBack={handleGoHome}
                 />;
             default:
-                // FIX: Removed invalid 'onNavigateToPracticeTest' prop.
                 return <PracticeHub {...practiceHubProps} />;
         }
     };
@@ -659,10 +656,6 @@ const App: React.FC = () => {
         );
     }
     
-    if (!isAuthenticated) {
-        return <LoginScreen onLoginSuccess={handleLoginSuccess} users={users} isLoggingIn={isLoggingIn} />;
-    }
-    
     const lightPattern = "data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3e%3cpath d='M30 50c-11 0-20-9-20-20s9-20 20-20 20 9 20 20-9 20-20 20zm0-38c-9.94 0-18 8.06-18 18s8.06 18 18 18 18-8.06 18-18-8.06-18-18-18zm-3-5h6v6h-6z' fill-opacity='.1' fill='%2393c5fd'/%3e%3cpath d='M5 10 C 10 0, 20 0, 25 10 L 15 15 Z' fill-opacity='.07' fill='%231f2937'/%3e%3c/svg%3e";
     const darkPattern = "data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3e%3cpath d='M30 50c-11 0-20-9-20-20s9-20 20-20 20 9 20 20-9 20-20 20zm0-38c-9.94 0-18 8.06-18 18s8.06 18 18 18 18-8.06 18-18-8.06-18-18-18zm-3-5h6v6h-6z' fill-opacity='.1' fill='%233b82f6'/%3e%3cpath d='M5 10 C 10 0, 20 0, 25 10 L 15 15 Z' fill-opacity='.08' fill='%23d1d5db'/%3e%3c/svg%3e";
 
@@ -673,43 +666,52 @@ const App: React.FC = () => {
             <div className="relative z-10 flex flex-col min-h-screen">
                 <header className="bg-blue-50/80 dark:bg-slate-900/80 backdrop-blur-sm shadow-md border-b border-blue-200 dark:border-slate-800 sticky top-0 z-40">
                     <nav className="container mx-auto px-4 py-3 flex justify-between items-center">
-                        <div className="flex items-center gap-2 cursor-pointer" onClick={handleGoHome}>
-                            {/* Removed LogoIcon as requested */}
+                        <div className="flex items-center gap-2 cursor-pointer" onClick={isAuthenticated ? handleGoHome : undefined}>
+                            <LogoIcon className="h-8 w-8 text-blue-600" />
                             <span className="text-xl font-bold text-slate-800 dark:text-slate-100">TOEIC Pavex</span>
                             
                         </div>
-                        <div className="hidden md:flex items-center gap-2">
-                            <NavButton onClick={handleGoHome} isActive={appState === AppState.PracticeHub || appState.startsWith('MINI_TEST')}>Practice Hub</NavButton>
-                            <NavButton onClick={() => setAppState(AppState.MyProgress)} isActive={appState === AppState.MyProgress}>My Progress</NavButton>
-                            {currentUser?.username === 'admin' && (
+                        {isAuthenticated && (
+                            <div className="hidden md:flex items-center gap-2">
+                                <NavButton onClick={handleGoHome} isActive={appState === AppState.PracticeHub || appState.startsWith('MINI_TEST')}>Practice Hub</NavButton>
+                                <NavButton onClick={() => setAppState(AppState.MyProgress)} isActive={appState === AppState.MyProgress}>My Progress</NavButton>
+                                {currentUser?.username === 'admin' && (
+                                    <>
+                                        <NavButton onClick={() => setAppState(AppState.StudentManagement)} isActive={appState === AppState.StudentManagement}>Students</NavButton>
+                                    </>
+                                )}
+                            </div>
+                        )}
+                        <div className="flex items-center gap-4">
+                            {isAuthenticated && currentUser && (
                                 <>
-                                    <NavButton onClick={() => setAppState(AppState.StudentManagement)} isActive={appState === AppState.StudentManagement}>Students</NavButton>
-                                    
+                                    <button 
+                                        onClick={toggleNewsPopup} 
+                                        className="relative p-2 rounded-full bg-red-100 dark:bg-red-900/50 hover:bg-red-200 dark:hover:bg-red-800/50 transition-colors"
+                                        aria-label="Show news updates"
+                                    >
+                                        <HeadphoneIcon className="h-5 w-5 text-red-600 dark:text-red-300" />
+                                        {showNewsPopup && (
+                                            <span className="absolute -top-1 -right-1 block h-3 w-3 rounded-full bg-red-500 ring-2 ring-white"></span>
+                                        )}
+                                    </button>
+                                    <span className="hidden sm:inline text-sm font-medium text-slate-600 dark:text-slate-300">Welcome, {currentUser.username}</span>
+                                    <NavButton onClick={() => setAppState(AppState.Settings)} isActive={appState === AppState.Settings}>Settings</NavButton>
+                                    <button onClick={handleLogout} className="px-4 py-2 text-sm font-semibold text-red-600 bg-red-100 dark:bg-red-900/50 dark:text-red-300 rounded-lg hover:bg-red-200 dark:hover:bg-red-800/50 transition-colors">
+                                        Logout
+                                    </button>
                                 </>
                             )}
-                        </div>
-                        <div className="flex items-center gap-4">
-                            <button 
-                                onClick={toggleNewsPopup} 
-                                className="relative p-2 rounded-full bg-red-100 dark:bg-red-900/50 hover:bg-red-200 dark:hover:bg-red-800/50 transition-colors"
-                                aria-label="Show news updates"
-                            >
-                                <HeadphoneIcon className="h-5 w-5 text-red-600 dark:text-red-300" />
-                                {showNewsPopup && (
-                                    <span className="absolute -top-1 -right-1 block h-3 w-3 rounded-full bg-red-500 ring-2 ring-white"></span>
-                                )}
-                            </button>
-                            <span className="hidden sm:inline text-sm font-medium text-slate-600 dark:text-slate-300">Welcome, {currentUser?.username}</span>
-                            <NavButton onClick={() => setAppState(AppState.Settings)} isActive={appState === AppState.Settings}>Settings</NavButton>
-                            <button onClick={handleLogout} className="px-4 py-2 text-sm font-semibold text-red-600 bg-red-100 dark:bg-red-900/50 dark:text-red-300 rounded-lg hover:bg-red-200 dark:hover:bg-red-800/50 transition-colors">
-                                Logout
-                            </button>
                         </div>
                     </nav>
                 </header>
         
-                <main className="py-8 flex-grow">
-                    {renderContent()}
+                <main className="py-8 flex-grow flex flex-col">
+                    {!isAuthenticated ? (
+                         <LoginScreen onLoginSuccess={handleLoginSuccess} users={users} isLoggingIn={isLoggingIn} />
+                    ) : (
+                        renderContent()
+                    )}
                 </main>
                 
                 <StatsFooter />
